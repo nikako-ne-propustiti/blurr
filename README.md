@@ -1,10 +1,10 @@
-# PSI projekat
+# PSI projekat ![backend_test](https://github.com/KockaAdmiralac/PSI/actions/workflows/backend_test.yml/badge.svg) ![frontend_test](https://github.com/KockaAdmiralac/PSI/actions/workflows/frontend_test.yml/badge.svg)
 Projekat iz [Principa softverskog inženjerstva](http://si3psi.etf.rs/) u školskoj 2021/2022 godini od tima Nikako Ne Propustiti:
 
-- [Aleksa Marković](https://github.com/topofkeks)
-- [Ivan Pešić](https://github.com/ivan-pesic)
-- [Luka Simić](https://github.com/KockaAdmiralac)
-- [Miljan Marković](https://github.com/pigajunior)
+ - [Aleksa Marković](https://github.com/topofkeks)
+ - [Ivan Pešić](https://github.com/ivan-pesic)
+ - [Luka Simić](https://github.com/KockaAdmiralac)
+ - [Miljan Marković](https://github.com/pigajunior)
 
 Šablon za ovaj projekat je uzet [odavde](github.com/ohbarye/rails-react-typescript-docker-example).
 
