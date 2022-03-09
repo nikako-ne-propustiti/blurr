@@ -41,4 +41,4 @@ jobs:
         app-name: 'blurr'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_ca239a049e094332882ac1838e530d93 }}
-        images: 'psiregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8365a8c679ac437f864156497d3e6a10 }}/blurr:${{ github.sha }}'
+        images: '${{ secrets.REGISTRY_LOGIN_SERVER }}/blurr:${{ github.sha }}'
