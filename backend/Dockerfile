@@ -18,3 +18,4 @@ RUN wget https://github.com/progrium/entrykit/releases/download/v${ENTRYKIT_VERS
 ENTRYPOINT [ \
   "prehook", "ruby -v", "--", \
   "prehook", "/myapp/backend/prehook", "--"]
+CMD ["bundle", "exec", "rails", "s", "-p", "80", "-b", "0.0.0.0"]

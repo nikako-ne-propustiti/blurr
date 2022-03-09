@@ -10,7 +10,6 @@ services:
   backend:
     container_name: backend
     build: ./backend
-    command: bundle exec rails s -p 80 -b '0.0.0.0'
     volumes:
       - ./backend:/myapp/backend
     depends_on:
