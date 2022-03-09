@@ -6,4 +6,24 @@ Projekat iz [Principa softverskog inženjerstva](http://si3psi.etf.rs/) u škols
 - [Luka Simić](https://github.com/KockaAdmiralac)
 - [Miljan Marković](https://github.com/pigajunior)
 
-*Više detalja uskoro...*
+Šablon za ovaj projekat je uzet [odavde](github.com/ohbarye/rails-react-typescript-docker-example).
+
+# Korišćenje
+
+```bash
+$ git clone https://github.com/KockaAdmiralac/PSI.git && cd PSI
+
+# Setup
+$ docker-compose run frontend yarn
+$ docker-compose run backend bin/rails db:create db:migrate
+
+# Start
+$ docker-compose up -d
+
+# Open frontend
+$ open http://localhost:80
+
+# Check backend API
+$ curl -H 'Host: backend.localhost' http://localhost/greetings/hello
+```
+
