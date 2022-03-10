@@ -2,6 +2,7 @@ const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  mode: 'development',
   module: {
     rules: [
       {
@@ -30,6 +31,5 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 3000,
-    disableHostCheck: true,
   },
 };
