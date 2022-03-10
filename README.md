@@ -1,4 +1,5 @@
-# PSI projekat ![backend_test](https://github.com/KockaAdmiralac/PSI/actions/workflows/backend_test.yml/badge.svg) ![frontend_test](https://github.com/KockaAdmiralac/PSI/actions/workflows/frontend_test.yml/badge.svg)
+# PSI projekat ![backend_test](https://github.com/KockaAdmiralac/PSI/actions/workflows/backend_test.yml/badge.svg) ![frontend_test](https://github.com/KockaAdmiralac/PSI/actions/workflows/frontend_test.yml/badge.svg) [![Build and deploy to Azure](https://github.com/nikako-ne-propustiti/PSI/actions/workflows/master_blurr.yml/badge.svg)](https://github.com/nikako-ne-propustiti/PSI/actions/workflows/master_blurr.yml)
+
 Projekat iz [Principa softverskog inženjerstva](http://si3psi.etf.rs/) u školskoj 2021/2022 godini od tima Nikako Ne Propustiti:
 
  - [Aleksa Marković](https://github.com/topofkeks)
