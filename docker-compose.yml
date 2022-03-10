@@ -4,14 +4,20 @@ services:
     container_name: postgres
     image: postgres:11
     volumes:
-      - ./tmp/db:/var/lib/postgresql/data
+      - ./backend/tmp/db:/var/lib/postgresql/data
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
   backend:
     container_name: backend
-    build: ./backend
+    build: .
     volumes:
-      - ./backend:/myapp/backend
+      - ./backend/app:/myapp/backend/app
+      - ./backend/config:/myapp/backend/config
+      - ./backend/db:/myapp/backend/db
+      - ./backend/lib:/myapp/backend/lib
+      - ./backend/log:/myapp/backend/log
+      - ./backend/test:/myapp/backend/test
+      - ./backend/vendor:/myapp/backend/vendor
     depends_on:
       - db
     ports:
