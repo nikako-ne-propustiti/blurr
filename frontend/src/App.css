@@ -1,0 +1,14 @@
+main {
+    border: 1px solid #CCCCCC;
+    margin: 10px auto;
+    max-width: 1000px;
+    padding: 30px;
+}
+
+footer {
+    align-items: center;
+    border-top: 1px solid #CCCCCC;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
