@@ -1,5 +1,6 @@
 const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -24,6 +25,12 @@ module.exports = {
     extensions: [".js", ".ts", ".tsx", ".json", ".mjs", ".wasm"],
   },
   plugins: [
+    new CopyPlugin([
+      {
+        from: 'static',
+        to: '.'
+      }
+    ]),
     new HTMLPlugin({
       template: path.join(__dirname, "src/index.html"),
     }),
