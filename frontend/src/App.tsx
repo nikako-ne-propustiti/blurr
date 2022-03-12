@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import {CreatePost, EditAccount, Login, RegisterAccount, ViewFeed, ViewPost, ViewUserFeed} from './routes';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {Navbar} from './wrapper';
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3001';
 
@@ -18,8 +19,10 @@ const fetchContent = async () => {
 const App: React.FC = () => {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
+      <Navbar />
+      <main>
+        <BrowserRouter>
+          <Routes>
             <Route path='/' element={<ViewFeed />} />
             <Route path='/accounts/login' element={<Login />} />
             <Route path='/accounts/register' element={<RegisterAccount />} />
@@ -27,8 +30,10 @@ const App: React.FC = () => {
             <Route path='/p/:post' element={<ViewPost />} />
             <Route path='/p/new' element={<CreatePost />} />
             <Route path='/:username' element={<ViewUserFeed />} />
-        </Routes>
-    </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </main>
+      <footer>Nikako Ne Propustiti &copy; {new Date().getFullYear()}</footer>
     </div>
   );
 }
