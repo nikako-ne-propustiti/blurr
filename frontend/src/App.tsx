@@ -18,10 +18,10 @@ const fetchContent = async () => {
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <Navbar />
-      <main>
-        <BrowserRouter>
+    <BrowserRouter>
+      <div className="App">
+        <Navbar />
+        <main>
           <Routes>
             <Route path='/' element={<ViewFeed />} />
             <Route path='/accounts/login' element={<Login />} />
@@ -31,10 +31,10 @@ const App: React.FC = () => {
             <Route path='/p/new' element={<CreatePost />} />
             <Route path='/:username' element={<ViewUserFeed />} />
           </Routes>
-        </BrowserRouter>
-      </main>
-      <footer>Nikako Ne Propustiti &copy; {new Date().getFullYear()}</footer>
-    </div>
+        </main>
+        <footer>Nikako Ne Propustiti &copy; {new Date().getFullYear()}</footer>
+      </div>
+    </BrowserRouter>
   );
 }
 
