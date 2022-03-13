@@ -1,4 +1,5 @@
 main {
+    background-color: white;
     border: 1px solid #CCCCCC;
     margin: 10px auto;
     max-width: 1000px;
@@ -7,7 +8,7 @@ main {
 
 footer {
     align-items: center;
-    border-top: 1px solid #CCCCCC;
+    color: #8E8E8E;
     display: flex;
     justify-content: center;
     padding: 30px;
