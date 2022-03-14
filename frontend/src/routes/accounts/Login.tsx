@@ -6,29 +6,35 @@ import Button from '../../shared/Button';
 import './Login.css';
 import SubmissionIndicator, {SubmissionState} from '../../shared/SubmissionIndicator';
 import {Context} from '../../shared/Context';
+import {login} from '../../api';
 
 const Login: React.FC = () => {
     const [submissionState, setSubmissionState] = useState<SubmissionState>('not-submitted');
     const [indicatorText, setIndicatorText] = useState('');
     const {state, dispatch} = useContext(Context);
-    const onLoginSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+    const onLoginSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const username = formData.get('username');
         const password = formData.get('password');
+        if (typeof username !== 'string' || typeof password !== 'string') {
+            setSubmissionState('error');
+            setIndicatorText('Please provide a username and a password.');
+            return;
+        }
         setSubmissionState('submitting');
         setIndicatorText('');
-        // Prototype data.
-        if (username === 'admin' && password === 'admin') {
+        const response = await login(username, password);
+        if (response.success) {
             setSubmissionState('not-submitted');
             dispatch({
                 type: 'log-in'
             });
         } else {
             setSubmissionState('error');
-            setIndicatorText('Invalid username or password.');
+            setIndicatorText(response.error);
         }
-    }, [submissionState, indicatorText]);
+    }, []);
     return <form action="/accounts/login" method="POST" className="login-form" onSubmit={onLoginSubmit}>
         {state.loggedIn && <Navigate to="/" />}
         <img src={logo} alt="Blurr logo" />
