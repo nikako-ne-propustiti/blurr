@@ -1,3 +1,5 @@
+require 'test_helper'
+
 class RoutingTest < Minitest::Test
   include ::RouteMechanic::Testing::Methods
 
