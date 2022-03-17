@@ -56,7 +56,7 @@ const Login: React.FC = () => {
         <AccountTextInput name="password" placeholder="Password" />
         <Button text="Login" />
         <SubmissionIndicator submissionState={submissionState} text={indicatorText} />
-        <p>No account? <strong><Link to='/accounts/register'>Register</Link></strong></p>
+        <p>No account? <strong><Link to={`/accounts/register?returnTo=${encodeURIComponent(returnTo)}`}>Register</Link></strong></p>
     </form>;
 }
 
