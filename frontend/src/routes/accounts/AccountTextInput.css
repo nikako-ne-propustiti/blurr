@@ -1,0 +1,11 @@
+.account-text-input {
+    margin: 5px 0;
+}
+
+.account-text-input input {
+    background-color: #FAFAFA;
+    border: 1px solid #CCCCCC;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 100%;
+}
