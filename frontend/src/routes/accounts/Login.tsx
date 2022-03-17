@@ -1,16 +1,29 @@
 import React, {FormEvent, useCallback, useContext, useState} from 'react';
 import AccountTextInput from './AccountTextInput';
 import logo from '../../logo.png';
-import {Link, Navigate} from 'react-router-dom';
+import {Link, Navigate, useSearchParams} from 'react-router-dom';
 import Button from '../../shared/Button';
 import './Login.css';
 import SubmissionIndicator, {SubmissionState} from '../../shared/SubmissionIndicator';
 import {Context} from '../../shared/Context';
 import {login} from '../../api';
 
+const validateRedirectTarget = (target: string | null): string => {
+    if (!target) {
+        // If the return path was not specified, default to /.
+        return '/';
+    }
+    if (!target.startsWith('/') || target.startsWith('//')) {
+        // If the return path attempts to redirect us to an external site, default to /.
+        return '/';
+    }
+    return target;
+};
+
 const Login: React.FC = () => {
     const [submissionState, setSubmissionState] = useState<SubmissionState>('not-submitted');
     const [indicatorText, setIndicatorText] = useState('');
+    const [searchParams] = useSearchParams();
     const {state, dispatch} = useContext(Context);
     const onLoginSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -35,8 +48,9 @@ const Login: React.FC = () => {
             setIndicatorText(response.error);
         }
     }, []);
+    const returnTo = validateRedirectTarget(searchParams.get('returnTo'));
     return <form action="/accounts/login" method="POST" className="login-form" onSubmit={onLoginSubmit}>
-        {state.loggedIn && <Navigate to="/" />}
+        {state.loggedIn && <Navigate to={returnTo} />}
         <img src={logo} alt="Blurr logo" />
         <AccountTextInput name="username" placeholder="Username" />
         <AccountTextInput name="password" placeholder="Password" />
