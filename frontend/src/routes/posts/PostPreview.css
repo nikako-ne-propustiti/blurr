@@ -1,0 +1,9 @@
+.post-preview {
+    width: 32%;
+    padding: 5px;
+}
+
+.post-preview-image {
+    width: 100%;
+    margin : auto;
+}

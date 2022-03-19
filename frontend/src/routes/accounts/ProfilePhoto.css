@@ -1,0 +1,10 @@
+.profile-photo {
+    margin: auto;
+    display: inline-block;
+    height: 150px;
+}
+
+.profile-photo > img {
+    width: inherit;
+    height: inherit;
+}

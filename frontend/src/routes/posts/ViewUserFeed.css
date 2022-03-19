@@ -1,0 +1,12 @@
+.userfeed-profile-info{
+    display: flex;
+    height: auto;
+    align-items: baseline;
+    justify-content: center;
+}
+
+.userfeed-info {
+    margin: auto;
+    padding: 5px;
+    display: inline-block;
+}

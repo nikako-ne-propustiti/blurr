@@ -1,5 +1,7 @@
 import React from 'react';
 import placeholder from '../../placeholder.jpg';
+import loader from '../../loader.gif';
+import './PostPreview.css';
 
 interface Props {
     photoId? : string
@@ -14,7 +16,7 @@ const PostPreview : React.FC<Props> = ({photoId}) => {
     const initialState = {
         isLoading : true,
         isError : false,
-        imageUrl : 'loader.gif'
+        imageUrl : loader
     };
 
     const PostPreviewReducer = (state: typeof initialState, action: ACTIONTYPE) => {
@@ -36,7 +38,7 @@ const PostPreview : React.FC<Props> = ({photoId}) => {
                 return {
                     ...state,
                     isError: true,
-                    imageUrl: 'error.png'
+                    imageUrl: ''
                 };
             default:
                 throw new Error();
@@ -53,7 +55,7 @@ const PostPreview : React.FC<Props> = ({photoId}) => {
             if (photoId !== 'nophoto')
                 dispatch({
                     type: 'fetch_success',
-                    imageUrl: placeholder
+                    imageUrl: `https://picsum.photos/200/200/?blur=${(Math.random()*10).toFixed()}&nocache=${Math.random()}`
                 });
             else 
             dispatch({
@@ -62,8 +64,13 @@ const PostPreview : React.FC<Props> = ({photoId}) => {
         }, 1000 * Math.random());
     }, [photoId]);
 
-    return <div className='postPreview'>
-        <img src={state.imageUrl} />
+    const openPostPage = () => {
+        if (state.isError || state.isLoading) return;
+        window.open(`/p/${state.imageUrl}`,'_blank');
+    };
+
+    return <div className='post-preview'>
+        <img className="post-preview-image" src={state.imageUrl} onClick={openPostPage} />
     </div>
 };
 

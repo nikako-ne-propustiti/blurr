@@ -1,17 +1,20 @@
 import React from 'react';
+import loader from '../../loader.gif';
+import placeholder from '../../placeholder.jpg';
+import './ProfilePhoto.css'
 
 interface Props {
     username?: string
 };
 
-const ProfilePhotoChanger: React.FC<Props> = ({ username }) => {
+const ProfilePhoto: React.FC<Props> = ({ username }) => {
     type ACTIONTYPE =
         | { type: "fetch_init"; }
         | { type: "fetch_success"; imageUrl: string; canUpload: boolean; }
         | { type: "fetch_fail"; };
 
     const initialState = {
-        imageUrl: 'loader.gif',
+        imageUrl: loader,
         tooltipText: 'Loading...',
         isLoading: true,
         isError: false,
@@ -41,7 +44,7 @@ const ProfilePhotoChanger: React.FC<Props> = ({ username }) => {
                     ...state,
                     isError: true,
                     imageUrl: 'error.png',
-                    tooltipText : 'Error loading profile photo'
+                    tooltipText: 'Error loading profile photo'
                 };
             default:
                 throw new Error();
@@ -55,21 +58,23 @@ const ProfilePhotoChanger: React.FC<Props> = ({ username }) => {
             type: 'fetch_init'
         });
         setTimeout(() => {
-            if (username !== 'noaccount')
+            if (username !== 'noacc')
                 dispatch({
                     type: 'fetch_success',
-                    imageUrl: 'logo.png',
+                    imageUrl: 'https://picsum.photos/150/150',
                     canUpload: false
                 });
-            else 
-            dispatch({
-                type: 'fetch_fail'
-            });
+            else
+                dispatch({
+                    type: 'fetch_fail'
+                });
         }, 1000);
     }, [username]);
 
 
-    return <img src={state.imageUrl} title={state.tooltipText} />
+    return <div className='profile-photo'>
+        <img src={state.imageUrl} title={state.tooltipText} />
+    </div>
 };
 
-export default ProfilePhotoChanger;
+export default ProfilePhoto;
