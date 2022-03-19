@@ -1,7 +1,7 @@
 import {apiCall} from './base';
 
 const accountInfo = (username: string) => {
-    return apiCall('accounts/login', {
+    return apiCall('accounts/info', {
         json: {username},
         method: 'GET'
     });
