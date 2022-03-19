@@ -55,7 +55,7 @@ const PostPreview : React.FC<Props> = ({photoId}) => {
             if (photoId !== 'nophoto')
                 dispatch({
                     type: 'fetch_success',
-                    imageUrl: `https://picsum.photos/200/200/?blur=${(Math.random()*10).toFixed()}&nocache=${Math.random()}`
+                    imageUrl: `https://picsum.photos/512/512/?blur=${(Math.random()*10).toFixed()}&nocache=${Math.random()}`
                 });
             else 
             dispatch({

@@ -4,6 +4,6 @@
 }
 
 .post-preview-image {
-    width: 100%;
-    margin : auto;
+    max-width: 100%;
+    margin : 0 auto;
 }
