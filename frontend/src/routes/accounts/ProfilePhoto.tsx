@@ -1,6 +1,5 @@
 import React from 'react';
 import loader from '../../loader.gif';
-import placeholder from '../../placeholder.jpg';
 import './ProfilePhoto.css'
 
 interface Props {

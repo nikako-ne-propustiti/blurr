@@ -1,5 +1,4 @@
 import React from 'react';
-import placeholder from '../../placeholder.jpg';
 import loader from '../../loader.gif';
 import './PostPreview.css';
 
