@@ -1,111 +1,51 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import PostGrid from './PostGrid';
+
+import User from '../../models/User';
+import Post from '../../models/Post';
+
 import { ProfilePhoto } from '../accounts';
+import PostGrid from './PostGrid';
+
 import './ViewUserFeed.css';
 
 const pluralHelper = (word: string, count: number | undefined) =>
     <><b>{count}</b> {`${word}${(count !== 1) ? 's' : ''}`}</>;
 
+type LoadState = 'INIT' | 'LOADED' | 'ERROR';
+
+interface UserFeedState {
+    loadState: LoadState;
+    userInfo?: User;
+    posts?: Post[];
+}
+
 const ViewUserFeed: React.FC = () => {
-    interface UserData {
-        name: string,
-        postsCount: number
-        followersCount: number,
-        followingCount: number,
-    };
-
-    interface State {
-        isLoading: boolean,
-        isError: boolean,
-        userData?: UserData
-    }
-
-    type ACTIONTYPE =
-        | { type: "fetch_init"; }
-        | { type: "fetch_success"; userData: UserData; }
-        | { type: "fetch_fail"; };
-
-    const initialState: State = {
-        isLoading: true,
-        isError: false,
-    };
-
-    const UserFeedReducer = (state: typeof initialState, action: ACTIONTYPE) => {
-        switch (action.type) {
-            case 'fetch_init':
-                return {
-                    ...state,
-                    isLoading: true,
-                    isError: false
-                };
-            case 'fetch_success':
-                return {
-                    ...state,
-                    isLoading: false,
-                    isError: false,
-                    userData: action.userData
-                };
-            case 'fetch_fail':
-                return {
-                    ...state,
-                    isError: true,
-                };
-            default:
-                throw new Error();
-        }
-    };
-
-    const [state, dispatch] = React.useReducer(UserFeedReducer, initialState);
-
     const { username } = useParams();
 
+    const [state, setState] = React.useState<UserFeedState>({ loadState: 'INIT' });
+
     React.useEffect(() => {
-        dispatch({
-            type: 'fetch_init'
-        });
-        setTimeout(() => {
-            if (username !== 'noacc')
-                dispatch({
-                    type: 'fetch_success',
-                    userData: {
-                        name: 'Miljan Marković',
-                        postsCount: 12,
-                        followersCount: 213481,
-                        followingCount: 1,
-                    }
-                });
-            else
-                dispatch({
-                    type: 'fetch_fail'
-                });
-        }, 1000 * Math.random());
+        setState({ loadState: 'ERROR' });
     }, [username]);
 
+    const { loadState, userInfo, posts } = state;
 
-    return (
-        <>
-            <section className="userfeed-profile-info">
-                <ProfilePhoto username={username}></ProfilePhoto>
-                <div className="userfeed-info">
-                    {state.isError
-                        ? <p>Error loading profile.</p>
-                        : (state.isLoading ? <p>Loading...</p> :
-                            <>
-                                <h1>{username} - <em>{state.userData?.name}</em></h1>
-                                <p>
-                                    {pluralHelper('follower', state.userData?.followersCount)}.&nbsp;
-                                    <b>{state.userData?.followingCount}</b> following.&nbsp;
-                                    {pluralHelper('post', state.userData?.postsCount)}.&nbsp;
-                                </p>
-                            </>
-                        )}
-                </div>
-            </section>
-            <hr />
-            <PostGrid username={username}></PostGrid>
-        </>
-    );
+    return <>
+        <section className="userfeed-profile-info">
+            {userInfo && <ProfilePhoto {...userInfo} />}
+            <div className="userfeed-info">
+                {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
+                {userInfo && <ul>
+                    <li>Data 1.</li>
+                    <li>Data 2.</li>
+                    <li>Data 3.</li>
+                </ul>}
+            </div>
+        </section>
+        <hr />
+        {posts && <PostGrid posts={posts} />}
+    </>;
 }
 
 export default ViewUserFeed;
