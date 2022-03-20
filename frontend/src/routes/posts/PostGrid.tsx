@@ -1,10 +1,12 @@
 import React from 'react';
+
+import PostBasicInfo from '../../models/PostBasicInfo';
 import PostPreview from './PostPreview';
+
 import './PostGrid.css';
-import Post from '../../models/Post';
 
 interface Props {
-    posts: Post[]
+    posts: PostBasicInfo[]
 };
 
 const PostGrid: React.FC<Props> = ({ posts }) => {
