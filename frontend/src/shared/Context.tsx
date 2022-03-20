@@ -2,10 +2,12 @@ import React from 'react';
 
 interface State {
     loggedIn: boolean
+    currentUser? : string
 }
 
 export interface Action {
-    type: 'log-in'
+    type: 'log-in',
+    username? : string
 }
 
 type ContextReducer = (state: State, action: Action) => State;
@@ -15,16 +17,19 @@ const reducer: ContextReducer = (state, action) => {
         case 'log-in':
             // TODO: Remove after the prototype
             localStorage.setItem('logged-in', 'true');
+            localStorage.setItem('currentUser', action.username || '');
             return {
                 ...state,
-                loggedIn: true
+                loggedIn: true,
+                currentUser : action.username
             };
     }
 };
 
 const initialState: State = {
     // TODO: Change after the prototype
-    loggedIn: Boolean(localStorage.getItem('logged-in'))
+    loggedIn: Boolean(localStorage.getItem('logged-in')),
+    currentUser : localStorage.getItem('currentUser') || undefined
 };
 
 export const Context = React.createContext({
