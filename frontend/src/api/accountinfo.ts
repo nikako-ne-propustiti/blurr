@@ -1,9 +1,9 @@
 import {apiCall} from './base';
 
-const accountInfo = (username: string) => {
+const userInfo = (username: string) => {
     return apiCall('accounts/info', {
         json: {username}
     });
 };
 
-export default accountInfo;
+export default userInfo;
