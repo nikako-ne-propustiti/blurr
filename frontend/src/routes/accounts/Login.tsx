@@ -7,18 +7,7 @@ import './Login.css';
 import SubmissionIndicator, {SubmissionState} from '../../shared/SubmissionIndicator';
 import {Context} from '../../shared/Context';
 import {login} from '../../api';
-
-const validateRedirectTarget = (target: string | null): string => {
-    if (!target) {
-        // If the return path was not specified, default to /.
-        return '/';
-    }
-    if (!target.startsWith('/') || target.startsWith('//')) {
-        // If the return path attempts to redirect us to an external site, default to /.
-        return '/';
-    }
-    return target;
-};
+import validateRedirectTarget from '../../utils/validateRedirectTarget';
 
 const Login: React.FC = () => {
     const [submissionState, setSubmissionState] = useState<SubmissionState>('not-submitted');
