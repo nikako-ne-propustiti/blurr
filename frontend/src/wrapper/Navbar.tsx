@@ -10,7 +10,6 @@ const Navbar: React.FC = () => {
     const {state} = useContext(Context);
     return <nav className="navbar">
         <Link to="/" title="Home"><img src={logo} alt="Blurr" width="90" height="60" /></Link>
-        {state.loggedIn && <p>{state.username}</p>}
         <form>
             <input type="text" placeholder="Search"></input>
         </form>
