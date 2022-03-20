@@ -1,9 +1,37 @@
 .post-preview {
+    position: relative;
     width: 32%;
-    padding: 5px;
+    margin: 5px;
 }
 
 .post-preview-image {
-    max-width: 100%;
-    margin : 0 auto;
+    opacity: 1;
+    display: block;
+    width: 100%;
+    transition: .5s ease;
+    backface-visibility: hidden;
+    height: auto;
+}
+
+.post-preview .post-preview-image:hover {
+    opacity: 0.5;
+}
+
+.post-preview-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    opacity: 0;
+    transition: .5s ease;
+}
+
+.post-preview:hover .post-preview-overlay {
+    opacity: 1;
+}
+
+.post-preview-bar {
+    background-color: #4e4e4e;
+    color: white;
+    font-size: 16px;
+    padding: 16px 16px;
 }

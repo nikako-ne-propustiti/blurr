@@ -10,6 +10,9 @@ import './PostPreview.css';
 const PostPreview: React.FC<PostBasicInfo> = ({ postID, photoURL, numberOfLikes }) => {
     return <Link to={`/p/${postID}`} className='post-preview'>
         <img className="post-preview-image" src={photoURL} />
+        <div className="post-preview-overlay">
+            <div className="post-preview-bar">❤️ {numberOfLikes}</div>
+        </div>
     </Link>
 };
 
