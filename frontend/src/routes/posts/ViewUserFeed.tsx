@@ -62,7 +62,7 @@ const ViewUserFeed: React.FC = () => {
 
     return <>
         <section className="userfeed-profile-info">
-            {userInfo && <ProfilePhoto user={userInfo} isMyProfile={false} />}
+            {userInfo && <ProfilePhoto user={userInfo} isMyProfile={true} />}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
                 {loadState === 'NOUSER' && <p>The requested user does not exist.</p>}
