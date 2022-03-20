@@ -12,7 +12,7 @@ import './ViewUserFeed.css';
 const pluralHelper = (word: string, count: number | undefined) =>
     <><b>{count}</b> {`${word}${(count !== 1) ? 's' : ''}`}</>;
 
-type LoadState = 'INIT' | 'LOADED' | 'ERROR';
+type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'NOUSER';
 
 interface UserFeedState {
     loadState: LoadState;
@@ -55,7 +55,7 @@ const ViewUserFeed: React.FC = () => {
                     numberOfLikes: 38
                 }]
             });
-        else setState({ loadState: 'ERROR' });
+        else setState({ loadState: 'NOUSER' });
     }, [username]);
 
     const { loadState, userInfo, posts } = state;
@@ -65,6 +65,7 @@ const ViewUserFeed: React.FC = () => {
             {userInfo && <ProfilePhoto {...userInfo} />}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
+                {loadState === 'NOUSER' && <p>The requested user does not exist.</p>}
                 {userInfo && <>
                     <h1>{username} - <em>{userInfo.realName}</em></h1>
                     <ul className='userfeed-info-list'>
