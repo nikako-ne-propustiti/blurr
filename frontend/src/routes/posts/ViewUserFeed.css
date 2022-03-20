@@ -1,5 +1,6 @@
 .userfeed-profile-info{
     display: flex;
+    flex-wrap: wrap;
     height: auto;
     align-items: baseline;
     justify-content: center;
