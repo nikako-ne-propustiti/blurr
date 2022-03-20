@@ -1,5 +1,4 @@
 import login from './login';
-import accountInfo from "./accountInfo";
-import getPostsByUser from "./getPostsByUser";
+import register from './register';
 
-export {login, accountInfo, getPostsByUser as previewPosts};
+export {login, register};
