@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,12 +12,29 @@ import Button from '../../shared/Button';
 
 import './ViewUserFeed.css';
 
+const mockUserInfo: User = {
+    username: 'not loaded',
+    profileURL: '',
+    profilePhotoURL: 'http://picsum.photos/512/512?nocache=1',
+    amFollowing: false,
+    numberFollowing: 100,
+    numberOfFollowers: 1,
+    numberOfPosts: 20,
+    realName: 'John Doe'
+};
+
+const generateMockPost = () => {
+    return {
+        postID: Math.round((100000 * Math.random())).toFixed(),
+        photoURL: `http://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
+        numberOfLikes: Math.round((100 * Math.random()))
+    }
+}
 
 const pluralHelper = (word: string, count: number | undefined) =>
     <><b>{count}</b> {`${word}${(count !== 1) ? 's' : ''}`}</>;
 
 type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'NOUSER';
-
 
 const ViewUserFeed: React.FC = () => {
     const { username } = useParams();
@@ -26,6 +43,7 @@ const ViewUserFeed: React.FC = () => {
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [userInfo, setUserInfo] = React.useState<User>();
     const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
+    let loaded = false;
 
     const handleFollow = () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
@@ -43,36 +61,18 @@ const ViewUserFeed: React.FC = () => {
 
     React.useEffect(() => {
         setLoadState('INIT');
+
+        // TODO API call...
         if (username?.includes('error'))
             setLoadState('ERROR');
         else if (username?.includes('noacc'))
             setLoadState('NOUSER');
         else {
             setUserInfo({
-                username: username || '',
-                profileURL: '',
-                profilePhotoURL: 'http://picsum.photos/512/512?nocache=1',
-                amFollowing: false,
-                numberFollowing: 100,
-                numberOfFollowers: 1,
-                numberOfPosts: 20,
-                realName: 'John Doe'
+                ...mockUserInfo,
+                username: username || ''
             });
-            setPosts([
-                {
-                    postID: 'testpost1',
-                    photoURL: 'http://picsum.photos/512/512?nocache=2',
-                    numberOfLikes: 2
-                }, {
-                    postID: 'testpost2',
-                    photoURL: 'http://picsum.photos/512/512?nocache=3',
-                    numberOfLikes: 238
-                }, {
-                    postID: 'testpost3',
-                    photoURL: 'http://picsum.photos/512/512?nocache=4',
-                    numberOfLikes: 38
-                }
-            ]);
+            setPosts(new Array(10).fill(null).map(generateMockPost));
         }
     }, [username]);
 
