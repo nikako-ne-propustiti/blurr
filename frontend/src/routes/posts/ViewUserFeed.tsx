@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,12 +24,14 @@ const mockUserInfo: User = {
     realName: 'John Doe'
 };
 
-const generateMockPosts = ( number : number) => {
-    return new Array(number).fill(null).map(() => {return {
-        postID: Math.round((100000 * Math.random())).toFixed(),
-        photoURL: `http://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
-        numberOfLikes: Math.round((100 * Math.random()))
-    }});
+const generateMockPosts = (number: number) => {
+    return new Array(number).fill(null).map(() => {
+        return {
+            postID: Math.round((100000 * Math.random())).toFixed(),
+            photoURL: `http://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
+            numberOfLikes: Math.round((100 * Math.random()))
+        }
+    });
 }
 
 const pluralHelper = (word: string, count: number | undefined) =>

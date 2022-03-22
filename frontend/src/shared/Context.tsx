@@ -2,12 +2,12 @@ import React from 'react';
 
 interface State {
     loggedIn: boolean
-    currentUser? : string
+    currentUser?: string
 }
 
 export interface Action {
     type: 'log-in',
-    username? : string
+    username?: string
 }
 
 type ContextReducer = (state: State, action: Action) => State;
@@ -21,7 +21,7 @@ const reducer: ContextReducer = (state, action) => {
             return {
                 ...state,
                 loggedIn: true,
-                currentUser : action.username
+                currentUser: action.username
             };
     }
 };
@@ -29,21 +29,21 @@ const reducer: ContextReducer = (state, action) => {
 const initialState: State = {
     // TODO: Change after the prototype
     loggedIn: Boolean(localStorage.getItem('logged-in')),
-    currentUser : localStorage.getItem('currentUser') || undefined
+    currentUser: localStorage.getItem('currentUser') || undefined
 };
 
 export const Context = React.createContext({
     state: initialState,
-    dispatch: (_: Action) => {}
+    dispatch: (_: Action) => { }
 });
 
 interface Props {
     children: React.ReactNode
 }
 
-export const ContextProvider: React.FC<Props> = ({children}) => {
+export const ContextProvider: React.FC<Props> = ({ children }) => {
     const [state, dispatch] = React.useReducer(reducer, initialState);
-    return <Context.Provider value={{state, dispatch}}>
+    return <Context.Provider value={{ state, dispatch }}>
         {children}
     </Context.Provider>
 };

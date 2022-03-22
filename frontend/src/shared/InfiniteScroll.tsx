@@ -1,10 +1,10 @@
 import React from "react";
 
 interface Props {
-    callback : ((scrollHeight? : number) => void)
+    callback: ((scrollHeight?: number) => void)
 };
 
-const InfiniteScroll: React.FC<Props> = ({callback}) => {
+const InfiniteScroll: React.FC<Props> = ({ callback }) => {
     const prevScrollY = React.useRef(0);
     const [goingUp, setGoingUp] = React.useState(true);
 
@@ -13,7 +13,7 @@ const InfiniteScroll: React.FC<Props> = ({callback}) => {
         const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
         if (prevScrollY.current < scrollHeight && goingUp)
             setGoingUp(false);
-        if (prevScrollY.current > scrollHeight && !goingUp) 
+        if (prevScrollY.current > scrollHeight && !goingUp)
             setGoingUp(true);
         if (scrollTop + clientHeight > scrollHeight - 5 && !goingUp) {
             callback();

@@ -1,4 +1,4 @@
-.userfeed-profile-info{
+.userfeed-profile-info {
     display: flex;
     flex-wrap: wrap;
     height: auto;
@@ -17,7 +17,7 @@
     padding-left: 0;
 }
 
-.userfeed-info-list > li {
+.userfeed-info-list>li {
     display: inline-block;
     margin: 5px;
 }
