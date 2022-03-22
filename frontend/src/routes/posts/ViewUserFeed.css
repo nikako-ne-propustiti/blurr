@@ -21,3 +21,9 @@
     display: inline-block;
     margin: 5px;
 }
+
+.userfeed-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
