@@ -1,0 +1,29 @@
+.userfeed-profile-info {
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    align-items: baseline;
+    justify-content: center;
+}
+
+.userfeed-info {
+    margin: auto;
+    padding: 5px;
+    display: inline-block;
+}
+
+.userfeed-info-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.userfeed-info-list>li {
+    display: inline-block;
+    margin: 5px;
+}
+
+.userfeed-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}

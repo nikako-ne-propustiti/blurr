@@ -8,7 +8,7 @@ interface Props {
     isPassword?: boolean
 }
 
-const AccountTextInput: React.FC<Props> = ({name, placeholder, length, isPassword}) => {
+const AccountTextInput: React.FC<Props> = ({ name, placeholder, length, isPassword }) => {
     return (
         <p className="account-text-input"><input type={isPassword ? 'password' : 'text'} name={name} placeholder={placeholder} maxLength={length}></input></p>
     );
