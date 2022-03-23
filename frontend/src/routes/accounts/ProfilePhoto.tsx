@@ -34,7 +34,7 @@ const ProfilePhoto: React.FC<Props> = ({ user, isMyProfile, }) => {
             return;
         }
 
-        if (file.size > 2048*1024) {
+        if (file.size > 2048 * 1024) {
             alert("Maximum 2 MB for profile photo.");
             return;
         }

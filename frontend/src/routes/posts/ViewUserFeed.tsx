@@ -42,7 +42,6 @@ type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'NOUSER';
 const ViewUserFeed: React.FC = () => {
     const { username } = useParams();
     const { state: context } = React.useContext(Context);
-    const navigate = useNavigate();
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [userInfo, setUserInfo] = React.useState<User>();
     const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
