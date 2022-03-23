@@ -1,19 +1,19 @@
-import React, {FormEvent, useCallback, useContext, useState} from 'react';
+import React, { FormEvent, useCallback, useContext, useState } from 'react';
 import AccountTextInput from './AccountTextInput';
 import logo from '../../logo.png';
-import {Link, Navigate, useSearchParams} from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import Button from '../../shared/Button';
 import './Login.css';
-import SubmissionIndicator, {SubmissionState} from '../../shared/SubmissionIndicator';
-import {Context} from '../../shared/Context';
-import {login} from '../../api';
+import SubmissionIndicator, { SubmissionState } from '../../shared/SubmissionIndicator';
+import { Context } from '../../shared/Context';
+import { login } from '../../api';
 import validateRedirectTarget from '../../utils/validateRedirectTarget';
 
 const Login: React.FC = () => {
     const [submissionState, setSubmissionState] = useState<SubmissionState>('not-submitted');
     const [indicatorText, setIndicatorText] = useState('');
     const [searchParams] = useSearchParams();
-    const {state, dispatch} = useContext(Context);
+    const { state, dispatch } = useContext(Context);
     const onLoginSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -30,7 +30,8 @@ const Login: React.FC = () => {
         if (response.success) {
             setSubmissionState('not-submitted');
             dispatch({
-                type: 'log-in'
+                type: 'log-in',
+                username: username
             });
         } else {
             setSubmissionState('error');

@@ -1,0 +1,23 @@
+.profile-photo {
+    margin: auto;
+    display: inline-block;
+    max-height: 150px;
+}
+
+.profile-photo-clickable:hover {
+    cursor:pointer;
+}
+
+.profile-photo > img {
+    width: inherit;
+    height: inherit;
+    max-height: 150px;
+    margin: 0 auto;
+}
+
+.profile-photo > input {
+    display: block;
+    /*visibility: hidden;*/
+    width: 0;
+    height: 0;
+}
