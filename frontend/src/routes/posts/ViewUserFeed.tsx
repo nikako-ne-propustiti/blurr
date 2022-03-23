@@ -47,14 +47,16 @@ const ViewUserFeed: React.FC = () => {
     const [userInfo, setUserInfo] = React.useState<User>();
     const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
 
-    const handleFollow = () => {
+    const handleFollow = React.useCallback(() => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
             if (userInfo.amFollowing)
                 setUserInfo({ ...userInfo, amFollowing: false });
             else setUserInfo({ ...userInfo, amFollowing: true });
         }
         // TODO API call...
-    };
+        
+    }, [userInfo?.amFollowing]);
+
 
     // Infinite scrolling callback
     const handleInfiniteScroll = () => {

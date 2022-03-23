@@ -9,7 +9,7 @@ const InfiniteScroll: React.FC<Props> = ({ callback }) => {
     const [goingUp, setGoingUp] = React.useState(true);
 
     // TODO Could do refactoring
-    const onScroll = () => {
+    const onScroll = React.useCallback(() => {
         const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
         if (prevScrollY.current < scrollHeight && goingUp)
             setGoingUp(false);
@@ -20,7 +20,7 @@ const InfiniteScroll: React.FC<Props> = ({ callback }) => {
             setGoingUp(true);
         }
         prevScrollY.current = scrollHeight;
-    }
+    }, [goingUp]);
 
     React.useEffect(() => {
         // Removes old event
