@@ -1,6 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import User from '../../models/User';
 import PostBasicInfo from '../../models/PostBasicInfo';
@@ -12,6 +11,7 @@ import Button from '../../shared/Button';
 import InfiniteScroll from '../../shared/InfiniteScroll';
 
 import './ViewUserFeed.css';
+import '../../shared/Button.css'
 
 const mockUserInfo: User = {
     username: 'not loaded',
@@ -56,11 +56,6 @@ const ViewUserFeed: React.FC = () => {
         // TODO API call...
     };
 
-    // Edit account button
-    const handleEditAccount = () => {
-        navigate('/accounts/edit');
-    };
-
     // Infinite scrolling callback
     const handleInfiniteScroll = () => {
         setPosts(posts.concat(generateMockPosts(10)));
@@ -103,7 +98,7 @@ const ViewUserFeed: React.FC = () => {
                     && context.currentUser !== username
                     && <Button text={(userInfo?.amFollowing) ? 'Unfollow' : 'Follow'} onClick={handleFollow} />}
                 {context.currentUser === username
-                    && <Button text='Edit account' onClick={handleEditAccount} />}
+                    && <Link to="/accounts/edit" className="button">Edit account</Link>}
             </div>
         </section>
         <hr />
