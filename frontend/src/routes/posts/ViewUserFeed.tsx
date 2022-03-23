@@ -54,14 +54,14 @@ const ViewUserFeed: React.FC = () => {
             else setUserInfo({ ...userInfo, amFollowing: true });
         }
         // TODO API call...
-        
+
     }, [userInfo?.amFollowing]);
 
 
     // Infinite scrolling callback
-    const handleInfiniteScroll = () => {
+    const handleInfiniteScroll = React.useCallback(() => {
         setPosts(posts.concat(generateMockPosts(10)));
-    };
+    }, [posts]);
 
     React.useEffect(() => {
         setLoadState('INIT');
