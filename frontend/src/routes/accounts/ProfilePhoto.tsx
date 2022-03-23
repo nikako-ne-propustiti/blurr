@@ -16,9 +16,10 @@ const ProfilePhoto: React.FC<Props> = ({ user, isMyProfile, }) => {
     if (isMyProfile) className += ' profile-photo-clickable';
 
     const fileInput = React.useRef<HTMLInputElement>(null);
+    const [profilePhotoURL, setProfilePhotoURL] = React.useState(user.profilePhotoURL);
 
     // TODO This will also have to be written a bit nicer
-    const uploadFile = () => {
+    const uploadFile = React.useCallback(() => {
         if (!fileInput.current) return;
 
         // What file we got
@@ -38,21 +39,21 @@ const ProfilePhoto: React.FC<Props> = ({ user, isMyProfile, }) => {
             return;
         }
 
-        alert("Simulated file upload");
-
+        // Simulated upload
+        setProfilePhotoURL(URL.createObjectURL(file));
         // The server would inform us about the file being inadequate in any other way
         // E.g. resolution, etc.
-    };
+    }, [fileInput]);
 
-    const openFileDialog = () => {
+    const openFileDialog = React.useCallback(() => {
         if (!isMyProfile) return;
         if (!fileInput.current) return;
 
         // Simulate click on input field
         fileInput.current.click();
-    }
+    }, []);
 
-    const { profilePhotoURL, username } = user;
+    const { username } = user;
 
     return <div className={className}>
         <img src={profilePhotoURL} title={username} onClick={openFileDialog} />
