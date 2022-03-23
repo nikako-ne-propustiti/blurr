@@ -1,4 +1,5 @@
-import User from "./User";
+import Comment from './Comment';
+import User from './User';
 
 interface Post {
     id: string;

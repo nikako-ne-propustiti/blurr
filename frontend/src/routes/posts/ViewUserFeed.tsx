@@ -21,7 +21,8 @@ const mockUserInfo: User = {
     numberFollowing: 100,
     numberOfFollowers: 1,
     numberOfPosts: 20,
-    realName: 'John Doe'
+    realName: 'John Doe',
+    id: 1
 };
 
 const generateMockPosts = (number: number) => {

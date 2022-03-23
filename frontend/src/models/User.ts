@@ -1,5 +1,5 @@
 interface User {
-    id: string;
+    id: number;
     username: string;
     realName: string;
     profileURL: string;

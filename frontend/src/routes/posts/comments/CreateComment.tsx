@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import './CreateComment.css';
 
@@ -6,9 +6,9 @@ const CreateComment: React.FC = () => {
 
     const [input, setInput] = useState("");
 
-    const inputChange = e => {
+    const inputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setInput(e.target.value);
-    }
+    }, []);
 
     return (
         <div className="comment-wrapper">
