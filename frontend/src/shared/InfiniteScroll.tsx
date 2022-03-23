@@ -16,7 +16,7 @@ const InfiniteScroll: React.FC<Props> = ({ callback }) => {
         if (prevScrollY.current > scrollHeight && !goingUp)
             setGoingUp(true);
         if (scrollTop + clientHeight > scrollHeight - 5 && !goingUp) {
-            callback();
+            callback(scrollHeight);
             setGoingUp(true);
         }
         prevScrollY.current = scrollHeight;
