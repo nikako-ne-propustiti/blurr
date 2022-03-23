@@ -52,8 +52,8 @@ const ShowPost: React.FC<Props> = ({post}) => {
                                 </div>
                             </div>
 
-                            <span className="material-icons">
-                                {c.haveLiked ? "pie_chart" : "favorite"}
+                            <span className="material-icons heart">
+                                {c.haveLiked ? "favorite" : "favorite_border"}
                             </span>   
                         </li>
                     )}
@@ -62,8 +62,8 @@ const ShowPost: React.FC<Props> = ({post}) => {
 
                 <div>
 
-                    <span className="material-icons">
-                        {post.haveLiked ? "pie_chart" : "favorite"}
+                    <span className="material-icons heart">
+                        {post.haveLiked ? "favorite" : "favorite_border"}
                     </span>   
 
                     <input type="text" className="key-box" placeholder="Enter the key"/>

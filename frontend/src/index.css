@@ -16,3 +16,7 @@ a, a:hover, a:visited {
     color: #0095F6;
     text-decoration: none;
 }
+
+.material-icons {
+    user-select: none;
+}

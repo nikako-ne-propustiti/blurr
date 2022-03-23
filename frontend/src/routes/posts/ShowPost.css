@@ -78,3 +78,7 @@ button, input[type="submit"], input[type="reset"] {
     outline: none;
     font-size: 14px;
 }
+
+.heart {
+    color: #ee515e;
+}
