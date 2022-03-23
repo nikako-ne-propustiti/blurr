@@ -45,7 +45,8 @@ const RegisterAccount: React.FC = () => {
         if (response.success) {
             setSubmissionState('not-submitted');
             dispatch({
-                type: 'log-in'
+                type: 'log-in',
+                username: username
             });
         } else {
             setSubmissionState('error');
