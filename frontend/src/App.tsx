@@ -3,6 +3,7 @@ import './App.css';
 import {CreatePost, EditAccount, Login, RegisterAccount, ViewFeed, ViewPost, ViewUserFeed} from './routes';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './wrapper';
+import 'material-icons/iconfont/material-icons.css';
 
 const App: React.FC = () => {
     return <BrowserRouter>
