@@ -34,7 +34,7 @@ const generateMockPosts = (number: number) => {
     });
 }
 
-const pluralHelper = (word: string, count: number | undefined) =>
+const pluralHelper = (word: string, count?: number) =>
     <><b>{count}</b> {`${word}${(count !== 1) ? 's' : ''}`}</>;
 
 type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'NOUSER';
