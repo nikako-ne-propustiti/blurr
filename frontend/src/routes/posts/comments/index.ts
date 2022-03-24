@@ -1,3 +1,4 @@
-import CreateComment from "./CreateComment";
+import CreateComment from './CreateComment';
+import ShowComment from './ShowComment';
 
-export {CreateComment};
+export {CreateComment, ShowComment};
