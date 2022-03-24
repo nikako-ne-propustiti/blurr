@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {CreatePost, EditAccount, Login, RegisterAccount, ViewFeed, ViewPost, ViewUserFeed} from './routes';
+import {CreatePost, EditAccount, Login, RegisterAccount, Review, ViewFeed, ViewPost, ViewUserFeed} from './routes';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Navbar} from './wrapper';
 
@@ -16,6 +16,7 @@ const App: React.FC = () => {
                 <Route path='/accounts/edit' element={<EditAccount />} />
                 <Route path='/p/:post' element={<ViewPost />} />
                 <Route path='/p/new' element={<CreatePost />} />
+                <Route path='/p/review' element={<Review />} />
                 <Route path='/:username' element={<ViewUserFeed />} />
             </Routes>
             </main>

@@ -1,0 +1,8 @@
+.review-feed {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.review-feed .indicator-not-submitted {
+    margin: 0;
+}
