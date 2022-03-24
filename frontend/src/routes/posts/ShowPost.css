@@ -21,20 +21,9 @@
     border-radius: 50%;    
 }
 
-.comment {
-    display: flex;
-    margin: 20px 0;
-}
-
 ul {
     padding: 0;
     list-style-type: none;
-}
-
-.comm {
-    display: flex;
-    flex-grow: 3;
-    flex-direction: column;
 }
 
 .profile-bar {
@@ -57,28 +46,14 @@ button, input[type="submit"], input[type="reset"] {
 	outline: inherit;
 }
 
-
-.comm-bottom {
-    color: #8e8e8e;
-}
-
-.comm-bottom button {
-    font-weight: bold;
-}
-
-.comments li * {
-    padding: 2px 5px;
-}
-
 .key-box {
     width: 80%;
-    /* height: 100%; */
     margin-bottom: 10px;
     border: none;
     outline: none;
     font-size: 14px;
 }
 
-.heart {
+.post-bottom .material-icons:first-of-type {
     color: #ee515e;
 }

@@ -1,23 +1,21 @@
 import React from 'react';
-
-
+import {CreateComment, ShowComment} from './comments';
+import {Post} from '../../models';
+import Icon from '../../shared/Icon';
 
 import './ShowPost.css';
-import { CreateComment } from './comments';
-import { Post } from '../../models';
 
 interface Props {
     post: Post;
 }
 
+const imageDoubleClick = () => {
+    console.log('Double click');
+};
+
 const ShowPost: React.FC<Props> = ({post}) => {
-
-    const imageDoubleClick = () => {
-        console.log("Double click");
-    }
-
     return (
-        <div className="wrapper">
+        <article className="wrapper">
             <img onDoubleClick={imageDoubleClick} src={post.photoURL} />
             <div className="panel">
                 <div className="profile-bar">
@@ -35,49 +33,22 @@ const ShowPost: React.FC<Props> = ({post}) => {
 
                 <div className="comments">
                     <ul>
-                    {post.comments.map(c =>
-                        <li key={c.id} className="comment">
-                            <img src={c.commenter.profilePhotoURL} />
-                            <div className="comm">
-                                <div className="comm-top">
-                                    <a href={c.commenter.profileURL}>{c.commenter.username}</a>
-                                    {c.text}
-                                </div>
-                                <div className="comm-bottom">
-                                    <span>1 minute ago</span>
-
-                                    {c.likes == 0 ? null : <span>{c.likes + (c.likes == 1 ? " like" : " likes")}</span>}
-                                   
-                                    <button>Reply</button>
-                                </div>
-                            </div>
-
-                            <span className="material-icons heart">
-                                {c.haveLiked ? "favorite" : "favorite_border"}
-                            </span>   
-                        </li>
-                    )}
+                    {post.comments.map(c => <ShowComment comment={c} />)}
                     </ul>
                 </div>
 
-                <div>
-
-                    <span className="material-icons heart">
-                        {post.haveLiked ? "favorite" : "favorite_border"}
-                    </span>   
-
-                    <input type="text" className="key-box" placeholder="Enter the key"/>
-
+                <div className="post-bottom">
+                    <Icon name={post.haveLiked ? 'favorite' : 'favorite_border'} />
+                    <input type="text" className="key-box" placeholder="Enter the key" />
                     <div>
                         Liked by stan, elizabeth, and 39 others
                     </div>
-
                 </div>
 
                 <CreateComment />
 
             </div>
-        </div>
+        </article>
     );
 }
 
