@@ -21,13 +21,14 @@ const mockUserInfo: User = {
     numberFollowing: 100,
     numberOfFollowers: 1,
     numberOfPosts: 20,
-    realName: 'John Doe'
+    realName: 'John Doe',
+    id: 1
 };
 
 const generateMockPosts = (number: number) => {
     return new Array(number).fill(null).map(() => {
         return {
-            postID: Math.round((100000 * Math.random())).toFixed(),
+            id: Math.round((100000 * Math.random())).toFixed(),
             photoURL: `http://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
             numberOfLikes: Math.round((100 * Math.random()))
         }

@@ -1,5 +1,5 @@
 interface PostBasicInfo {
-    postID : string;
+    id: string;
     photoURL: string;
     numberOfLikes : number
 }

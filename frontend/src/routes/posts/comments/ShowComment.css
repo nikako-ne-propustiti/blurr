@@ -1,0 +1,26 @@
+.comment {
+    display: flex;
+    margin: 20px 0;
+}
+
+.comment * {
+    padding: 2px 5px;
+}
+
+.comm {
+    display: flex;
+    flex-grow: 3;
+    flex-direction: column;
+}
+
+.comm-bottom {
+    color: #8e8e8e;
+}
+
+.comm-bottom button {
+    font-weight: bold;
+}
+
+.comment .material-icons:first-of-type {
+    color: #ee515e;
+}

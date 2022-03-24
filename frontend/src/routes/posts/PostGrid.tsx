@@ -12,7 +12,7 @@ interface Props {
 const PostGrid: React.FC<Props> = ({ posts }) => {
     return <section className='post-grid'>
         {posts.map((post) =>
-            <PostPreview {...post} key={post.postID}></PostPreview>
+            <PostPreview {...post} key={post.id}></PostPreview>
         )}
     </section>
 };
