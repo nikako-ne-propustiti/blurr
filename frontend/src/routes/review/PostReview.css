@@ -1,0 +1,38 @@
+.review-feed-post {
+    border: 1px solid lightgray;
+    margin-bottom: 10px;
+}
+
+.review-feed-post-buttons {
+    border-bottom: 1px solid lightgray;
+    display: flex;
+    text-align: center;
+}
+
+.review-feed-post-buttons button {
+    box-sizing: border-box;
+    display: block;
+    padding: 10px;
+    width: 50%;
+}
+
+.review-feed-post-buttons button:hover {
+    background-color: lightgray;
+}
+
+.review-feed-post-buttons button:first-of-type .material-icons {
+    color: green;
+}
+
+.review-feed-post-buttons button:last-of-type .material-icons {
+    color: #ED4956;
+}
+
+.review-feed-post .wrapper {
+    flex-direction: column;
+    margin: 0;
+}
+
+.review-feed-post .panel {
+    order: -1;
+}
