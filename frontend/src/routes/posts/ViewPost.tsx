@@ -78,7 +78,7 @@ const post: Post = {
 
 const ViewPost: React.FC = () => {
     return (
-        <ShowPost post={post} />
+        <ShowPost post={post} showComments={true} />
     );
 }
 
