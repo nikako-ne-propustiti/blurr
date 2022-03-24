@@ -6,7 +6,7 @@ interface ApiCallArgs {
     query?: object
 }
 
-export const apiCall = async (path: string, options: ApiCallArgs) => {
+export const apiCall = async (path: string, options: ApiCallArgs = {}) => {
     const {json, method, query} = options;
     const requestOptions: RequestInit = {
         headers: {
