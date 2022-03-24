@@ -19,3 +19,8 @@
     height: 100%;
     width: 100%;
 }
+
+.navbar .material-icons {
+    color: initial;
+    font-size: 36px;
+}
