@@ -27,6 +27,11 @@ ul {
 }
 
 .profile-bar {
+    display: flex;
+    flex-direction: row;
+    justify-items: baseline;
+    align-items: center;
+    gap: 5px;
     border-bottom: 1px solid lightgray;
     padding-bottom: 10px;
 }
