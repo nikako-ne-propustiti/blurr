@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import ShowPost from './ShowPost';
 import { Post, User } from '../../models';
 import { Context } from '../../shared/Context';
@@ -7,22 +7,22 @@ import InfiniteScroll from '../../shared/InfiniteScroll';
 
 import './ViewFeed.css';
 
-const generateMockUser = () : User => {
-        const id = Math.round((100000 * Math.random()));
-        return {
-            id: id,
-            username: `acc-${id}`,
-            profileURL : `acc-${id}`,
-            profilePhotoURL: `http://picsum.photos/128/128?nocache=${Math.random()}`,
-            amFollowing: false,
-            numberFollowing: Math.round((1000 * Math.random())),
-            numberOfFollowers: Math.round((1000 * Math.random())),
-            numberOfPosts: Math.round((1000 * Math.random())),
-            realName: 'John Doe'
-        }
+const generateMockUser = (): User => {
+    const id = Math.round((100000 * Math.random()));
+    return {
+        id: id,
+        username: `acc-${id}`,
+        profileURL: `acc-${id}`,
+        profilePhotoURL: `http://picsum.photos/128/128?nocache=${Math.random()}`,
+        amFollowing: false,
+        numberFollowing: Math.round((1000 * Math.random())),
+        numberOfFollowers: Math.round((1000 * Math.random())),
+        numberOfPosts: Math.round((1000 * Math.random())),
+        realName: 'John Doe'
+    }
 }
 
-const generateMockPosts = (number: number) : Post[] => {
+const generateMockPosts = (number: number): Post[] => {
     return new Array(number).fill(null).map(() => {
         return {
             id: Math.round((100000 * Math.random())).toFixed(),
@@ -37,6 +37,7 @@ const generateMockPosts = (number: number) : Post[] => {
 }
 
 const ViewFeed: React.FC = () => {
+    const [searchParams] = useSearchParams();
     const { state: context } = useContext(Context);
     const [posts, setPosts] = React.useState<Post[]>([]);
 
@@ -52,12 +53,18 @@ const ViewFeed: React.FC = () => {
     return (
         <>
             {context.loggedIn || <Navigate to="/accounts/login" />}
-            <InfiniteScroll callback={handleInfiniteScroll} />
-            <section className="feed-list">
-                {posts.map((post) =>
-                    <ShowPost post={post} key={post.id} />
-                )}
-            </section>
+            {searchParams.get("nofollow") ?
+                <>
+                    <h1>Suggestions</h1>
+                </> :
+                <>
+                    <InfiniteScroll callback={handleInfiniteScroll} />
+                    <section className="feed-list">
+                        {posts.map((post) =>
+                            <ShowPost post={post} key={post.id} />
+                        )}
+                    </section>
+                </>}
         </>
     );
 }
