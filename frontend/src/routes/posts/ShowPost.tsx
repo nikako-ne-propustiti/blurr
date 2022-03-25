@@ -7,13 +7,14 @@ import './ShowPost.css';
 
 interface Props {
     post: Post;
+    showComments?: boolean;
 }
 
 const imageDoubleClick = () => {
     console.log('Double click');
 };
 
-const ShowPost: React.FC<Props> = ({post}) => {
+const ShowPost: React.FC<Props> = ({post, showComments}) => {
     return (
         <article className="wrapper">
             <img onDoubleClick={imageDoubleClick} src={post.photoURL} />
@@ -31,21 +32,21 @@ const ShowPost: React.FC<Props> = ({post}) => {
                     </span>
                 </div>
 
-                <div className="comments">
+                {showComments && <div className="comments">
                     <ul>
                     {post.comments.map(c => <ShowComment comment={c} />)}
                     </ul>
-                </div>
+                </div>}
 
-                <div className="post-bottom">
+                {showComments && <div className="post-bottom">
                     <Icon name={post.haveLiked ? 'favorite' : 'favorite_border'} />
                     <input type="text" className="key-box" placeholder="Enter the key" />
                     <div>
                         Liked by stan, elizabeth, and 39 others
                     </div>
-                </div>
+                </div>}
 
-                <CreateComment />
+                {showComments && <CreateComment />}
 
             </div>
         </article>

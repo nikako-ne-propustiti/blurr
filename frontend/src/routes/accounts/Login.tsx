@@ -43,7 +43,7 @@ const Login: React.FC = () => {
         {state.loggedIn && <Navigate to={returnTo} />}
         <img src={logo} alt="Blurr logo" />
         <AccountTextInput name="username" placeholder="Username" length={30} />
-        <AccountTextInput name="password" placeholder="Password" length={255} />
+        <AccountTextInput name="password" placeholder="Password" length={255} isPassword={true} />
         <Button text="Login" />
         <SubmissionIndicator submissionState={submissionState} text={indicatorText} />
         <p>No account? <strong><Link to={`/accounts/register?returnTo=${encodeURIComponent(returnTo)}`}>Register</Link></strong></p>

@@ -6,4 +6,6 @@ Rails.application.routes.draw do
   get '/accounts/edit', to: 'static#index'
   post '/api/accounts/login', to: 'accounts#login'
   post '/api/accounts/register', to: 'accounts#register'
+  get '/api/review', to: 'review#get'
+  post '/api/review/:postId', to: 'review#submit'
 end

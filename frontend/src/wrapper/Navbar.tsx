@@ -1,10 +1,9 @@
 import React, {useContext} from 'react';
-import add from '../add.png';
-import home from '../home.png';
 import logo from '../logo.png';
 import './Navbar.css';
 import {Context} from '../shared/Context';
 import {Link} from 'react-router-dom';
+import Icon from '../shared/Icon';
 
 const Navbar: React.FC = () => {
     const {state} = useContext(Context);
@@ -13,8 +12,9 @@ const Navbar: React.FC = () => {
         <form>
             <input type="text" placeholder="Search"></input>
         </form>
-        <Link to="/" title="Home"><img src={home} width="36" height="36" alt="Home" /></Link>
-        {state.loggedIn && <Link to="/p/new" title="Create"><img src={add} width="36" height="36" alt="Create" /></Link>}
+        <Link to="/" title="Home"><Icon name="home" /></Link>
+        {state.loggedIn && <Link to="/p/new" title="Create"><Icon name="add" /></Link>}
+        {state.currentUser === 'admin' && <Link to="/p/review" title="Review"><Icon name="remove_red_eye" /></Link>}
     </nav>;
 }
 
