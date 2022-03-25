@@ -1,0 +1,23 @@
+.follow-suggestions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.follow-suggestion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+}
+
+.follow-suggestion>a>img {
+    border-radius: 50%;
+}
+
+.follow-suggestion>a {
+    font-weight: bold;
+    position: relative;
+    margin: auto;
+}
