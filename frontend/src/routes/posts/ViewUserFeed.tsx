@@ -77,6 +77,7 @@ const ViewUserFeed: React.FC = () => {
                 username: username || ''
             });
             setPosts(generateMockPosts(10));
+            setLoadState('LOADED');
         }
     }, [username]);
 
@@ -95,13 +96,13 @@ const ViewUserFeed: React.FC = () => {
                         <li>{pluralHelper('post', userInfo.numberOfPosts)}</li>
                     </ul></>}
             </div>
-            <div className='userfeed-buttons'>
+            {loadState == 'LOADED' && <div className='userfeed-buttons'>
                 {context.loggedIn
                     && context.currentUser !== username
                     && <Button text={(userInfo?.amFollowing) ? 'Unfollow' : 'Follow'} onClick={handleFollow} />}
                 {context.currentUser === username
                     && <Link to="/accounts/edit" className="button">Edit account</Link>}
-            </div>
+            </div>}
         </section>
         <hr />
         {posts && <PostGrid posts={posts} />}
