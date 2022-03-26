@@ -1,6 +1,7 @@
 import React from 'react';
 import {Comment} from '../../../models';
 import Icon from '../../../shared/Icon';
+import {Link} from 'react-router-dom';
 
 import './ShowComment.css';
 
@@ -13,7 +14,7 @@ const ShowComment: React.FC<Props> = ({comment: {id, commenter, text, likes, hav
         <img src={commenter.profilePhotoURL} />
         <div className="comm">
             <div className="comm-top">
-                <a href={commenter.profileURL}>{commenter.username}</a>
+                <Link to={commenter.profileURL}>{commenter.username}</Link>
                 {text}
             </div>
             <div className="comm-bottom">

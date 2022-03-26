@@ -2,6 +2,7 @@ import React from 'react';
 import {CreateComment, ShowComment} from './comments';
 import {Post} from '../../models';
 import Icon from '../../shared/Icon';
+import {Link} from 'react-router-dom';
 
 import './ShowPost.css';
 
@@ -20,12 +21,12 @@ const ShowPost: React.FC<Props> = ({post, showComments}) => {
             <img onDoubleClick={imageDoubleClick} src={post.photoURL} />
             <div className="panel">
                 <div className="profile-bar">
-                    <a href={post.poster.profileURL}>
+                    <Link to={post.poster.profileURL}>
                         <img src={post.poster.profilePhotoURL}></img>
-                    </a>
-                    <a href={post.poster.profileURL}>
+                    </Link>
+                    <Link to={post.poster.profileURL}>
                         {post.poster.username}
-                    </a>
+                    </Link>
                     <span className="dot-separator">•</span>
                     <span> 
                         {post.poster.amFollowing ? "Following" : "Not following"}
