@@ -1,0 +1,51 @@
+.create-post {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+.create-post fieldset {
+    border: none;
+    padding: 0;
+    width: 60%;
+}
+
+.create-post-image-info input {
+    display: none;
+}
+
+.create-post-image-info p {
+    align-items: center;
+    border: 10px dashed lightgray;
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: gray;
+    display: flex;
+    font-size: xx-large;
+    font-weight: bold;
+    height: 300px;
+    justify-content: center;
+    margin: 0;
+    text-align: center;
+    width: 300px;
+}
+
+.create-post-image-info img {
+    max-width: 300px;
+}
+
+.create-post-contents textarea {
+    display: block;
+    resize: none;
+    width: 100%;
+}
+
+.create-post-password {
+    border-width: 0 0 1px 0;
+    font-size: 24px;
+    width: 100%;
+}
+
+.create-post-blur-level {
+    width: 75%;
+}
