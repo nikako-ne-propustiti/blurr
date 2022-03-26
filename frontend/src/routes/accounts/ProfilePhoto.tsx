@@ -56,7 +56,7 @@ const ProfilePhoto: React.FC<Props> = ({ user, isMyProfile, }) => {
     const { username } = user;
 
     return <div className={className}>
-        <img src={profilePhotoURL} title={username} onClick={openFileDialog} />
+        <img src={profilePhotoURL} title={isMyProfile ? 'Click to change profile picture' : username} onClick={openFileDialog} />
         {isMyProfile && <input type="file" accept=".jpg, .jpeg" onChange={uploadFile} ref={fileInput} id="profilePhotoFile" />}
     </div>
 };
