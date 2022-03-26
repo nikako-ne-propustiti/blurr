@@ -1,6 +1,6 @@
 .wrapper {
     display: flex;
-    margin: -30px;
+    margin: 10px;
 }
 
 .panel {
@@ -18,7 +18,7 @@
 .comments img {
     width: 32px;
     height: 32px;
-    border-radius: 50%;    
+    border-radius: 50%;
 }
 
 ul {
@@ -27,6 +27,11 @@ ul {
 }
 
 .profile-bar {
+    display: flex;
+    flex-direction: row;
+    justify-items: baseline;
+    align-items: center;
+    gap: 5px;
     border-bottom: 1px solid lightgray;
     padding-bottom: 10px;
 }
@@ -35,15 +40,19 @@ ul {
     margin: 0 5px;
 }
 
+
 /* Remove default button style */
-button, input[type="submit"], input[type="reset"] {
-	background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+
+button,
+input[type="submit"],
+input[type="reset"] {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
 }
 
 .key-box {
