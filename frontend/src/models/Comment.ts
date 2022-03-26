@@ -1,7 +1,7 @@
 import User from "./User";
 
 interface Comment {
-    id: string;
+    id: number;
     text: string;
     likes: number;
     time: Date;

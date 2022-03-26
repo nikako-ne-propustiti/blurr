@@ -16,7 +16,7 @@ import '../../shared/Button.css'
 const mockUserInfo: User = {
     username: 'not loaded',
     profileURL: '',
-    profilePhotoURL: 'http://picsum.photos/512/512',
+    profilePhotoURL: 'https://picsum.photos/512/512',
     amFollowing: false,
     numberFollowing: 100,
     numberOfFollowers: 1,
@@ -29,7 +29,7 @@ const generateMockPosts = (number: number) => {
     return new Array(number).fill(null).map(() => {
         return {
             id: Math.round((100000 * Math.random())).toFixed(),
-            photoURL: `http://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
+            photoURL: `https://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
             numberOfLikes: Math.round((100 * Math.random()))
         }
     });

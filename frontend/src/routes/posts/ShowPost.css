@@ -66,3 +66,25 @@ input[type="reset"] {
 .post-bottom .material-icons:first-of-type {
     color: #ee515e;
 }
+
+.comment-wrapper {
+    width: 100%;
+    height: 50px;
+    border-radius: 1px solid #dfdfdf;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 2px solid lightgray;
+}
+
+.comment-box {
+    width: 80%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.comment-wrapper input[type="submit"].button {
+    width: 25%;
+}
