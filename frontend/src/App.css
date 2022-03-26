@@ -10,6 +10,7 @@ footer {
     align-items: center;
     color: #8E8E8E;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     padding: 30px;
 }

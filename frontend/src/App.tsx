@@ -20,7 +20,10 @@ const App: React.FC = () => {
                 <Route path='/:username' element={<ViewUserFeed />} />
             </Routes>
             </main>
-            <footer>Nikako Ne Propustiti &copy; {new Date().getFullYear()}</footer>
+            <footer>
+                <p>Nikako Ne Propustiti &copy; {new Date().getFullYear()}</p>
+                <p><a href="/terms-of-service.html" target="_blank">Terms of Service</a> &bull; <a href="/privacy-policy.html" target="_blank">Privacy Policy</a></p>
+            </footer>
         </div>
     </BrowserRouter>;
 }
