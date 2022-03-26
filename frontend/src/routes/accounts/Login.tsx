@@ -1,3 +1,6 @@
+/**
+ * @author Luka Simić
+ */
 import React, { FormEvent, useCallback, useContext, useState } from 'react';
 import AccountTextInput from './AccountTextInput';
 import logo from '../../logo.png';

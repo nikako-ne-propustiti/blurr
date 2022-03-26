@@ -1,3 +1,6 @@
+/**
+ * @author Aleksa Marković
+ */
 import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 

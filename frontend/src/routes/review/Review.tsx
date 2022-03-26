@@ -1,3 +1,6 @@
+/**
+ * @author Luka Simić
+ */
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Post} from '../../models';
 import SubmissionIndicator, {SubmissionState} from '../../shared/SubmissionIndicator';

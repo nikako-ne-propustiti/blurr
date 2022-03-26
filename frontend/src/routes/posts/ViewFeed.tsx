@@ -1,3 +1,6 @@
+/**
+ * @author Aleksa Marković
+ */
 import React, {useCallback, useContext} from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import ShowPost from './ShowPost';
