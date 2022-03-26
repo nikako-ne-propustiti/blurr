@@ -67,7 +67,7 @@ const ViewFeed: React.FC = () => {
                     <InfiniteScroll callback={handleInfiniteScroll} />
                     <section className="feed-list">
                         {posts.map((post) =>
-                            <ShowPost post={post} key={post.id} />
+                            <ShowPost post={post} key={post.id} showComments={true} />
                         )}
                     </section>
                 </>}
