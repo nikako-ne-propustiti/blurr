@@ -1,7 +1,7 @@
 # Build frontend
 FROM node:14-alpine AS frontend
 ARG API_URL
-ENV BACKEND_API_URL $API_URL
+ENV BACKEND_API_URL=$API_URL
 RUN mkdir -p /myapp/frontend
 WORKDIR /myapp/frontend
 COPY frontend /myapp/frontend
