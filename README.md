@@ -7,11 +7,13 @@ Projekat iz [Principa softverskog inženjerstva](http://si3psi.etf.bg.ac.rs/) u 
  - [Luka Simić](https://github.com/KockaAdmiralac)
  - [Miljan Marković](https://github.com/pigajunior)
 
-Šablon za ovaj projekat je uzet [odavde](https://github.com/ohbarye/rails-react-typescript-docker-example).
+**Sajt možete videti uživo na [blurr.social](https://blurr.social)** (barem u prvih godinu dana rađenja projekta, posle toga će da ostane neregistrovan).
 
 Tema projekta je društvena mreža Blurr za postavljanje slika (nalik društvenoj mreži [Instagram](https://instagram.com)) koje se nakon postavljanja automatski zamagljuju i od ostalih korisnika traže šifru kako bi se odmaglile. Više detalja o samom projektu kao i njegovom razvoju može se naći na [vikiju ovog repozitorijuma](https://github.com/nikako-ne-propustiti/blurr/wiki). Detaljnije o napretku može se naći u [Projects](https://github.com/orgs/nikako-ne-propustiti/projects/2) tabu.
 
-# Korišćenje
+Šablon za ovaj projekat je uzet [odavde](https://github.com/ohbarye/rails-react-typescript-docker-example).
+
+# Razvoj
 
 ```bash
 # Kloniranje repozitorijuma sa izvornim kodom.
