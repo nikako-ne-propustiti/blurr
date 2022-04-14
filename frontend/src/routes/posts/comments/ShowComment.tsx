@@ -15,12 +15,12 @@ const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
     const {id, commenter, text, likes, haveLiked} = comment;
     const onReplyClick = useCallback(() => {
         onReply(commenter.username);
-    }, [commenter]);
+    }, [commenter, onReply]);
     const onLikeClick = useCallback(() => {
         if (onLike) {
             onLike(comment);
         }
-    }, [comment]);
+    }, [comment, onLike]);
     return <li key={id} className="comment">
         <img src={commenter.profilePhotoURL} />
         <div className="comm">

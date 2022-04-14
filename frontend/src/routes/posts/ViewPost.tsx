@@ -89,7 +89,7 @@ const ViewPost: React.FC = () => {
                 amFollowing: !post.poster.amFollowing
             }
         });
-    }, [post]);
+    }, [post, setPost]);
     const {state} = useContext(Context);
     const navigate = useNavigate();
     const addComment = useCallback((post: Post, comment: string) => {
@@ -117,13 +117,13 @@ const ViewPost: React.FC = () => {
                 }
             ]
         })
-    }, [post]);
+    }, [post, setPost]);
     const setLiked = useCallback((post: Post) => {
         setPost({
             ...post,
             haveLiked: !post.haveLiked
         });
-    }, [post]);
+    }, [post, setPost]);
     const setCommentLiked = useCallback((post: Post, comment: Comment) => {
         const commentToUpdate = post.comments.find(c => c.id === comment.id);
         if (commentToUpdate) {
@@ -138,10 +138,10 @@ const ViewPost: React.FC = () => {
                 comments: newComments
             });
         }
-    }, [post]);
+    }, [post, setPost]);
     const setDeleted = useCallback(() => {
         navigate('/');
-    }, [post]);
+    }, [navigate]);
     return (
         <ShowPost post={post} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setDeleted={setDeleted} />
     );

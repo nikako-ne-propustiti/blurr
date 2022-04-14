@@ -56,7 +56,7 @@ const ViewFeed: React.FC = () => {
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(() => {
         setPosts(posts.concat(generateMockPosts(10)));
-    }, [posts]);
+    }, [posts, setPosts]);
 
     const setFollowing = useCallback((post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
@@ -72,7 +72,7 @@ const ViewFeed: React.FC = () => {
             };
             setPosts(newPosts);
         }
-    }, [posts]);
+    }, [posts, setPosts]);
     const addComment = useCallback((post: Post, comment: string) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (postToUpdate) {
@@ -104,7 +104,7 @@ const ViewFeed: React.FC = () => {
             };
             setPosts(newPosts);
         }
-    }, [posts]);
+    }, [posts, setPosts]);
     const setLiked = useCallback((post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (postToUpdate) {
@@ -116,7 +116,7 @@ const ViewFeed: React.FC = () => {
             };
             setPosts(newPosts);
         }
-    }, [posts]);
+    }, [posts, setPosts]);
     const setCommentLiked = useCallback((post: Post, comment: Comment) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (postToUpdate) {
@@ -124,8 +124,8 @@ const ViewFeed: React.FC = () => {
             const postToUpdateIndex = posts.indexOf(postToUpdate);
             const commentToUpdate = postToUpdate.comments.find(c => c.id === comment.id);
             if (commentToUpdate) {
-                const commentToUpdateIndex = post.comments.indexOf(commentToUpdate);
-                const newComments = [...post.comments];
+                const commentToUpdateIndex = postToUpdate.comments.indexOf(commentToUpdate);
+                const newComments = [...postToUpdate.comments];
                 newComments[commentToUpdateIndex] = {
                     ...commentToUpdate,
                     haveLiked: !commentToUpdate.haveLiked
@@ -137,7 +137,7 @@ const ViewFeed: React.FC = () => {
                 setPosts(newPosts);
             }
         }
-    }, [posts]);
+    }, [posts, setPosts]);
     return (
         <>
             {context.loggedIn || <Navigate to="/accounts/login" />}

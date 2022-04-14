@@ -30,7 +30,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
     const loginFirst = useCallback(() => {
         const currentUrl = `/p/${post.id}`;
         navigate(`/accounts/login?returnTo=${encodeURIComponent(currentUrl)}`);
-    }, [post]);
+    }, [post, navigate]);
     const onFollow = useCallback(() => {
         if (state.loggedIn) {
             if (setFollowing) {
@@ -39,7 +39,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
         } else {
             loginFirst();
         }
-    }, [post]);
+    }, [post, setFollowing, state, loginFirst]);
     const onComment = useCallback((e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (state.loggedIn) {
@@ -50,7 +50,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
         } else {
             loginFirst();
         }
-    }, [post, commentInput]);
+    }, [post, addComment, commentInput, setCommentInput, state, loginFirst]);
     const onReply = useCallback((user: string) => {
         if (state.loggedIn) {
             setCommentInput(`@${user} `);
@@ -58,7 +58,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
         } else {
             loginFirst();
         }
-    }, [commentInputRef]);
+    }, [setCommentInput, commentInputRef, setCommentInput, state, loginFirst]);
     const onLike = useCallback(() => {
         if (state.loggedIn) {
             if (setLiked) {
@@ -67,7 +67,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
         } else {
             loginFirst();
         }
-    }, [post]);
+    }, [post, setLiked, state, loginFirst]);
     const onCommentLike = useCallback((comment: Comment) => {
         if (state.loggedIn) {
             if (setCommentLiked) {
@@ -76,15 +76,15 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
         } else {
             loginFirst();
         }
-    }, [post]);
+    }, [post, setCommentLiked, state, loginFirst]);
     const onDelete = useCallback(() => {
         if (setDeleted) {
             setDeleted(post);
         }
-    }, [post]);
+    }, [post, setDeleted]);
     const inputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setCommentInput(e.target.value);
-    }, []);
+    }, [setCommentInput]);
     return (
         <article className="wrapper">
             <img onDoubleClick={imageDoubleClick} src={post.photoURL} />
