@@ -30,9 +30,15 @@ const mockUserInfo: User = {
 
 const generateMockPosts = (number: number) => {
     return new Array(number).fill(null).map(() => {
+        let photoURL = '';
+        if (Math.floor(Math.random() * 10) === 0) {
+            photoURL = `https://picsum.photos/512/512?nocache=${Math.random()}`;
+        } else {
+            photoURL = `https://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`;
+        }
         return {
             id: Math.round((100000 * Math.random())).toFixed(),
-            photoURL: `https://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
+            photoURL,
             numberOfLikes: Math.round((100 * Math.random()))
         }
     });
