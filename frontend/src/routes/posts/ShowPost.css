@@ -1,5 +1,6 @@
 .wrapper {
     display: flex;
+    height: 600px;
     margin: 10px;
 }
 
@@ -12,6 +13,7 @@
 
 .comments {
     flex-grow: 4;
+    overflow-y: auto;
 }
 
 .profile-bar img,
@@ -68,6 +70,7 @@ input[type="reset"] {
 }
 
 .comment-wrapper {
+    box-sizing: border-box;
     width: 100%;
     height: 50px;
     border-radius: 1px solid #dfdfdf;
