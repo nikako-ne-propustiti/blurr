@@ -9,6 +9,7 @@ interface ApiCallArgs {
 export const apiCall = async (path: string, options: ApiCallArgs = {}) => {
     const {json, method, query} = options;
     const requestOptions: RequestInit = {
+        credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
