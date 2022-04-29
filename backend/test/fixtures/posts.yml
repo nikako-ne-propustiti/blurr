@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  post_url: MyString
+  file_uuid: 
+  description: MyString
+  user: one
+  password: MyString
+  reviewed: false
+  sponsored: false
+
+two:
+  post_url: MyString
+  file_uuid: 
+  description: MyString
+  user: two
+  password: MyString
+  reviewed: false
+  sponsored: false
