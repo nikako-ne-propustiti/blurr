@@ -11,6 +11,9 @@ module Myapp
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, key: 'blurr_session'
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -18,11 +21,15 @@ module Myapp
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.api_only = true
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins '*'
-        resource '*', headers: :any, methods: [:get, :post, :options]
+        origins 'http://localhost:3000', 'https://blurr.social', 'https://blurr.azurewebsites.net'
+        resource '*',
+          headers: :any,
+          methods: [:get, :post, :options],
+          credentials: true
       end
     end
   end

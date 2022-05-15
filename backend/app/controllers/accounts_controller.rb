@@ -1,21 +1,28 @@
 class AccountsController < ApplicationController
-  skip_before_action :verify_authenticity_token, :only => [:login, :register]
   def login
-    # TODO: Prototype data
-    if params[:username] == 'admin' and params[:password] == 'admin'
-      render json: {success: true}
-    else
+    user = User.find_by(username: params.require(:username))
+    if not user or not user.authenticate(params.require(:password))
       render json: {success: false, error: 'Invalid username or password.'}, status: 400
+      return
     end
+    session[:user_id] = user.id
+    render json: {success: true}
+  end
+  def logout
+    session.delete(:user_id)
+    @_current_user = nil
+    render json: {success: true}
   end
   def register
-    # TODO: Prototype data
-    if params[:username] == 'admin'
-      render json: {success: false, error: 'Username already exists.'}, status: 400
-    elsif params[:username].length > 30 or params[:username].length < 1 or params[:password].length > 255 or params[:password].length < 1 or params[:name].length > 255
-      render json: {success: false, error: 'Data field length limit exceeded.'}, status: 400
-    else
-      render json: {success: true}
+    username = params.require(:username)
+    password = params.require(:password)
+    real_name = params.require(:name)
+    user = User.new(username: username, password: password, real_name: real_name)
+    if not user.valid?
+      render json: {success: false, error: user.errors.full_messages[0]}, status: 400
+      return
     end
+    user.save
+    render json: {success: true}
   end
 end
