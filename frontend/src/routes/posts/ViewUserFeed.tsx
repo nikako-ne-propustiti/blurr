@@ -2,14 +2,16 @@
  * @author Aleksa Marković
  */
 import React from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import {useParams, useNavigate, Link} from 'react-router-dom';
+
+import {follow} from '../../api/';
 
 import User from '../../models/User';
 import PostBasicInfo from '../../models/PostBasicInfo';
 
-import { ProfilePhoto } from '../accounts';
+import {ProfilePhoto} from '../accounts';
 import PostGrid from './PostGrid';
-import { Context } from '../../shared/Context';
+import {Context} from '../../shared/Context';
 import Button from '../../shared/Button';
 import InfiniteScroll from '../../shared/InfiniteScroll';
 
@@ -50,20 +52,19 @@ const pluralHelper = (word: string, count?: number) =>
 type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'NOUSER';
 
 const ViewUserFeed: React.FC = () => {
-    const { username } = useParams();
-    const { state: context } = React.useContext(Context);
+    const {username} = useParams();
+    const {state: context} = React.useContext(Context);
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [userInfo, setUserInfo] = React.useState<User>();
     const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
 
-    const handleFollow = React.useCallback(() => {
+    const handleFollow = React.useCallback(async () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
-            if (userInfo.amFollowing)
-                setUserInfo({ ...userInfo, amFollowing: false });
-            else setUserInfo({ ...userInfo, amFollowing: true });
+            const result = await follow(username || '');
+            if (result.success){
+                setUserInfo({...userInfo, amFollowing: result.following});
+            }
         }
-        // TODO API call...
-
     }, [userInfo?.amFollowing]);
 
 
@@ -92,8 +93,8 @@ const ViewUserFeed: React.FC = () => {
 
     return <>
         <section className="userfeed-profile-info">
-            <InfiniteScroll callback={handleInfiniteScroll} />
-            {userInfo && <ProfilePhoto user={userInfo} isMyProfile={context.currentUser === username} />}
+            <InfiniteScroll callback={handleInfiniteScroll}/>
+            {userInfo && <ProfilePhoto user={userInfo} isMyProfile={context.currentUser === username}/>}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
                 {loadState === 'NOUSER' && <p>The requested user does not exist.</p>}
@@ -103,18 +104,19 @@ const ViewUserFeed: React.FC = () => {
                         <li>{pluralHelper('follower', userInfo.numberOfFollowers)}</li>
                         <li><b>{userInfo.numberFollowing}</b> following</li>
                         <li>{pluralHelper('post', userInfo.numberOfPosts)}</li>
-                    </ul></>}
+                    </ul>
+                </>}
             </div>
             {loadState == 'LOADED' && <div className='userfeed-buttons'>
                 {context.loggedIn
                     && context.currentUser !== username
-                    && <Button text={(userInfo?.amFollowing) ? 'Unfollow' : 'Follow'} onClick={handleFollow} />}
+                    && <Button text={(userInfo?.amFollowing) ? 'Unfollow' : 'Follow'} onClick={handleFollow}/>}
                 {context.currentUser === username
                     && <Link to="/accounts/edit" className="button">Edit account</Link>}
             </div>}
         </section>
-        <hr />
-        {posts && <PostGrid posts={posts} />}
+        <hr/>
+        {posts && <PostGrid posts={posts}/>}
     </>;
 }
 
