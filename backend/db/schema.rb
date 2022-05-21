@@ -15,13 +15,13 @@ ActiveRecord::Schema.define(version: 0) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "blocks", primary_key: ["blocker_id", "blockee_id"], force: :cascade do |t|
+  create_table "blocks", primary_key: :serial, force: :cascade do |t|
     t.integer "blocker_id", null: false
     t.integer "blockee_id", null: false
     t.datetime "created_at", default: -> { "now()" }
   end
 
-  create_table "comment_likes", primary_key: ["user_id", "comment_id"], force: :cascade do |t|
+  create_table "comment_likes", primary_key: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "comment_id", null: false
     t.datetime "created_at", default: -> { "now()" }
@@ -35,18 +35,18 @@ ActiveRecord::Schema.define(version: 0) do
     t.datetime "created_at", default: -> { "now()" }
   end
 
-  create_table "follows", primary_key: ["follower_id", "followee_id"], force: :cascade do |t|
+  create_table "follows", primary_key: :serial, force: :cascade do |t|
     t.integer "follower_id", null: false
     t.integer "followee_id", null: false
     t.datetime "created_at", default: -> { "now()" }
   end
 
-  create_table "hashtags", primary_key: ["post_id", "tag_name"], force: :cascade do |t|
+  create_table "hashtags", primary_key: :serial, force: :cascade do |t|
     t.integer "post_id", null: false
     t.string "tag_name", limit: 32, null: false
   end
 
-  create_table "post_likes", primary_key: ["user_id", "post_id"], force: :cascade do |t|
+  create_table "post_likes", primary_key: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "post_id", null: false
     t.datetime "created_at", default: -> { "now()" }
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.index ["post_url"], name: "posts_post_url_key", unique: true
   end
 
-  create_table "unlocks", primary_key: ["user_id", "post_id"], force: :cascade do |t|
+  create_table "unlocks", primary_key: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "post_id", null: false
     t.datetime "created_at", default: -> { "now()" }
@@ -95,4 +95,9 @@ ActiveRecord::Schema.define(version: 0) do
   add_foreign_key "posts", "users", name: "posts_user_id_fkey", on_delete: :cascade
   add_foreign_key "unlocks", "posts", name: "unlocks_post_id_fkey", on_delete: :cascade
   add_foreign_key "unlocks", "users", name: "unlocks_user_id_fkey", on_delete: :cascade
+  add_index :blocks, [:blocker_id, :blockee_id], unique: true
+  add_index :follows, [:follower_id, :followee_id], unique: true
+  add_index :post_likes, [:user_id, :post_id], unique: true
+  add_index :unlocks, [:user_id, :post_id], unique: true
+
 end
