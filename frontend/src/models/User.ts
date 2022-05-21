@@ -7,7 +7,7 @@ interface User {
     numberOfPosts : number;
     numberOfFollowers : number;
     numberFollowing : number;
-    // Does the curent user follow this person
+    // Does the current user follow this person
     amFollowing: boolean;
 }
 

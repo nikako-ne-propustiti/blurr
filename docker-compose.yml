@@ -22,7 +22,6 @@ services:
       - db
     ports:
       - 3001:80
-    command: tail -f /dev/null
   frontend:
     container_name: frontend
     image: "node:14-alpine"

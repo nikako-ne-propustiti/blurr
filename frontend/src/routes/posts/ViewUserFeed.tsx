@@ -3,8 +3,7 @@
  */
 import React from 'react';
 import {useParams, useNavigate, Link} from 'react-router-dom';
-
-import {follow} from '../../api/';
+import {follow, accountInfo, getReview} from '../../api/';
 
 import User from '../../models/User';
 import PostBasicInfo from '../../models/PostBasicInfo';
@@ -17,18 +16,7 @@ import InfiniteScroll from '../../shared/InfiniteScroll';
 
 import './ViewUserFeed.css';
 import '../../shared/Button.css'
-
-const mockUserInfo: User = {
-    username: 'not loaded',
-    profileURL: '',
-    profilePhotoURL: 'https://picsum.photos/512/512',
-    amFollowing: false,
-    numberFollowing: 100,
-    numberOfFollowers: 1,
-    numberOfPosts: 20,
-    realName: 'John Doe',
-    id: 1
-};
+import accountinfo from "../../api/accountinfo";
 
 const generateMockPosts = (number: number) => {
     return new Array(number).fill(null).map(() => {
@@ -59,9 +47,9 @@ const ViewUserFeed: React.FC = () => {
     const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
 
     const handleFollow = React.useCallback(async () => {
-        if (userInfo && context.loggedIn && username !== context.currentUser) {
+        if (loadState === 'LOADED' && userInfo && context.loggedIn && username !== context.currentUser) {
             const result = await follow(username || '');
-            if (result.success){
+            if (result.success) {
                 setUserInfo({...userInfo, amFollowing: result.following});
             }
         }
@@ -70,25 +58,28 @@ const ViewUserFeed: React.FC = () => {
 
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(() => {
-        setPosts(posts.concat(generateMockPosts(10)));
+        if (loadState == 'LOADED')
+            setPosts(posts.concat(generateMockPosts(10)));
     }, [posts]);
 
     React.useEffect(() => {
         setLoadState('INIT');
-
-        // TODO API call...
-        if (username?.includes('error'))
-            setLoadState('ERROR');
-        else if (username?.includes('noacc'))
-            setLoadState('NOUSER');
-        else {
+        (async (username : string) => {
+            const response = await accountInfo(username);
+            if (!response.success) {
+                if (response.error == 'Requested resource does not exist.')
+                    setLoadState('NOUSER');
+                else
+                    setLoadState('ERROR');
+                return;
+            }
             setUserInfo({
-                ...mockUserInfo,
+                ...response.account,
                 username: username || ''
             });
             setPosts(generateMockPosts(10));
             setLoadState('LOADED');
-        }
+        })(username || '');
     }, [username]);
 
     return <>

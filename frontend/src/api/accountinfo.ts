@@ -1,9 +1,14 @@
 import {apiCall} from './base';
+import {User} from "../models";
 
-const userInfo = (username: string) => {
+type AccountInfoResponse =
+    { success: false, error: string } |
+    { success: true, account: User };
+
+const accountInfo = (username: string): Promise<AccountInfoResponse> => {
     return apiCall('accounts/info', {
-        json: {username}
+        query: {username},
     });
 };
 
-export default userInfo;
+export default accountInfo;

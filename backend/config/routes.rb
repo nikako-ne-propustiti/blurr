@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   delete '/api/accounts/logout', to: 'accounts#logout'
   post '/api/accounts/register', to: 'accounts#register'
   post 'api/accounts/follow', to: 'follow#follow'
+  get 'api/accounts/info', to: 'accounts#info'
   get '/api/review', to: 'review#get'
   post '/api/review/:postId', to: 'review#submit'
 end

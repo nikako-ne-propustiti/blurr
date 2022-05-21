@@ -13,6 +13,7 @@ export const apiCall = async (path: string, options: ApiCallArgs = {}) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin':'*'
         },
         method
     };

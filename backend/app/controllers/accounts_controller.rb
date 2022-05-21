@@ -28,4 +28,17 @@ class AccountsController < ApplicationController
     render json: { success: true }
   end
 
+  def info
+    username = params.require(:username)
+    user = User.find_by! username: username
+    info = user.get_json user
+    if user
+      render json: {
+        success: true,
+        account: info
+      }
+
+    end
+  end
+
 end
