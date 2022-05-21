@@ -28,30 +28,4 @@ class AccountsController < ApplicationController
     render json: { success: true }
   end
 
-  before_action :check_logged_in
-
-  def follow
-    followed = User.find_by! username: params.require(:username)
-    followee = User.find! session[:user_id]
-    following = Follow.find_by follower_id: follower.id, followee_id: followee.id
-    if following
-      following.destroy
-      return json: {
-        success: true,
-        following: false
-      }
-    else
-      following = Follow.new follower_id: follower.id, followee_id: followee.id
-      following.save
-      return json: {
-        success: true,
-        following: true
-      }
-    end
-  rescue => RecordNotFound
-    return json: {
-      success: false,
-      following: false
-    }
-  end
 end
