@@ -6,7 +6,7 @@ interface State {
 }
 
 export interface Action {
-    type: 'log-in',
+    type: 'log-in' | 'log-out',
     username?: string
 }
 
@@ -22,6 +22,14 @@ const reducer: ContextReducer = (state, action) => {
                 ...state,
                 loggedIn: true,
                 currentUser: action.username
+            };
+        case 'log-out':
+            localStorage.setItem('logged-in', 'false');
+            localStorage.setItem('currentUser', '');
+            return {
+                ...state,
+                loggedIn: false,
+                currentUser: ''
             };
     }
 };
