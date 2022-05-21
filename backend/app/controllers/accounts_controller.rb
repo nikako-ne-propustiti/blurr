@@ -31,14 +31,24 @@ class AccountsController < ApplicationController
   def info
     username = params.require(:username)
     user = User.find_by! username: username
-    info = user.get_json user
+    info = user.get_json current_user
     if user
       render json: {
         success: true,
         account: info
       }
-
     end
   end
 
+  def index
+    user = User.find_by username: params.require(:username)
+    lastIndex = params.require(:lastIndex)
+    user_posts = Post.where(user_id: user.id).offset(lastIndex)
+    left = user_posts.length >= 10 ? user_posts.length - 10 : user_posts.length
+    render json: {
+      success: true,
+      left: left,
+      posts: user_posts.map { | p | p.get_basic_json }
+    }
+  end
 end

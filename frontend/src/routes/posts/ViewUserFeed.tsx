@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {useParams, useNavigate, Link} from 'react-router-dom';
-import {follow, accountInfo, getReview} from '../../api/';
+import {follow, accountInfo, userPosts} from '../../api/';
 
 import User from '../../models/User';
 import PostBasicInfo from '../../models/PostBasicInfo';
@@ -17,6 +17,9 @@ import InfiniteScroll from '../../shared/InfiniteScroll';
 import './ViewUserFeed.css';
 import '../../shared/Button.css'
 import accountinfo from "../../api/accountinfo";
+import post from "../../models/Post";
+import {Simulate} from "react-dom/test-utils";
+import load = Simulate.load;
 
 const generateMockPosts = (number: number) => {
     return new Array(number).fill(null).map(() => {
@@ -44,6 +47,8 @@ const ViewUserFeed: React.FC = () => {
     const {state: context} = React.useContext(Context);
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [userInfo, setUserInfo] = React.useState<User>();
+    const [postsLeft, setPostsLeft] = React.useState<number>(0);
+    const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
     const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
 
     const handleFollow = React.useCallback(async () => {
@@ -57,14 +62,23 @@ const ViewUserFeed: React.FC = () => {
 
 
     // Infinite scrolling callback
-    const handleInfiniteScroll = React.useCallback(() => {
-        if (loadState == 'LOADED')
-            setPosts(posts.concat(generateMockPosts(10)));
+    const handleInfiniteScroll = React.useCallback(async() => {
+        if (loadState == 'LOADED' && postsLeft){
+            const response = await userPosts(username || '', lastPostIndex);
+            if (!response.success){
+                setLoadState('ERROR');
+            } else {
+                setPosts(response.posts);
+                setPostsLeft(response.left);
+                setLastPostIndex(lastPostIndex + response.posts.length);
+            }
+
+        }
     }, [posts]);
 
     React.useEffect(() => {
         setLoadState('INIT');
-        (async (username : string) => {
+        (async (username: string) => {
             const response = await accountInfo(username);
             if (!response.success) {
                 if (response.error == 'Requested resource does not exist.')
@@ -77,8 +91,15 @@ const ViewUserFeed: React.FC = () => {
                 ...response.account,
                 username: username || ''
             });
-            setPosts(generateMockPosts(10));
-            setLoadState('LOADED');
+            const postsResponse = await userPosts(username, 0);
+            if (!postsResponse.success) {
+                setLoadState('ERROR');
+            } else {
+                setPosts(postsResponse.posts);
+                setPostsLeft(postsResponse.left);
+                setLastPostIndex(postsResponse.posts.length);
+                setLoadState('LOADED');
+            }
         })(username || '');
     }, [username]);
 
