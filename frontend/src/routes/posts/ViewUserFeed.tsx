@@ -48,7 +48,7 @@ const ViewUserFeed: React.FC = () => {
             if (!response.success) {
                 setLoadState('ERROR');
             } else {
-                setPosts(response.posts);
+                setPosts(posts.concat(response.posts));
                 setPostsLeft(response.left);
                 setLastPostIndex(lastPostIndex + response.posts.length);
             }
@@ -80,6 +80,7 @@ const ViewUserFeed: React.FC = () => {
             setPosts(postsResponse.posts);
             setPostsLeft(postsResponse.left);
             setLastPostIndex(postsResponse.posts.length);
+            setLoadState('LOADED');
         })(username || '');
 
     }, [username]);

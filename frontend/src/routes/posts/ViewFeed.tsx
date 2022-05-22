@@ -2,60 +2,45 @@
  * @author Aleksa Marković
  */
 import React, {useCallback, useContext} from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import {Link, Navigate} from 'react-router-dom';
+
+import {feed, getSuggestions} from '../../api'
+
 import ShowPost from './ShowPost';
-import FollowSuggestions from '../accounts/FollowSuggestions';
-import { Comment, Post, User } from '../../models';
-import { Context } from '../../shared/Context';
+import {Context} from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
+import FollowSuggestions from "../accounts/FollowSuggestions";
+
+import {Comment, Post, User} from '../../models';
 
 import './ViewFeed.css';
 
-const generateMockUser = (): User => {
-    const id = Math.round((100000 * Math.random()));
-    return {
-        id: id,
-        username: `acc-${id}`,
-        profileURL: `acc-${id}`,
-        profilePhotoURL: `https://picsum.photos/128/128?nocache=${Math.random()}`,
-        amFollowing: false,
-        numberFollowing: Math.round((1000 * Math.random())),
-        numberOfFollowers: Math.round((1000 * Math.random())),
-        numberOfPosts: Math.round((1000 * Math.random())),
-        realName: 'John Doe'
-    }
-}
 
-const generateMockUsers = (number: number): User[] => {
-    return new Array(number).fill(null).map(generateMockUser);
- }
-
-const generateMockPosts = (number: number): Post[] => {
-    return new Array(number).fill(null).map(() => {
-        return {
-            id: Math.round((100000 * Math.random())).toFixed(),
-            photoURL: `https://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
-            description: 'Description',
-            haveLiked: Math.random() < 0.5,
-            time: new Date(),
-            poster: generateMockUser(),
-            comments: []
-        }
-    });
-}
+type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'SUGGESTIONS';
 
 const ViewFeed: React.FC = () => {
-    const [searchParams] = useSearchParams();
     const {state: context} = useContext(Context);
+    const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [posts, setPosts] = React.useState<Post[]>([]);
+    const [suggestions, setSuggestions] = React.useState<User[]>([]);
 
     React.useEffect(() => {
-        setPosts(generateMockPosts(5));
+        setLoadState('INIT');
+        (async () => {
+
+            const response = await getSuggestions();
+            if (!response.success) {
+                setLoadState('ERROR');
+                return;
+            }
+            setLoadState('SUGGESTIONS');
+            setSuggestions(response.suggestions);
+
+        })();
     }, []);
 
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(() => {
-        setPosts(posts.concat(generateMockPosts(10)));
     }, [posts, setPosts]);
 
     const setFollowing = useCallback((post: Post) => {
@@ -140,17 +125,18 @@ const ViewFeed: React.FC = () => {
     }, [posts, setPosts]);
     return (
         <>
-            {context.loggedIn || <Navigate to="/accounts/login" />}
-            {searchParams.get("nofollow") ?
+            {context.loggedIn || <Navigate to="/accounts/login"/>}
+            {loadState == 'SUGGESTIONS' ?
                 <>
-                    <h1>Suggestions</h1>
-                    <FollowSuggestions users={generateMockUsers(10)} />
+                    <h1>People you might like</h1>
+                    {<FollowSuggestions users={suggestions}/>}
                 </> :
                 <>
-                    <InfiniteScroll callback={handleInfiniteScroll} />
+                    <InfiniteScroll callback={handleInfiniteScroll}/>
                     <section className="feed-list">
                         {posts.map((post) =>
-                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} />
+                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing}
+                                      setLiked={setLiked} setCommentLiked={setCommentLiked}/>
                         )}
                     </section>
                 </>}

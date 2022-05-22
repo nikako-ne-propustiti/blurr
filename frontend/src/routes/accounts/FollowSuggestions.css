@@ -1,22 +1,22 @@
 .follow-suggestions {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
 }
 
 .follow-suggestion {
+    flex: 1 0 21%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .follow-suggestion>a>img {
+    width: 200px;
     border-radius: 50%;
 }
 
 .follow-suggestion>a {
     font-weight: bold;
-    position: relative;
     margin: auto;
 }
