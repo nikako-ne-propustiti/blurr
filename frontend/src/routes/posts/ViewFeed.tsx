@@ -4,7 +4,7 @@
 import React, {useCallback, useContext} from 'react';
 import {Link, Navigate} from 'react-router-dom';
 
-import {feed, getSuggestions} from '../../api'
+import {feed, getSuggestions, userPosts} from '../../api'
 
 import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
@@ -22,25 +22,44 @@ const ViewFeed: React.FC = () => {
     const {state: context} = useContext(Context);
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [posts, setPosts] = React.useState<Post[]>([]);
+    const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
     const [suggestions, setSuggestions] = React.useState<User[]>([]);
 
     React.useEffect(() => {
         setLoadState('INIT');
         (async () => {
-
-            const response = await getSuggestions();
-            if (!response.success) {
+            const feedResponse = await feed(0);
+            if (!feedResponse.success) {
                 setLoadState('ERROR');
                 return;
             }
-            setLoadState('SUGGESTIONS');
-            setSuggestions(response.suggestions);
-
+            if (feedResponse.posts.length > 0) {
+                setLoadState('LOADED');
+                setPosts(feedResponse.posts);
+                setLastPostIndex(feedResponse.posts.length);
+            } else {
+                const response = await getSuggestions();
+                if (!response.success) {
+                    setLoadState('ERROR');
+                    return;
+                }
+                setLoadState('SUGGESTIONS');
+                setSuggestions(response.suggestions);
+            }
         })();
     }, []);
 
     // Infinite scrolling callback
-    const handleInfiniteScroll = React.useCallback(() => {
+    const handleInfiniteScroll = React.useCallback(async () => {
+        if (loadState == 'LOADED') {
+            const response = await feed(lastPostIndex);
+            if (!response.success) {
+                setLoadState('ERROR');
+            } else {
+                setPosts(posts.concat(response.posts));
+                setLastPostIndex(lastPostIndex + response.posts.length);
+            }
+        }
     }, [posts, setPosts]);
 
     const setFollowing = useCallback((post: Post) => {
@@ -125,12 +144,15 @@ const ViewFeed: React.FC = () => {
     }, [posts, setPosts]);
     return (
         <>
+            {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
             {context.loggedIn || <Navigate to="/accounts/login"/>}
-            {loadState == 'SUGGESTIONS' ?
+            {loadState == 'SUGGESTIONS' &&
                 <>
                     <h1>People you might like</h1>
                     {<FollowSuggestions users={suggestions}/>}
-                </> :
+                </>
+            }
+            {loadState == 'LOADED' &&
                 <>
                     <InfiniteScroll callback={handleInfiniteScroll}/>
                     <section className="feed-list">
