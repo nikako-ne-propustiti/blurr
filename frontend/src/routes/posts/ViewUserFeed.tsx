@@ -2,11 +2,11 @@
  * @author Aleksa Marković
  */
 import React from 'react';
-import {useParams, useNavigate, Link} from 'react-router-dom';
+import {useParams, Link} from 'react-router-dom';
+
 import {follow, accountInfo, userPosts} from '../../api/';
 
-import User from '../../models/User';
-import PostBasicInfo from '../../models/PostBasicInfo';
+import {PostBasicInfo, User} from '../../models/';
 
 import {ProfilePhoto} from '../accounts';
 import PostGrid from './PostGrid';
@@ -16,26 +16,6 @@ import InfiniteScroll from '../../shared/InfiniteScroll';
 
 import './ViewUserFeed.css';
 import '../../shared/Button.css'
-import accountinfo from "../../api/accountinfo";
-import post from "../../models/Post";
-import {Simulate} from "react-dom/test-utils";
-import load = Simulate.load;
-
-const generateMockPosts = (number: number) => {
-    return new Array(number).fill(null).map(() => {
-        let photoURL = '';
-        if (Math.floor(Math.random() * 10) === 0) {
-            photoURL = `https://picsum.photos/512/512?nocache=${Math.random()}`;
-        } else {
-            photoURL = `https://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`;
-        }
-        return {
-            id: Math.round((100000 * Math.random())).toFixed(),
-            photoURL,
-            numberOfLikes: Math.round((100 * Math.random()))
-        }
-    });
-}
 
 const pluralHelper = (word: string, count?: number) =>
     <><b>{count}</b> {`${word}${(count !== 1) ? 's' : ''}`}</>;
@@ -52,7 +32,7 @@ const ViewUserFeed: React.FC = () => {
     const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
 
     const handleFollow = React.useCallback(async () => {
-        if (loadState === 'LOADED' && userInfo && context.loggedIn && username !== context.currentUser) {
+        if (userInfo && context.loggedIn && username !== context.currentUser) {
             const result = await follow(username || '');
             if (result.success) {
                 setUserInfo({...userInfo, amFollowing: result.following});
@@ -62,10 +42,10 @@ const ViewUserFeed: React.FC = () => {
 
 
     // Infinite scrolling callback
-    const handleInfiniteScroll = React.useCallback(async() => {
-        if (loadState == 'LOADED' && postsLeft){
+    const handleInfiniteScroll = React.useCallback(async () => {
+        if (loadState == 'LOADED' && postsLeft) {
             const response = await userPosts(username || '', lastPostIndex);
-            if (!response.success){
+            if (!response.success) {
                 setLoadState('ERROR');
             } else {
                 setPosts(response.posts);
@@ -94,19 +74,20 @@ const ViewUserFeed: React.FC = () => {
             const postsResponse = await userPosts(username, 0);
             if (!postsResponse.success) {
                 setLoadState('ERROR');
-            } else {
-                setPosts(postsResponse.posts);
-                setPostsLeft(postsResponse.left);
-                setLastPostIndex(postsResponse.posts.length);
-                setLoadState('LOADED');
+                return;
             }
+            setLoadState('LOADED');
+            setPosts(postsResponse.posts);
+            setPostsLeft(postsResponse.left);
+            setLastPostIndex(postsResponse.posts.length);
         })(username || '');
+
     }, [username]);
 
     return <>
         <section className="userfeed-profile-info">
             <InfiniteScroll callback={handleInfiniteScroll}/>
-            {userInfo && <ProfilePhoto user={userInfo} isMyProfile={context.currentUser === username}/>}
+            {userInfo && <ProfilePhoto profilePhotoURL={userInfo.profilePhotoURL} tooltip={username}/>}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
                 {loadState === 'NOUSER' && <p>The requested user does not exist.</p>}
