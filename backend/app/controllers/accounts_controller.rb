@@ -28,6 +28,12 @@ class AccountsController < ApplicationController
     render json: { success: true }
   end
 
+  ##
+  # GET api/accounts/info
+  # Query parameters:
+  # username - username
+  #
+  # Gets basic information about the user. This is used on individual account pages.
   def info
     username = params.require(:username)
     user = User.find_by! username: username
@@ -40,15 +46,23 @@ class AccountsController < ApplicationController
     end
   end
 
+  ##
+  # GET /api/accounts/posts
+  # Query parameters:
+  # username - username
+  # lastIndex - the last post's index received from the previous query
+  #
+  # Gets a list of all the user's posts and their basic info for the posts grid on the individual account pages.
+  # Returns at most 10 posts and how many are left.
   def index
     user = User.find_by username: params.require(:username)
     lastIndex = params.require(:lastIndex)
-    user_posts = Post.where(user_id: user.id).offset(lastIndex)
+    user_posts = Post.where(user_id: user.id).offset(lastIndex).limit(10)
     left = user_posts.length >= 10 ? user_posts.length - 10 : user_posts.length
     render json: {
       success: true,
       left: left,
-      posts: user_posts.map { | p | p.get_basic_json }
+      posts: user_posts.map { |p| p.get_basic_json }
     }
   end
 end

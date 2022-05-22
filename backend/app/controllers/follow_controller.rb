@@ -1,6 +1,11 @@
 class FollowController < ApplicationController
   before_action :check_logged_in
-
+  ##
+  # POST api/accounts/follow
+  # JSON:
+  # username - username
+  #
+  # Follows/unfollows the account with the given username. The follower is the currently logged in account.
   def follow
     followee = User.find_by! username: params.require(:username)
     follower = User.find session[:user_id]
