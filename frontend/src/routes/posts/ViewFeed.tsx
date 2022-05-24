@@ -22,6 +22,7 @@ const ViewFeed: React.FC = () => {
     const {state: context} = useContext(Context);
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [posts, setPosts] = React.useState<Post[]>([]);
+    const [postsLeft, setPostsLeft] = React.useState<number>(0);
     const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
     const [suggestions, setSuggestions] = React.useState<User[]>([]);
 
@@ -36,6 +37,7 @@ const ViewFeed: React.FC = () => {
             if (feedResponse.posts.length > 0) {
                 setLoadState('LOADED');
                 setPosts(feedResponse.posts);
+                setPostsLeft(feedResponse.left);
                 setLastPostIndex(feedResponse.posts.length);
             } else {
                 const response = await getSuggestions();
@@ -51,7 +53,7 @@ const ViewFeed: React.FC = () => {
 
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(async () => {
-        if (loadState == 'LOADED') {
+        if (loadState == 'LOADED' && postsLeft > 0) {
             const response = await feed(lastPostIndex);
             if (!response.success) {
                 setLoadState('ERROR');

@@ -10,7 +10,8 @@ class Post < ApplicationRecord
       haveLiked: PostLike.exists?(user_id: user.id, post_id: id),
       time: created_at,
       poster: User.find_by(id: user_id).get_json(user),
-      comments: Comment.where(post_id: id).map { |c| c.get_json(user) }
+      #comments: Comment.where(post_id: id).map { |c| c.get_json(user) }
+      comments: []
     }
   end
 

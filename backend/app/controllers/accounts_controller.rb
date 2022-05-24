@@ -58,7 +58,7 @@ class AccountsController < ApplicationController
     user = User.find_by username: params.require(:username)
     lastIndex = params.require(:lastIndex)
     user_posts = Post.where(user_id: user.id).offset(lastIndex).limit(10)
-    left = user_posts.length >= 10 ? user_posts.length - 10 : user_posts.length
+    left = user_posts.length >= 10 ? user_posts.length - 10 : 0
     render json: {
       success: true,
       left: left,
