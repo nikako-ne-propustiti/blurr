@@ -8,5 +8,6 @@ import accountInfo from "./accountinfo";
 import userPosts from "./userposts";
 import feed from "./feed";
 import getSuggestions from "./getSuggestions";
+import profilePhoto from "./profilePhoto";
 
-export {getReview, login, logout, register, submitReview, follow, accountInfo, userPosts, feed, getSuggestions};
+export {getReview, login, logout, register, submitReview, follow, accountInfo, userPosts, feed, getSuggestions, profilePhoto};
