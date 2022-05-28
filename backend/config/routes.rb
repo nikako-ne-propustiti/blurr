@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   get '/api/posts/', to: 'posts#posts'
   get '/api/review', to: 'review#get'
   post '/api/review/:postId', to: 'review#submit'
-  post '/api/p/new', to: 'post#new'
+  post '/api/p/new', to: 'posts#new'
 end
