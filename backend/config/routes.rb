@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   get '/api/review', to: 'review#get'
   post '/api/review/:postId', to: 'review#submit'
   post '/api/p/new', to: 'posts#new'
+  post '/api/users/pfp', to: 'users#pfp'
 end

@@ -37,3 +37,5 @@ export const apiCall = async (path: string, options: ApiCallArgs = {}) => {
         };
     }
 };
+
+export default BACKEND_API_URL;

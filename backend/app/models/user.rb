@@ -11,8 +11,7 @@ class User < ApplicationRecord
       username: username,
       realName: real_name,
       profileURL: username,
-      # TODO: Add profile photo fetching endpoint
-      profilePhotoURL: 'https://picsum.photos/600',
+      profilePhotoURL: (profile_photo_uuid) ? "/images/pfp/#{profile_photo_uuid}.jpg" : '/default_images/default_user.jpg',
       amFollowing: Follow.exists?(follower_id: user.id, followee_id: id),
       numberOfPosts: Post.where(user_id: id).count,
       numberOfFollowers: Follow.where(followee_id: id).count,
