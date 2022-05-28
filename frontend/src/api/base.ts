@@ -1,4 +1,4 @@
-const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3001';
+export const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3001';
 
 interface ApiCallArgs {
     json?: any,
@@ -37,5 +37,3 @@ export const apiCall = async (path: string, options: ApiCallArgs = {}) => {
         };
     }
 };
-
-export default BACKEND_API_URL;

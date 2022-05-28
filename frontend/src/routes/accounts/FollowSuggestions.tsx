@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { User } from '../../models';
 import './FollowSuggestions.css';
+
 import {BACKEND_API_URL} from "../../api";
 
 interface Props {
