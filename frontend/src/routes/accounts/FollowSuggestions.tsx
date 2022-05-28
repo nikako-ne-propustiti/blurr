@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { User } from '../../models';
 import './FollowSuggestions.css';
 
+import {BACKEND_API_URL} from "../../api";
+
 interface Props {
     users: User[]
 };
@@ -12,7 +14,7 @@ const FollowSuggestions: React.FC<Props> = ({ users }) => {
         {users.map(({ username, profilePhotoURL, id }) => {
             return <div className='follow-suggestion' key={id}>
                 <Link to={username}>
-                    <img src={profilePhotoURL}></img>
+                    <img src={`${BACKEND_API_URL}/${profilePhotoURL}`}></img>
                 </Link>
                 <Link to={username}>
                     {username}
