@@ -4,9 +4,9 @@
 import React from 'react';
 import {useParams, Link} from 'react-router-dom';
 
-import {follow, accountInfo, userPosts} from '../../api/';
+import {follow, accountInfo, posts as getPosts} from '../../api/';
 
-import {PostBasicInfo, User} from '../../models/';
+import {Post, User} from '../../models/';
 
 import {ProfilePhoto} from '../accounts';
 import PostGrid from './PostGrid';
@@ -29,7 +29,7 @@ const ViewUserFeed: React.FC = () => {
     const [userInfo, setUserInfo] = React.useState<User>();
     const [postsLeft, setPostsLeft] = React.useState<number>(0);
     const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
-    const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
+    const [posts, setPosts] = React.useState<Post[]>([]);
 
     const handleFollow = React.useCallback(async () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
@@ -40,11 +40,14 @@ const ViewUserFeed: React.FC = () => {
         }
     }, [userInfo?.amFollowing]);
 
+    const uploadProfilePhoto = React.useCallback((file?: File | null) => {
+        if (!file) return;
+    }, [userInfo]);
 
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(async () => {
         if (loadState == 'LOADED' && postsLeft) {
-            const response = await userPosts(username || '', lastPostIndex);
+            const response = await getPosts(lastPostIndex, username || '');
             if (!response.success) {
                 setLoadState('ERROR');
             } else {
@@ -71,7 +74,7 @@ const ViewUserFeed: React.FC = () => {
                 ...response.account,
                 username: username || ''
             });
-            const postsResponse = await userPosts(username, 0);
+            const postsResponse = await getPosts(0, username || '');
             if (!postsResponse.success) {
                 setLoadState('ERROR');
                 return;
@@ -88,7 +91,8 @@ const ViewUserFeed: React.FC = () => {
     return <>
         <section className="userfeed-profile-info">
             <InfiniteScroll callback={handleInfiniteScroll}/>
-            {userInfo && <ProfilePhoto profilePhotoURL={userInfo.profilePhotoURL} tooltip={username}/>}
+            {userInfo && <ProfilePhoto profilePhotoURL={userInfo.profilePhotoURL} callback={uploadProfilePhoto}
+                                       tooltip={username}/>}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
                 {loadState === 'NOUSER' && <p>The requested user does not exist.</p>}

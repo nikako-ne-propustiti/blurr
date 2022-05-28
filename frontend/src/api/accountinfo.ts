@@ -6,7 +6,7 @@ type AccountInfoResponse =
     { success: true, account: User };
 
 const accountInfo = (username: string): Promise<AccountInfoResponse> => {
-    return apiCall('accounts/info', {
+    return apiCall('users/info', {
         query: {username},
     });
 };

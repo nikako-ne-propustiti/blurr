@@ -1,7 +1,25 @@
-class FollowController < ApplicationController
-  before_action :check_logged_in
+class UsersController < ApplicationController
+  before_action :check_logged_in, except: :info
   ##
-  # POST api/accounts/follow
+  # GET api/users/{username}
+  # Query parameters:
+  # username - username
+  #
+  # Gets basic information about the user. This is used on individual account pages.
+  def info
+    username = params.require(:username)
+    user = User.find_by! username: username
+    info = user.get_json current_user
+    if user
+      render json: {
+        success: true,
+        account: info
+      }
+    end
+  end
+
+  ##
+  # POST api/users/follow
   # JSON:
   # username - username
   #

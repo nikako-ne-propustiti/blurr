@@ -1,7 +1,7 @@
 import {apiCall} from './base';
 
 const profilePhoto = (form : FormData) => {
-    return apiCall('accounts/pfp', {
+    return apiCall('users/pfp', {
         form,
         method: 'POST'
     });

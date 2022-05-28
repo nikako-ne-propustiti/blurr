@@ -6,7 +6,7 @@ type SuggestionsResponse =
     { success: true, suggestions: User[] };
 
 const getSuggestions = (): Promise<SuggestionsResponse> => {
-    return apiCall('accounts/suggestions');
+    return apiCall('posts/suggestions');
 };
 
 export default getSuggestions;

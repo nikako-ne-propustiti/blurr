@@ -2,7 +2,6 @@ interface User {
     id: number;
     username: string;
     realName: string;
-    profileURL: string;
     profilePhotoURL: string;
     numberOfPosts : number;
     numberOfFollowers : number;

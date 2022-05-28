@@ -4,7 +4,7 @@
 import React, {useCallback, useContext} from 'react';
 import {Link, Navigate} from 'react-router-dom';
 
-import {feed, getSuggestions, userPosts} from '../../api'
+import {feed, follow, getSuggestions, posts as getPosts} from '../../api'
 
 import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
@@ -29,7 +29,7 @@ const ViewFeed: React.FC = () => {
     React.useEffect(() => {
         setLoadState('INIT');
         (async () => {
-            const feedResponse = await feed(0);
+            const feedResponse = await getPosts(0, '');
             if (!feedResponse.success) {
                 setLoadState('ERROR');
                 return;
@@ -54,7 +54,7 @@ const ViewFeed: React.FC = () => {
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(async () => {
         if (loadState == 'LOADED' && postsLeft > 0) {
-            const response = await feed(lastPostIndex);
+            const response = await getPosts(lastPostIndex, '');
             if (!response.success) {
                 setLoadState('ERROR');
             } else {
@@ -64,19 +64,24 @@ const ViewFeed: React.FC = () => {
         }
     }, [posts, setPosts]);
 
-    const setFollowing = useCallback((post: Post) => {
-        const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            newPosts[postToUpdateIndex] = {
-                ...postToUpdate,
-                poster: {
-                    ...postToUpdate.poster,
-                    amFollowing: !postToUpdate.poster.amFollowing
+    const setFollowing = useCallback(async(post: Post) => {
+        if (context.loggedIn && post.poster.username !== context.currentUser) {
+            const result = await follow(post.poster.username || '');
+            if (result.success) {
+                const postToUpdate = posts.find(p => p.id === post.id);
+                if (postToUpdate) {
+                    const newPosts = [...posts];
+                    const postToUpdateIndex = posts.indexOf(postToUpdate);
+                    newPosts[postToUpdateIndex] = {
+                        ...postToUpdate,
+                        poster: {
+                            ...postToUpdate.poster,
+                            amFollowing: !postToUpdate.poster.amFollowing
+                        }
+                    };
+                    setPosts(newPosts);
                 }
-            };
-            setPosts(newPosts);
+            }
         }
     }, [posts, setPosts]);
     const addComment = useCallback((post: Post, comment: string) => {
@@ -97,7 +102,6 @@ const ViewFeed: React.FC = () => {
                             id: 1,
                             username: context.currentUser || 'unknown',
                             realName: context.currentUser || 'unknown',
-                            profileURL: "https://picsum.photos/400",
                             profilePhotoURL: "https://picsum.photos/400",
                             amFollowing: true,
                             numberOfPosts: 0,
