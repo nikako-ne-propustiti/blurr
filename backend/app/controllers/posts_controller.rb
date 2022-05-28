@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :check_logged_in
+  before_action :check_logged_in, except: :posts
   ##
   # GET /api/posts/
   # Query:
@@ -55,6 +55,53 @@ class PostsController < ApplicationController
     render json: {
       success: true,
       suggestions: accounts.map { |a| a.get_json current_user },
+    }
+  end
+
+  ##
+  # POST /api/p/new
+  #
+  # Creates a new post
+  def new
+    image = params.require(:image)
+    password = params.require(:password)
+    blur_level = params.require(:"blur-level").to_i
+    description = params.require(:description)
+
+    post = Post.new
+    post.password = password
+
+    loop do
+      url = SecureRandom.hex(8)
+      if not Post.find_by(post_url: url)
+        post.post_url = url
+        break
+      end
+    end
+
+    post.file_uuid = SecureRandom.uuid
+    post.description = description
+    post.user_id = current_user.id
+
+    if not post.valid?
+      render json: { success: false, error: post.errors.full_messages[0] }, status: 400
+      return
+    end
+
+    File.binwrite("public/images/#{post.file_uuid}#{password}.jpg", image.read)
+    imageLocked = MiniMagick::Image.open("public/images/#{post.file_uuid}#{password}.jpg")
+
+    imageLocked.combine_options do |i|
+      i.blur "0x#{blur_level * 5}"
+    end
+
+    imageLocked.write "public/images/#{post.file_uuid}.jpg"
+
+    post.save
+
+    render json: {
+      success: true,
+      url: post.post_url
     }
   end
 end
