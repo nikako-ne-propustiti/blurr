@@ -94,7 +94,6 @@ const ViewFeed: React.FC = () => {
             method: 'POST',
             json: { comment: commmentJSON }
         }).then(({comment}) => {
-            console.log('commentRes', comment);
             const newPosts = [...posts];
             const postToUpdateIndex = posts.indexOf(postToUpdate);
             newPosts[postToUpdateIndex] = {

@@ -45,7 +45,6 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
     }, [post, setFollowing, state, loginFirst]);
 
     const onComment = useCallback((e: FormEvent<HTMLFormElement>) => {
-        console.log(post, commentInput);
         e.preventDefault();
         if (state.loggedIn) {
             if (addComment) {
@@ -61,7 +60,6 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
         if (state.loggedIn) {
             setCommentInput(`@${user} `);
             if (setParentCommentId) {
-                console.log('aaaaa', id)
                 setParentCommentId(id);
             }
             commentInputRef.current?.focus();
