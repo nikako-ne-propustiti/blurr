@@ -12,8 +12,7 @@ const users: User[] = [
     {
         id: 1,
         username: "john", 
-        realName: "john doe", 
-        profileURL: "https://picsum.photos/400",
+        realName: "john doe",
         profilePhotoURL: "https://picsum.photos/400",
         amFollowing: true,
         numberOfPosts: 0,
@@ -23,8 +22,7 @@ const users: User[] = [
     {
         id: 2,
         username: "alex", 
-        realName: "alex young", 
-        profileURL: "https://picsum.photos/500",
+        realName: "alex young",
         profilePhotoURL: "https://picsum.photos/500",
         amFollowing: false,
         numberOfPosts: 0,
@@ -34,8 +32,7 @@ const users: User[] = [
     {
         id: 3,
         username: "sara", 
-        realName: "sara mack", 
-        profileURL: "https://picsum.photos/600",
+        realName: "sara mack",
         profilePhotoURL: "https://picsum.photos/600",
         amFollowing: false,
         numberOfPosts: 0,
@@ -75,9 +72,10 @@ const ViewPost: React.FC = () => {
     const [post, setPost] = useState<Post>({
         id: "id",
         poster: users[1],
+        photoURL : 'https://picsum.photos/512/512?nocache=',
         time: new Date(),
         description: "hello",
-        photoURL: "https://picsum.photos/600",
+        likes : 20,
         comments,
         haveLiked: false
     });
@@ -106,7 +104,6 @@ const ViewPost: React.FC = () => {
                         id: 1,
                         username: state.currentUser || 'unknown',
                         realName: state.currentUser || 'unknown',
-                        profileURL: "https://picsum.photos/400",
                         profilePhotoURL: "https://picsum.photos/400",
                         amFollowing: true,
                         numberOfPosts: 0,
