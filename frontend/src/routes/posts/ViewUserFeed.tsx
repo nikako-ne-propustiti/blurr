@@ -2,47 +2,20 @@
  * @author Aleksa Marković
  */
 import React from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import {useParams, Link} from 'react-router-dom';
 
-import User from '../../models/User';
-import PostBasicInfo from '../../models/PostBasicInfo';
+import {follow, accountInfo, posts as getPosts} from '../../api/';
 
-import { ProfilePhoto } from '../accounts';
+import {Post, User} from '../../models/';
+
+import {ProfilePhoto} from '../accounts';
 import PostGrid from './PostGrid';
-import { Context } from '../../shared/Context';
+import {Context} from '../../shared/Context';
 import Button from '../../shared/Button';
 import InfiniteScroll from '../../shared/InfiniteScroll';
 
 import './ViewUserFeed.css';
 import '../../shared/Button.css'
-
-const mockUserInfo: User = {
-    username: 'not loaded',
-    profileURL: '',
-    profilePhotoURL: 'https://picsum.photos/512/512',
-    amFollowing: false,
-    numberFollowing: 100,
-    numberOfFollowers: 1,
-    numberOfPosts: 20,
-    realName: 'John Doe',
-    id: 1
-};
-
-const generateMockPosts = (number: number) => {
-    return new Array(number).fill(null).map(() => {
-        let photoURL = '';
-        if (Math.floor(Math.random() * 10) === 0) {
-            photoURL = `https://picsum.photos/512/512?nocache=${Math.random()}`;
-        } else {
-            photoURL = `https://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`;
-        }
-        return {
-            id: Math.round((100000 * Math.random())).toFixed(),
-            photoURL,
-            numberOfLikes: Math.round((100 * Math.random()))
-        }
-    });
-}
 
 const pluralHelper = (word: string, count?: number) =>
     <><b>{count}</b> {`${word}${(count !== 1) ? 's' : ''}`}</>;
@@ -50,50 +23,76 @@ const pluralHelper = (word: string, count?: number) =>
 type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'NOUSER';
 
 const ViewUserFeed: React.FC = () => {
-    const { username } = useParams();
-    const { state: context } = React.useContext(Context);
+    const {username} = useParams();
+    const {state: context} = React.useContext(Context);
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [userInfo, setUserInfo] = React.useState<User>();
-    const [posts, setPosts] = React.useState<PostBasicInfo[]>([]);
+    const [postsLeft, setPostsLeft] = React.useState<number>(0);
+    const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
+    const [posts, setPosts] = React.useState<Post[]>([]);
 
-    const handleFollow = React.useCallback(() => {
+    const handleFollow = React.useCallback(async () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
-            if (userInfo.amFollowing)
-                setUserInfo({ ...userInfo, amFollowing: false });
-            else setUserInfo({ ...userInfo, amFollowing: true });
+            const result = await follow(username || '');
+            if (result.success) {
+                setUserInfo({...userInfo, amFollowing: result.following});
+            }
         }
-        // TODO API call...
-
     }, [userInfo?.amFollowing]);
 
+    const uploadProfilePhoto = React.useCallback((file?: File | null) => {
+        if (!file) return;
+    }, [userInfo]);
 
     // Infinite scrolling callback
-    const handleInfiniteScroll = React.useCallback(() => {
-        setPosts(posts.concat(generateMockPosts(10)));
+    const handleInfiniteScroll = React.useCallback(async () => {
+        if (loadState == 'LOADED' && postsLeft) {
+            const response = await getPosts(lastPostIndex, username || '');
+            if (!response.success) {
+                setLoadState('ERROR');
+            } else {
+                setPosts(posts.concat(response.posts));
+                setPostsLeft(response.left);
+                setLastPostIndex(lastPostIndex + response.posts.length);
+            }
+
+        }
     }, [posts]);
 
     React.useEffect(() => {
         setLoadState('INIT');
-
-        // TODO API call...
-        if (username?.includes('error'))
-            setLoadState('ERROR');
-        else if (username?.includes('noacc'))
-            setLoadState('NOUSER');
-        else {
+        (async (username: string) => {
+            const response = await accountInfo(username);
+            if (!response.success) {
+                if (response.error == 'Requested resource does not exist.')
+                    setLoadState('NOUSER');
+                else
+                    setLoadState('ERROR');
+                return;
+            }
             setUserInfo({
-                ...mockUserInfo,
+                ...response.account,
                 username: username || ''
             });
-            setPosts(generateMockPosts(10));
+            const postsResponse = await getPosts(0, username || '');
+            if (!postsResponse.success) {
+                setLoadState('ERROR');
+                return;
+            }
             setLoadState('LOADED');
-        }
+            setPosts(postsResponse.posts);
+            setPostsLeft(postsResponse.left);
+            setLastPostIndex(postsResponse.posts.length);
+            setLoadState('LOADED');
+        })(username || '');
+
     }, [username]);
 
     return <>
         <section className="userfeed-profile-info">
-            <InfiniteScroll callback={handleInfiniteScroll} />
-            {userInfo && <ProfilePhoto user={userInfo} isMyProfile={context.currentUser === username} />}
+            <InfiniteScroll callback={handleInfiniteScroll}/>
+            {userInfo && <ProfilePhoto profilePhotoURL={userInfo.profilePhotoURL} callback={uploadProfilePhoto}
+                                       tooltip={username}/>}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
                 {loadState === 'NOUSER' && <p>The requested user does not exist.</p>}
@@ -103,18 +102,19 @@ const ViewUserFeed: React.FC = () => {
                         <li>{pluralHelper('follower', userInfo.numberOfFollowers)}</li>
                         <li><b>{userInfo.numberFollowing}</b> following</li>
                         <li>{pluralHelper('post', userInfo.numberOfPosts)}</li>
-                    </ul></>}
+                    </ul>
+                </>}
             </div>
             {loadState == 'LOADED' && <div className='userfeed-buttons'>
                 {context.loggedIn
                     && context.currentUser !== username
-                    && <Button text={(userInfo?.amFollowing) ? 'Unfollow' : 'Follow'} onClick={handleFollow} />}
+                    && <Button text={(userInfo?.amFollowing) ? 'Unfollow' : 'Follow'} onClick={handleFollow}/>}
                 {context.currentUser === username
                     && <Link to="/accounts/edit" className="button">Edit account</Link>}
             </div>}
         </section>
-        <hr />
-        {posts && <PostGrid posts={posts} />}
+        <hr/>
+        {posts && <PostGrid posts={posts}/>}
     </>;
 }
 

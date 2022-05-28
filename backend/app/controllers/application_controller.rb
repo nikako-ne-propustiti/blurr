@@ -16,7 +16,7 @@ class ApplicationController < ActionController::API
   private
 
   def check_logged_in
-    if not current_user
+    unless current_user
       render json: {success: false, error: 'You must be logged in to perform this action.'}, status: 401
     end
   end

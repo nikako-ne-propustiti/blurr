@@ -1,27 +1,25 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import User from '../../models/User';
+
 import './ProfilePhoto.css';
 
 interface Props {
-    user: User,
-    isMyProfile: boolean
-};
+    profilePhotoURL: string,
+    callback?: (file?: File | null) => void
+    tooltip?: string
+}
 
 // Profile photo, as it appears on the user's page
-// TODO Refactor uploading profile photo as callback to parent component
-const ProfilePhoto: React.FC<Props> = ({ user, isMyProfile, }) => {
-    // TODO Refactor
+const ProfilePhoto: React.FC<Props> = ({profilePhotoURL, callback, tooltip}) => {
     let className = 'profile-photo';
-    if (isMyProfile) className += ' profile-photo-clickable';
+    if (callback != null) className += ' profile-photo-clickable';
 
     const fileInput = React.useRef<HTMLInputElement>(null);
-    const [profilePhotoURL, setProfilePhotoURL] = React.useState(user.profilePhotoURL);
-
     // TODO This will also have to be written a bit nicer
     const uploadFile = React.useCallback(() => {
         if (!fileInput.current) return;
-
+        if (callback)
+            callback(fileInput.current.files?.item(0));
+        /*
         // What file we got
         const file = fileInput.current.files?.item(0);
         if (!file) {
@@ -43,21 +41,20 @@ const ProfilePhoto: React.FC<Props> = ({ user, isMyProfile, }) => {
         setProfilePhotoURL(URL.createObjectURL(file));
         // The server would inform us about the file being inadequate in any other way
         // E.g. resolution, etc.
+         */
     }, [fileInput]);
 
     const openFileDialog = React.useCallback(() => {
-        if (!isMyProfile) return;
         if (!fileInput.current) return;
 
         // Simulate click on input field
         fileInput.current.click();
     }, []);
 
-    const { username } = user;
-
     return <div className={className}>
-        <img src={profilePhotoURL} title={isMyProfile ? 'Click to change profile picture' : username} onClick={openFileDialog} />
-        {isMyProfile && <input type="file" accept=".jpg, .jpeg" onChange={uploadFile} ref={fileInput} id="profilePhotoFile" />}
+        <img src={profilePhotoURL} title={tooltip} onClick={openFileDialog}/>
+        {callback != null &&
+            <input type="file" accept=".jpg, .jpeg" onChange={uploadFile} ref={fileInput} id="profilePhotoFile"/>}
     </div>
 };
 
