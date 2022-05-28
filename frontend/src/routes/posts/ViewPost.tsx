@@ -72,9 +72,10 @@ const ViewPost: React.FC = () => {
     const [post, setPost] = useState<Post>({
         id: "id",
         poster: users[1],
+        photoURL : 'https://picsum.photos/512/512?nocache=',
         time: new Date(),
         description: "hello",
-        photoURL: "https://picsum.photos/600",
+        likes : 20,
         comments,
         haveLiked: false
     });
@@ -103,7 +104,6 @@ const ViewPost: React.FC = () => {
                         id: 1,
                         username: state.currentUser || 'unknown',
                         realName: state.currentUser || 'unknown',
-                        profileURL: "https://picsum.photos/400",
                         profilePhotoURL: "https://picsum.photos/400",
                         amFollowing: true,
                         numberOfPosts: 0,
