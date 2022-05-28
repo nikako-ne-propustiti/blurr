@@ -6,7 +6,6 @@ Rails.application.routes.draw do
   get '/api/accounts/info', to: 'accounts#info'
   get '/api/accounts/posts', to: 'accounts#index'
   get '/api/accounts/suggestions', to: 'feed#suggestions'
-
   get '/api/posts', to: 'posts#index'
   get '/api/posts/feed', to: 'feed#feed'
   get '/api/review', to: 'review#get'
