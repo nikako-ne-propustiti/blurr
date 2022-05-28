@@ -100,6 +100,7 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
+    mini_magick (4.11.0)
     mini_mime (1.1.2)
     mini_portile2 (2.6.1)
     minitest (5.15.0)
@@ -200,6 +201,7 @@ DEPENDENCIES
   capybara (>= 3.26)
   jbuilder (~> 2.11)
   listen (~> 3.7)
+  mini_magick
   pg (>= 0.18, < 2.0)
   puma (~> 5.5)
   rack-cors

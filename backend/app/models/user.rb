@@ -10,6 +10,7 @@ class User < ApplicationRecord
       id: id,
       username: username,
       realName: real_name,
+      profileURL: username,
       # TODO: Add profile photo fetching endpoint
       profilePhotoURL: 'https://picsum.photos/600',
       amFollowing: Follow.exists?(follower_id: user.id, followee_id: id),

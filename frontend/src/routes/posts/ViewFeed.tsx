@@ -2,77 +2,88 @@
  * @author Aleksa Marković
  */
 import React, {useCallback, useContext} from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import {Link, Navigate} from 'react-router-dom';
+
+import {feed, follow, getSuggestions, posts as getPosts} from '../../api'
+
 import ShowPost from './ShowPost';
-import FollowSuggestions from '../accounts/FollowSuggestions';
-import { Comment, Post, User } from '../../models';
-import { Context } from '../../shared/Context';
+import {Context} from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
+import FollowSuggestions from "../accounts/FollowSuggestions";
+
+import {Comment, Post, User} from '../../models';
 
 import './ViewFeed.css';
 import { apiCall } from '../../api/base';
 
-const generateMockUser = (): User => {
-    const id = Math.round((100000 * Math.random()));
-    return {
-        id: id,
-        username: `acc-${id}`,
-        profileURL: `acc-${id}`,
-        profilePhotoURL: `https://picsum.photos/128/128?nocache=${Math.random()}`,
-        amFollowing: false,
-        numberFollowing: Math.round((1000 * Math.random())),
-        numberOfFollowers: Math.round((1000 * Math.random())),
-        numberOfPosts: Math.round((1000 * Math.random())),
-        realName: 'John Doe'
-    }
-}
 
-const generateMockUsers = (number: number): User[] => {
-    return new Array(number).fill(null).map(generateMockUser);
- }
-
-const generateMockPosts = (number: number): Post[] => {
-    return new Array(number).fill(null).map(() => {
-        return {
-            id: Math.round((100000 * Math.random())).toFixed(),
-            photoURL: `https://picsum.photos/512/512?blur=${Math.round((10 * Math.random())).toFixed()}&nocache=${Math.random()}`,
-            description: 'Description',
-            haveLiked: Math.random() < 0.5,
-            time: new Date(),
-            poster: generateMockUser(),
-            comments: []
-        }
-    });
-}
+type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'SUGGESTIONS';
 
 const ViewFeed: React.FC = () => {
-    const [searchParams] = useSearchParams();
     const {state: context} = useContext(Context);
+    const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [posts, setPosts] = React.useState<Post[]>([]);
     const [parentCommentId, setParentCommentId] = React.useState<number>(-1);
+    const [postsLeft, setPostsLeft] = React.useState<number>(0);
+    const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
+    const [suggestions, setSuggestions] = React.useState<User[]>([]);
 
     React.useEffect(() => {
-        setPosts(generateMockPosts(5));
+        setLoadState('INIT');
+        (async () => {
+            const feedResponse = await getPosts(0, '');
+            if (!feedResponse.success) {
+                setLoadState('ERROR');
+                return;
+            }
+            if (feedResponse.posts.length > 0) {
+                setLoadState('LOADED');
+                setPosts(feedResponse.posts);
+                setPostsLeft(feedResponse.left);
+                setLastPostIndex(feedResponse.posts.length);
+            } else {
+                const response = await getSuggestions();
+                if (!response.success) {
+                    setLoadState('ERROR');
+                    return;
+                }
+                setLoadState('SUGGESTIONS');
+                setSuggestions(response.suggestions);
+            }
+        })();
     }, []);
 
     // Infinite scrolling callback
-    const handleInfiniteScroll = React.useCallback(() => {
-        setPosts(posts.concat(generateMockPosts(10)));
+    const handleInfiniteScroll = React.useCallback(async () => {
+        if (loadState == 'LOADED' && postsLeft > 0) {
+            const response = await getPosts(lastPostIndex, '');
+            if (!response.success) {
+                setLoadState('ERROR');
+            } else {
+                setPosts(posts.concat(response.posts));
+                setLastPostIndex(lastPostIndex + response.posts.length);
+            }
+        }
     }, [posts, setPosts]);
 
-    const setFollowing = useCallback((post: Post) => {
-        const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            newPosts[postToUpdateIndex] = {
-                ...postToUpdate,
-                poster: {
-                    ...postToUpdate.poster,
-                    amFollowing: !postToUpdate.poster.amFollowing
+    const setFollowing = useCallback(async(post: Post) => {
+        if (context.loggedIn && post.poster.username !== context.currentUser) {
+            const result = await follow(post.poster.username || '');
+            if (result.success) {
+                const postToUpdate = posts.find(p => p.id === post.id);
+                if (postToUpdate) {
+                    const newPosts = [...posts];
+                    const postToUpdateIndex = posts.indexOf(postToUpdate);
+                    newPosts[postToUpdateIndex] = {
+                        ...postToUpdate,
+                        poster: {
+                            ...postToUpdate.poster,
+                            amFollowing: !postToUpdate.poster.amFollowing
+                        }
+                    };
+                    setPosts(newPosts);
                 }
-            };
-            setPosts(newPosts);
+            }
         }
     }, [posts, setPosts]);
 
@@ -157,14 +168,17 @@ const ViewFeed: React.FC = () => {
 
     return (
         <>
-            {context.loggedIn || <Navigate to="/accounts/login" />}
-            {searchParams.get("nofollow") ?
+            {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
+            {context.loggedIn || <Navigate to="/accounts/login"/>}
+            {loadState == 'SUGGESTIONS' &&
                 <>
-                    <h1>Suggestions</h1>
-                    <FollowSuggestions users={generateMockUsers(10)} />
-                </> :
+                    <h1>People you might like</h1>
+                    {<FollowSuggestions users={suggestions}/>}
+                </>
+            }
+            {loadState == 'LOADED' &&
                 <>
-                    <InfiniteScroll callback={handleInfiniteScroll} />
+                    <InfiniteScroll callback={handleInfiniteScroll}/>
                     <section className="feed-list">
                         {posts.map((post) =>
                             <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setParentCommentId={setParentCommentId} />

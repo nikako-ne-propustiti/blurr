@@ -21,7 +21,7 @@ $ git clone https://github.com/nikako-ne-propustiti/blurr.git && cd blurr
 # Instaliranje potrebnih paketa za frontend
 $ docker-compose run frontend yarn
 # Pravljenje baze za backend
-$ docker-compose run backend bin/rails db:create db:migrate
+$ docker-compose run backend bin/rails db:drop db:setup
 # Pokretanje baze, frontend dev servera i backend servera
 $ docker-compose up -d
 ```

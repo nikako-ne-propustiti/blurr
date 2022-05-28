@@ -5,13 +5,15 @@ class Post < ApplicationRecord
     return {
       id: id,
       # TODO: Add photo fetching endpoint
-      photoURL: 'https://picsum.photos/600',
+      photoURL: 'https://picsum.photos/512/512?nocache=',
       description: description,
       likes: PostLike.where(post_id: id).length,
       haveLiked: PostLike.exists?(user_id: user.id, post_id: id),
+      likes: PostLike.where(post_id: id).length,
       time: created_at,
       poster: User.find_by(id: user_id).get_json(user),
-      comments: Comment.where(post_id: id).map {|c| c.get_json(user) }
+      comments: Comment.where(post_id: id).map { |c| c.get_json(user) }
     }
   end
+
 end

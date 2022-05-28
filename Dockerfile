@@ -9,7 +9,7 @@ RUN yarn && yarn build
 
 # Build backend
 FROM ruby:3.0.0 AS backend
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs imagemagick libmagic-dev libmagickwand-dev
 RUN mkdir -p /myapp/backend
 WORKDIR /myapp/backend
 COPY --from=frontend /myapp/frontend/dist /myapp/backend/public
