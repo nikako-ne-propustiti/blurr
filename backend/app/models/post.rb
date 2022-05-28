@@ -7,6 +7,7 @@ class Post < ApplicationRecord
       # TODO: Add photo fetching endpoint
       photoURL: 'https://picsum.photos/600',
       description: description,
+      likes: PostLike.where(post_id: id).length,
       haveLiked: PostLike.exists?(user_id: user.id, post_id: id),
       time: created_at,
       poster: User.find_by(id: user_id).get_json(user),

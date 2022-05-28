@@ -5,6 +5,7 @@ interface Post {
     id: string;
     photoURL: string;
     description: string;
+    likes: number;
     haveLiked: boolean;
     time: Date;
     poster: User;

@@ -10,6 +10,7 @@ import { Context } from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
 
 import './ViewFeed.css';
+import { apiCall } from '../../api/base';
 
 const generateMockUser = (): User => {
     const id = Math.round((100000 * Math.random()));
@@ -48,6 +49,7 @@ const ViewFeed: React.FC = () => {
     const [searchParams] = useSearchParams();
     const {state: context} = useContext(Context);
     const [posts, setPosts] = React.useState<Post[]>([]);
+    const [parentCommentId, setParentCommentId] = React.useState<number>(-1);
 
     React.useEffect(() => {
         setPosts(generateMockPosts(5));
@@ -73,71 +75,87 @@ const ViewFeed: React.FC = () => {
             setPosts(newPosts);
         }
     }, [posts, setPosts]);
-    const addComment = useCallback((post: Post, comment: string) => {
+
+    const addComment = useCallback((post: Post, commentText: string) => {
         const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
+        if (!postToUpdate) {
+            return;
+        }
+
+        const commmentJSON: any = {
+            text: commentText,
+            time: new Date()
+        }
+        if (parentCommentId != -1 && commentText.startsWith('@')) {
+            commmentJSON['parentCommentId'] = parentCommentId;
+        }
+
+        apiCall(`comments/${post.id}`, {
+            method: 'POST',
+            json: { comment: commmentJSON }
+        }).then(({comment}) => {
+            console.log('commentRes', comment);
             const newPosts = [...posts];
             const postToUpdateIndex = posts.indexOf(postToUpdate);
             newPosts[postToUpdateIndex] = {
                 ...postToUpdate,
                 comments: [
                     ...postToUpdate.comments,
-                    {
-                        id: Math.round(Math.random() * 10000),
-                        text: comment,
-                        likes: 0,
-                        time: new Date(),
-                        commenter: {
-                            id: 1,
-                            username: context.currentUser || 'unknown',
-                            realName: context.currentUser || 'unknown',
-                            profileURL: "https://picsum.photos/400",
-                            profilePhotoURL: "https://picsum.photos/400",
-                            amFollowing: true,
-                            numberOfPosts: 0,
-                            numberOfFollowers: 0,
-                            numberFollowing: 0
-                        },
-                        haveLiked: false
-                    }
+                    comment
                 ]
             };
             setPosts(newPosts);
-        }
-    }, [posts, setPosts]);
+        });
+    }, [posts, setPosts, parentCommentId, setParentCommentId]);
+
     const setLiked = useCallback((post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
+        if (!postToUpdate) {
+            return;
+        }
+        apiCall(`posts/${post.id}/likes`, {
+            method: 'POST'
+        }).then(data => {
             const newPosts = [...posts];
             const postToUpdateIndex = posts.indexOf(postToUpdate);
             newPosts[postToUpdateIndex] = {
                 ...postToUpdate,
-                haveLiked: !postToUpdate.haveLiked
+                haveLiked: !data.haveLiked
             };
             setPosts(newPosts);
-        }
+        });
     }, [posts, setPosts]);
+
     const setCommentLiked = useCallback((post: Post, comment: Comment) => {
         const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            const commentToUpdate = postToUpdate.comments.find(c => c.id === comment.id);
-            if (commentToUpdate) {
-                const commentToUpdateIndex = postToUpdate.comments.indexOf(commentToUpdate);
-                const newComments = [...postToUpdate.comments];
-                newComments[commentToUpdateIndex] = {
-                    ...commentToUpdate,
-                    haveLiked: !commentToUpdate.haveLiked
-                };
-                newPosts[postToUpdateIndex] = {
-                    ...postToUpdate,
-                    comments: newComments
-                };
-                setPosts(newPosts);
-            }
+        if (!postToUpdate) {
+            return;
         }
+
+        const newPosts = [...posts];
+        const postToUpdateIndex = posts.indexOf(postToUpdate);
+        const commentToUpdate = postToUpdate.comments.find(c => c.id === comment.id);
+        if (!commentToUpdate) {
+            return;
+        }
+
+        apiCall(`comments/${comment.id}/likes`, {
+            method: 'POST'
+        }).then(data => {
+            const commentToUpdateIndex = postToUpdate.comments.indexOf(commentToUpdate);
+            const newComments = [...postToUpdate.comments];
+            newComments[commentToUpdateIndex] = {
+                ...commentToUpdate,
+                haveLiked: !data.haveLiked
+            };
+            newPosts[postToUpdateIndex] = {
+                ...postToUpdate,
+                comments: newComments
+            };
+            setPosts(newPosts);
+        })
     }, [posts, setPosts]);
+
     return (
         <>
             {context.loggedIn || <Navigate to="/accounts/login" />}
@@ -150,7 +168,7 @@ const ViewFeed: React.FC = () => {
                     <InfiniteScroll callback={handleInfiniteScroll} />
                     <section className="feed-list">
                         {posts.map((post) =>
-                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} />
+                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setParentCommentId={setParentCommentId} />
                         )}
                     </section>
                 </>}
