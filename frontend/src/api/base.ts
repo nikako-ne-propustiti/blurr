@@ -2,15 +2,16 @@ const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3001';
 
 interface ApiCallArgs {
     json?: any,
+    form?: FormData,
     method?: string,
     query?: object
 }
 
 export const apiCall = async (path: string, options: ApiCallArgs = {}) => {
-    const {json, method, query} = options;
+    const {json, method, query, form} = options;
     const requestOptions: RequestInit = {
         credentials: 'include',
-        headers: {
+        headers: form ? {} : {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
@@ -19,6 +20,9 @@ export const apiCall = async (path: string, options: ApiCallArgs = {}) => {
     const queryParams = {...query, t: Date.now()};
     if (json) {
         requestOptions.body = JSON.stringify(json);
+    }
+    if (form) {
+        requestOptions.body = form;
     }
     const searchParams = new URLSearchParams(Object.entries(queryParams).map(([k, v]) => [k, v.toString()]));
     try {

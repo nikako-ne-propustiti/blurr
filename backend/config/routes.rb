@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   post '/api/accounts/register', to: 'accounts#register'
   get '/api/review', to: 'review#get'
   post '/api/review/:postId', to: 'review#submit'
+  post '/api/p/new', to: 'post#new'
 end
