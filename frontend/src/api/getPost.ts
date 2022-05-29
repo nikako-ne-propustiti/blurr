@@ -6,7 +6,7 @@ type PostApiResponse =
     {success: true, post: Post};
 
 const getPost = (postId: string): Promise<PostApiResponse> => {
-    return apiCall(`/posts/${postId}`);
+    return apiCall(`posts/${postId}`);
 };
 
 export default getPost;

@@ -2,21 +2,15 @@ class PostsController < ApplicationController
   before_action :check_logged_in, except: :posts
 
   def get
-    post = Post.find(params[:postId])
-    if post
-      render json: {
-        post: post.get_json(current_user),
-        success: true
-      }
-    else
-      render json: {
-        success: false
-      }
-    end
+    post = Post.find(params.require(:postId))
+    render json: {
+      post: post.get_json(current_user),
+      success: true
+    }
   end
 
   def delete
-    post = Post.find(params[:postId])
+    post = Post.find(params.require(:postId))
     if post.user_id == current_user.id
       post.destroy
       render json: {
@@ -30,7 +24,7 @@ class PostsController < ApplicationController
   end
 
   def toggleLike
-    postLike = PostLike.find_by(user_id: current_user.id, post_id: params[:postId])
+    postLike = PostLike.find_by(user_id: current_user.id, post_id: params.require(:postId))
     if postLike
       postLike.destroy
       render json: {
@@ -38,7 +32,7 @@ class PostsController < ApplicationController
         haveLiked: false
       }
     else
-      PostLike.create(user_id: current_user.id, post_id: params[:postId])
+      PostLike.create(user_id: current_user.id, post_id: params.require(:postId))
       render json: {
         success: true,
         haveLiked: true

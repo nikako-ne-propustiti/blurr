@@ -20,7 +20,7 @@ class CommentsController < ApplicationController
   end
 
   def toggleLike
-    commentLike = CommentLike.find_by(user_id: current_user.id, comment_id: params[:commentId])
+    commentLike = CommentLike.find_by(user_id: current_user.id, comment_id: params.require(:commentId))
     if commentLike
       commentLike.destroy
       render json: {
@@ -28,7 +28,7 @@ class CommentsController < ApplicationController
         haveLiked: false
       }
     else
-      CommentLike.create(user_id: current_user.id, comment_id: params[:commentId])
+      CommentLike.create(user_id: current_user.id, comment_id: params.require(:commentId))
       render json: {
         success: true,
         haveLiked: true

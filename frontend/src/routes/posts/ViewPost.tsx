@@ -31,7 +31,7 @@ const ViewPost: React.FC = () => {
             setPost(response.post);
             setLoadState('LOADED');
         })();
-    }, []);
+    }, [postId]);
 
     const setFollowing = useCallback((post: Post) => {
         setPost({
