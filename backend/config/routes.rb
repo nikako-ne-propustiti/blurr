@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   post '/api/accounts/login', to: 'accounts#login'
   delete '/api/accounts/logout', to: 'accounts#logout'
   post '/api/accounts/register', to: 'accounts#register'
+  get '/api/accounts/whoami', to: 'accounts#info'
   post '/api/users/follow', to: 'users#follow'
   get '/api/users/info', to: 'users#info'
   get '/api/posts/suggestions', to: 'posts#suggestions'

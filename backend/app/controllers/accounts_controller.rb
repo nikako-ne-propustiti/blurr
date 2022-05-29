@@ -28,4 +28,17 @@ class AccountsController < ApplicationController
     session[:user_id] = user.id
     render json: { success: true }
   end
+
+  def info
+    if current_user.nil?
+      render json: {
+        success: true
+      }
+    else
+      render json: {
+        success: true,
+        user: current_user.username
+      }
+    end
+  end
 end

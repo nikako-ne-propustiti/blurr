@@ -15,17 +15,12 @@ type ContextReducer = (state: State, action: Action) => State;
 const reducer: ContextReducer = (state, action) => {
     switch (action.type) {
         case 'log-in':
-            // TODO: Remove after the prototype
-            localStorage.setItem('logged-in', 'true');
-            localStorage.setItem('currentUser', action.username || '');
             return {
                 ...state,
-                loggedIn: true,
+                loggedIn: Boolean(action.username),
                 currentUser: action.username
             };
         case 'log-out':
-            localStorage.setItem('logged-in', 'false');
-            localStorage.setItem('currentUser', '');
             return {
                 ...state,
                 loggedIn: false,
@@ -35,9 +30,7 @@ const reducer: ContextReducer = (state, action) => {
 };
 
 const initialState: State = {
-    // TODO: Change after the prototype
-    loggedIn: Boolean(localStorage.getItem('logged-in')),
-    currentUser: localStorage.getItem('currentUser') || undefined
+    loggedIn: false
 };
 
 export const Context = React.createContext({
