@@ -109,6 +109,7 @@ const ViewPost: React.FC = () => {
         {loadState == 'LOADED' && post &&
             <ShowPost post={post} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setDeleted={setDeleted} setParentCommentId={setParentCommentId} />
         }
+        {loadState == 'ERROR' && <p>Requested post does not exist.</p>}
         </>
     );
 }
