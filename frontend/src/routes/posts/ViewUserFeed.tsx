@@ -35,7 +35,13 @@ const ViewUserFeed: React.FC = () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
             const result = await follow(username || '');
             if (result.success) {
-                setUserInfo({...userInfo, amFollowing: result.following});
+                setUserInfo({
+                    ...userInfo,
+                    amFollowing: result.following,
+                    numberOfFollowers: result.following ?
+                        userInfo.numberOfFollowers + 1 :
+                        userInfo.numberOfFollowers - 1
+                });
             }
         }
     }, [userInfo?.amFollowing]);
