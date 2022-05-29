@@ -2,9 +2,9 @@
  * @author Aleksa Marković
  */
 import React, {useCallback, useContext} from 'react';
-import {Link, Navigate} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 
-import {feed, follow, getSuggestions, posts as getPosts} from '../../api'
+import {follow, getSuggestions, toggleCommentLike, posts as getPosts, createComment, togglePostLike} from '../../api'
 
 import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
@@ -22,6 +22,7 @@ const ViewFeed: React.FC = () => {
     const {state: context} = useContext(Context);
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [posts, setPosts] = React.useState<Post[]>([]);
+    const [parentCommentId, setParentCommentId] = React.useState<number>(-1);
     const [postsLeft, setPostsLeft] = React.useState<number>(0);
     const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
     const [suggestions, setSuggestions] = React.useState<User[]>([]);
@@ -84,70 +85,83 @@ const ViewFeed: React.FC = () => {
             }
         }
     }, [posts, setPosts]);
-    const addComment = useCallback((post: Post, comment: string) => {
+
+    const addComment = useCallback(async(post: Post, commentText: string) => {
         const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            newPosts[postToUpdateIndex] = {
-                ...postToUpdate,
-                comments: [
-                    ...postToUpdate.comments,
-                    {
-                        id: Math.round(Math.random() * 10000),
-                        text: comment,
-                        likes: 0,
-                        time: new Date(),
-                        commenter: {
-                            id: 1,
-                            username: context.currentUser || 'unknown',
-                            realName: context.currentUser || 'unknown',
-                            profilePhotoURL: "https://picsum.photos/400",
-                            amFollowing: true,
-                            numberOfPosts: 0,
-                            numberOfFollowers: 0,
-                            numberFollowing: 0
-                        },
-                        haveLiked: false
-                    }
-                ]
-            };
-            setPosts(newPosts);
+        if (!postToUpdate) {
+            return;
         }
-    }, [posts, setPosts]);
-    const setLiked = useCallback((post: Post) => {
+
+        const response = (parentCommentId != -1 && commentText.startsWith('@')) ?
+            await createComment(post.id, commentText, parentCommentId) :
+            await createComment(post.id, commentText);
+        if (!response.success) {
+            return;
+        }
+
+        const newPosts = [...posts];
+        const postToUpdateIndex = posts.indexOf(postToUpdate);
+        newPosts[postToUpdateIndex] = {
+            ...postToUpdate,
+            comments: [
+                ...postToUpdate.comments,
+                response.comment
+            ]
+        };
+        setPosts(newPosts);
+    }, [posts, setPosts, parentCommentId, setParentCommentId]);
+
+    const setLiked = useCallback(async(post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            newPosts[postToUpdateIndex] = {
-                ...postToUpdate,
-                haveLiked: !postToUpdate.haveLiked
-            };
-            setPosts(newPosts);
+        if (!postToUpdate) {
+            return;
         }
+
+        const response = await togglePostLike(post.id);
+        if (!response.success) {
+            return;
+        }
+
+        const newPosts = [...posts];
+        const postToUpdateIndex = posts.indexOf(postToUpdate);
+        newPosts[postToUpdateIndex] = {
+            ...postToUpdate,
+            haveLiked: response.haveLiked
+        };
+        setPosts(newPosts);
     }, [posts, setPosts]);
-    const setCommentLiked = useCallback((post: Post, comment: Comment) => {
+
+    const setCommentLiked = useCallback(async(post: Post, comment: Comment) => {
         const postToUpdate = posts.find(p => p.id === post.id);
-        if (postToUpdate) {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            const commentToUpdate = postToUpdate.comments.find(c => c.id === comment.id);
-            if (commentToUpdate) {
-                const commentToUpdateIndex = postToUpdate.comments.indexOf(commentToUpdate);
-                const newComments = [...postToUpdate.comments];
-                newComments[commentToUpdateIndex] = {
-                    ...commentToUpdate,
-                    haveLiked: !commentToUpdate.haveLiked
-                };
-                newPosts[postToUpdateIndex] = {
-                    ...postToUpdate,
-                    comments: newComments
-                };
-                setPosts(newPosts);
-            }
+        if (!postToUpdate) {
+            return;
         }
+
+        const newPosts = [...posts];
+        const postToUpdateIndex = posts.indexOf(postToUpdate);
+        const commentToUpdate = postToUpdate.comments.find(c => c.id === comment.id);
+        if (!commentToUpdate) {
+            return;
+        }
+
+        const response = await toggleCommentLike(comment.id);
+        if (!response.success) {
+            return;
+        }
+
+        const commentToUpdateIndex = postToUpdate.comments.indexOf(commentToUpdate);
+        const newComments = [...postToUpdate.comments];
+        newComments[commentToUpdateIndex] = {
+            ...commentToUpdate,
+            haveLiked: response.haveLiked
+        };
+        newPosts[postToUpdateIndex] = {
+            ...postToUpdate,
+            comments: newComments
+        };
+        setPosts(newPosts);
     }, [posts, setPosts]);
+
     return (
         <>
             {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
@@ -163,8 +177,7 @@ const ViewFeed: React.FC = () => {
                     <InfiniteScroll callback={handleInfiniteScroll}/>
                     <section className="feed-list">
                         {posts.map((post) =>
-                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing}
-                                      setLiked={setLiked} setCommentLiked={setCommentLiked}/>
+                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setParentCommentId={setParentCommentId} />
                         )}
                     </section>
                 </>}

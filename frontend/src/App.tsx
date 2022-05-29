@@ -37,7 +37,7 @@ const App: React.FC = () => {
                     <Route path='/accounts/login' element={<Login />} />
                     <Route path='/accounts/register' element={<RegisterAccount />} />
                     <Route path='/accounts/edit' element={<EditAccount />} />
-                    <Route path='/p/:post' element={<ViewPost />} />
+                    <Route path='/p/:postId' element={<ViewPost />} />
                     <Route path='/p/new' element={<CreatePost />} />
                     <Route path='/p/review' element={<Review />} />
                     <Route path='/:username' element={<ViewUserFeed />} />

@@ -10,6 +10,11 @@ Rails.application.routes.draw do
   get '/api/posts/', to: 'posts#posts'
   get '/api/review', to: 'review#get'
   post '/api/review/:postId', to: 'review#submit'
-  post '/api/p/new', to: 'posts#new'
+  get '/api/posts/:postId', to: 'posts#get'
+  post '/api/posts', to: 'posts#new'
+  delete '/api/posts/:postId', to: 'posts#delete'
+  post '/api/posts/:postId/likes', to: 'posts#toggleLike'
+  post '/api/comments/:commentId/likes', to: 'comments#toggleLike'
+  post '/api/comments/:postId', to: 'comments#new'
   post '/api/users/pfp', to: 'users#pfp'
 end
