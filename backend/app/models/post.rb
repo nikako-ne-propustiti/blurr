@@ -5,8 +5,7 @@ class Post < ApplicationRecord
     return {
       id: id,
       url: post_url,
-      # TODO: Add photo fetching endpoint
-      photoURL: 'https://picsum.photos/512/512?nocache=',
+      photoURL: "/images/#{file_uuid}.jpg",
       description: description,
       likes: PostLike.where(post_id: id).length,
       haveLiked: PostLike.exists?(user_id: user.id, post_id: id),

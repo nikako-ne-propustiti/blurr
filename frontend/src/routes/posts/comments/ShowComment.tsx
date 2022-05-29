@@ -1,7 +1,8 @@
-import React, {useCallback, useContext} from 'react';
+import React, {useCallback} from 'react';
 import {Comment} from '../../../models';
 import Icon from '../../../shared/Icon';
 import {Link} from 'react-router-dom';
+import {BACKEND_API_URL} from '../../../api';
 
 import './ShowComment.css';
 
@@ -25,7 +26,7 @@ const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
     }, [comment, onLike]);
 
     return <li key={id} className="comment">
-        <img src={commenter.profilePhotoURL} />
+        <img src={`${BACKEND_API_URL}/${commenter.profilePhotoURL}`} />
         <div className="comm">
             <div className="comm-top">
                 <Link to={`/${commenter.username}`}>{commenter.username}</Link>

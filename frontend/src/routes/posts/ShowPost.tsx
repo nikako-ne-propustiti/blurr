@@ -5,6 +5,7 @@ import Icon from '../../shared/Icon';
 import {Link, useNavigate} from 'react-router-dom';
 import Button from '../../shared/Button';
 import {Context} from '../../shared/Context';
+import {BACKEND_API_URL} from '../../api';
 
 import './ShowPost.css';
 
@@ -100,11 +101,11 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
 
     return (
         <article className="wrapper">
-            <img onDoubleClick={imageDoubleClick} src={post.photoURL} />
+            <img onDoubleClick={imageDoubleClick} src={`${BACKEND_API_URL}/${post.photoURL}`} />
             <div className="panel">
                 <div className="profile-bar">
                     <Link to={`/${post.poster.username}`}>
-                        <img src={post.poster.profilePhotoURL}></img>
+                        <img src={`${BACKEND_API_URL}/${post.poster.profilePhotoURL}`}></img>
                     </Link>
                     <Link to={`/${post.poster.username}`}>
                         {post.poster.username}
@@ -132,7 +133,6 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
                     <input onChange={inputChange} type="text" name="text" className="comment-box" placeholder="Add a comment" ref={commentInputRef} value={commentInput} />
                     <Button text="Post" disabled={!commentInput} />
                 </form>}
-
             </div>
         </article>
     );
