@@ -85,7 +85,9 @@ class UsersController < ApplicationController
       render json: { success: false, error: 'User error.' }, status: 400
       return
     end
-    File.delete"public/images/pfp/#{old_uuid}.jpg"
+    unless old_uuid.nil?
+      File.delete"public/images/pfp/#{old_uuid}.jpg"
+    end
     user.profile_photo_uuid = uuid
     user.save
     render json: {
