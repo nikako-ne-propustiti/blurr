@@ -25,6 +25,7 @@ class AccountsController < ApplicationController
       return
     end
     user.save
+    session[:user_id] = user.id
     render json: { success: true }
   end
 end
