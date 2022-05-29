@@ -1,0 +1,18 @@
+.edit-account-form input[type="submit"].button {
+    margin-top: 0;
+    width: initial;
+}
+
+.edit-account-form section {
+    align-items: center;
+    display: flex;
+}
+
+.edit-account-form label {
+    display: inline-block;
+    width: 30%;
+}
+
+.edit-account-form .profile-photo {
+    margin: initial;
+}

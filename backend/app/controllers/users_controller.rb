@@ -95,4 +95,10 @@ class UsersController < ApplicationController
       url: "/images/pfp/#{uuid}.jpg"
     }
   end
+
+  def edit
+    current_user.real_name = params.require(:realName)
+    current_user.save
+    render json: {success: true}
+  end
 end
