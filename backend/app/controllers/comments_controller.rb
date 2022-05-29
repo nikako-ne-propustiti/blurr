@@ -7,9 +7,7 @@ class CommentsController < ApplicationController
 
     c = Comment.create(
       comment_text: comment['text'],
-      # TODO
-      # post_id: post_id,
-      post_id: 2,
+      post_id: post_id,
       user_id: current_user.id,
       created_at: comment['time'],
       parent_comment_id: comment['parentCommentId']

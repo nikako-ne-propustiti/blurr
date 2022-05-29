@@ -2,83 +2,37 @@
  * @author Miljan Marković
  */
 import React, {useCallback, useContext, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ShowPost } from '.';
+import { createComment, deletePost, getPost, toggleCommentLike, togglePostLike } from '../../api';
 
-import { Comment, User, Post } from '../../models';
+import { Comment, Post } from '../../models';
 import { Context } from '../../shared/Context';
 
-const users: User[] = [
-    {
-        id: 1,
-        username: "john", 
-        realName: "john doe",
-        profilePhotoURL: "https://picsum.photos/400",
-        amFollowing: true,
-        numberOfPosts: 0,
-        numberOfFollowers: 0,
-        numberFollowing: 0
-    },
-    {
-        id: 2,
-        username: "alex", 
-        realName: "alex young",
-        profilePhotoURL: "https://picsum.photos/500",
-        amFollowing: false,
-        numberOfPosts: 0,
-        numberOfFollowers: 0,
-        numberFollowing: 0
-    },
-    {
-        id: 3,
-        username: "sara", 
-        realName: "sara mack",
-        profilePhotoURL: "https://picsum.photos/600",
-        amFollowing: false,
-        numberOfPosts: 0,
-        numberOfFollowers: 0,
-        numberFollowing: 0
-    }
-];
-
-const comments: Comment[] = [
-    {
-        id: 1,
-        text: "zdravo",
-        likes: 1,
-        time: new Date(),
-        commenter: users[0],
-        haveLiked: false
-    },
-    {
-        id: 2,
-        text: "pozdrav",
-        likes: 1,
-        time: new Date(),
-        commenter: users[2],
-        haveLiked: true
-    },
-    {
-        id: 3,
-        text: "cao",
-        likes: 0,
-        time: new Date(),
-        commenter: users[0],
-        haveLiked: true
-    }
-];
+type LoadState = 'INIT' | 'LOADED' | 'ERROR';
 
 const ViewPost: React.FC = () => {
-    const [post, setPost] = useState<Post>({
-        id: "id",
-        poster: users[1],
-        photoURL : 'https://picsum.photos/512/512?nocache=',
-        time: new Date(),
-        description: "hello",
-        likes : 20,
-        comments,
-        haveLiked: false
-    });
+    const postId = useParams().postId || '';
+    const {state} = useContext(Context);
+    const navigate = useNavigate();
+    const [loadState, setLoadState] = React.useState<LoadState>('INIT');
+    const [parentCommentId, setParentCommentId] = React.useState<number>(-1);
+    const [post, setPost] = useState<Post>();
+
+    React.useEffect(() => {
+        setLoadState('INIT');
+        (async () => {
+            const response = await getPost(postId);
+            if (!response.success) {
+                setLoadState('ERROR');
+                return;
+            }
+
+            setPost(response.post);
+            setLoadState('LOADED');
+        })();
+    }, []);
+
     const setFollowing = useCallback((post: Post) => {
         setPost({
             ...post,
@@ -88,59 +42,74 @@ const ViewPost: React.FC = () => {
             }
         });
     }, [post, setPost]);
-    const {state} = useContext(Context);
-    const navigate = useNavigate();
-    const addComment = useCallback((post: Post, comment: string) => {
+
+    const addComment = useCallback(async(post: Post, commentText: string) => {
+        const response = (parentCommentId != -1 && commentText.startsWith('@')) ?
+            await createComment(post.id, commentText, parentCommentId) :
+            await createComment(post.id, commentText);
+        if (!response.success) {
+            return;
+        }
+
         setPost({
             ...post,
             comments: [
                 ...post.comments,
-                {
-                    id: Math.round(Math.random() * 10000),
-                    text: comment,
-                    likes: 0,
-                    time: new Date(),
-                    commenter: {
-                        id: 1,
-                        username: state.currentUser || 'unknown',
-                        realName: state.currentUser || 'unknown',
-                        profilePhotoURL: "https://picsum.photos/400",
-                        amFollowing: true,
-                        numberOfPosts: 0,
-                        numberOfFollowers: 0,
-                        numberFollowing: 0
-                    },
-                    haveLiked: false
-                }
+                response.comment
             ]
         })
     }, [post, setPost]);
-    const setLiked = useCallback((post: Post) => {
+
+    const setLiked = useCallback(async(post: Post) => {
+        const response = await togglePostLike(post.id);
+        if (!response.success) {
+            return;
+        }
+
         setPost({
             ...post,
-            haveLiked: !post.haveLiked
+            haveLiked: response.haveLiked
         });
     }, [post, setPost]);
-    const setCommentLiked = useCallback((post: Post, comment: Comment) => {
+
+    const setCommentLiked = useCallback(async(post: Post, comment: Comment) => {
         const commentToUpdate = post.comments.find(c => c.id === comment.id);
-        if (commentToUpdate) {
-            const commentToUpdateIndex = post.comments.indexOf(commentToUpdate);
-            const newComments = [...post.comments];
-            newComments[commentToUpdateIndex] = {
-                ...commentToUpdate,
-                haveLiked: !commentToUpdate.haveLiked
-            };
-            setPost({
-                ...post,
-                comments: newComments
-            });
+        if (!commentToUpdate) {
+            return;
         }
+
+        const response = await toggleCommentLike(comment.id);
+        if (!response.success) {
+            return;
+        }
+
+        const commentToUpdateIndex = post.comments.indexOf(commentToUpdate);
+        const newComments = [...post.comments];
+        newComments[commentToUpdateIndex] = {
+            ...commentToUpdate,
+            haveLiked: response.haveLiked
+        };
+        setPost({
+            ...post,
+            comments: newComments
+        });
     }, [post, setPost]);
-    const setDeleted = useCallback(() => {
+
+    const setDeleted = useCallback(async(post: Post) => {
+        const response = await deletePost(post.id);
+        if (!response.success) {
+            return;
+        }
+
         navigate('/');
     }, [navigate]);
+
     return (
-        <ShowPost post={post} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setDeleted={setDeleted} />
+        <>
+        {loadState == 'LOADED' && post &&
+            <ShowPost post={post} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setDeleted={setDeleted} setParentCommentId={setParentCommentId} />
+        }
+        </>
     );
 }
 

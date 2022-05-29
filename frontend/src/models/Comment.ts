@@ -7,7 +7,7 @@ interface Comment {
     time: Date;
     commenter: User;
     postId: number,
-    parentCommentId: number,
+    parentCommentId?: number,
     // Has the current user already liked this comment
     haveLiked: boolean;
 }

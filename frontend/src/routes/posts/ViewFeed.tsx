@@ -2,9 +2,9 @@
  * @author Aleksa Marković
  */
 import React, {useCallback, useContext} from 'react';
-import {Link, Navigate} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 
-import {feed, follow, getSuggestions, posts as getPosts} from '../../api'
+import {follow, getSuggestions, toggleCommentLike, posts as getPosts, createComment, togglePostLike} from '../../api'
 
 import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
@@ -14,7 +14,6 @@ import FollowSuggestions from "../accounts/FollowSuggestions";
 import {Comment, Post, User} from '../../models';
 
 import './ViewFeed.css';
-import { apiCall } from '../../api/base';
 
 
 type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'SUGGESTIONS';
@@ -87,56 +86,52 @@ const ViewFeed: React.FC = () => {
         }
     }, [posts, setPosts]);
 
-    const addComment = useCallback((post: Post, commentText: string) => {
+    const addComment = useCallback(async(post: Post, commentText: string) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;
         }
 
-        const commmentJSON: any = {
-            text: commentText,
-            time: new Date()
-        }
-        if (parentCommentId != -1 && commentText.startsWith('@')) {
-            commmentJSON['parentCommentId'] = parentCommentId;
+        const response = (parentCommentId != -1 && commentText.startsWith('@')) ?
+            await createComment(post.id, commentText, parentCommentId) :
+            await createComment(post.id, commentText);
+        if (!response.success) {
+            return;
         }
 
-        apiCall(`comments/${post.id}`, {
-            method: 'POST',
-            json: { comment: commmentJSON }
-        }).then(({comment}) => {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            newPosts[postToUpdateIndex] = {
-                ...postToUpdate,
-                comments: [
-                    ...postToUpdate.comments,
-                    comment
-                ]
-            };
-            setPosts(newPosts);
-        });
+        const newPosts = [...posts];
+        const postToUpdateIndex = posts.indexOf(postToUpdate);
+        newPosts[postToUpdateIndex] = {
+            ...postToUpdate,
+            comments: [
+                ...postToUpdate.comments,
+                response.comment
+            ]
+        };
+        setPosts(newPosts);
     }, [posts, setPosts, parentCommentId, setParentCommentId]);
 
-    const setLiked = useCallback((post: Post) => {
+    const setLiked = useCallback(async(post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;
         }
-        apiCall(`posts/${post.id}/likes`, {
-            method: 'POST'
-        }).then(data => {
-            const newPosts = [...posts];
-            const postToUpdateIndex = posts.indexOf(postToUpdate);
-            newPosts[postToUpdateIndex] = {
-                ...postToUpdate,
-                haveLiked: !data.haveLiked
-            };
-            setPosts(newPosts);
-        });
+
+        const response = await togglePostLike(post.id);
+        if (!response.success) {
+            return;
+        }
+
+        const newPosts = [...posts];
+        const postToUpdateIndex = posts.indexOf(postToUpdate);
+        newPosts[postToUpdateIndex] = {
+            ...postToUpdate,
+            haveLiked: response.haveLiked
+        };
+        setPosts(newPosts);
     }, [posts, setPosts]);
 
-    const setCommentLiked = useCallback((post: Post, comment: Comment) => {
+    const setCommentLiked = useCallback(async(post: Post, comment: Comment) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;
@@ -149,21 +144,22 @@ const ViewFeed: React.FC = () => {
             return;
         }
 
-        apiCall(`comments/${comment.id}/likes`, {
-            method: 'POST'
-        }).then(data => {
-            const commentToUpdateIndex = postToUpdate.comments.indexOf(commentToUpdate);
-            const newComments = [...postToUpdate.comments];
-            newComments[commentToUpdateIndex] = {
-                ...commentToUpdate,
-                haveLiked: !data.haveLiked
-            };
-            newPosts[postToUpdateIndex] = {
-                ...postToUpdate,
-                comments: newComments
-            };
-            setPosts(newPosts);
-        })
+        const response = await toggleCommentLike(comment.id);
+        if (!response.success) {
+            return;
+        }
+
+        const commentToUpdateIndex = postToUpdate.comments.indexOf(commentToUpdate);
+        const newComments = [...postToUpdate.comments];
+        newComments[commentToUpdateIndex] = {
+            ...commentToUpdate,
+            haveLiked: response.haveLiked
+        };
+        newPosts[postToUpdateIndex] = {
+            ...postToUpdate,
+            comments: newComments
+        };
+        setPosts(newPosts);
     }, [posts, setPosts]);
 
     return (
