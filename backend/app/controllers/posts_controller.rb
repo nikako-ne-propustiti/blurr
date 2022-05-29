@@ -1,5 +1,45 @@
 class PostsController < ApplicationController
   before_action :check_logged_in, except: :posts
+
+  def get
+    post = Post.find(params.require(:postId))
+    render json: {
+      post: post.get_json(current_user),
+      success: true
+    }
+  end
+
+  def delete
+    post = Post.find(params.require(:postId))
+    if post.user_id == current_user.id
+      post.destroy
+      render json: {
+        success: true,
+      }
+    else
+      render json: {
+        success: false,
+      }, status: 403
+    end
+  end
+
+  def toggleLike
+    postLike = PostLike.find_by(user_id: current_user.id, post_id: params.require(:postId))
+    if postLike
+      postLike.destroy
+      render json: {
+        success: true,
+        haveLiked: false
+      }
+    else
+      PostLike.create(user_id: current_user.id, post_id: params.require(:postId))
+      render json: {
+        success: true,
+        haveLiked: true
+      }
+    end
+  end
+
   ##
   # GET /api/posts/
   # Query:
@@ -57,10 +97,6 @@ class PostsController < ApplicationController
     }
   end
 
-  ##
-  # POST /api/p/new
-  #
-  # Creates a new post
   def new
     image = params.require(:image)
     password = params.require(:password)
@@ -104,3 +140,4 @@ class PostsController < ApplicationController
     }
   end
 end
+

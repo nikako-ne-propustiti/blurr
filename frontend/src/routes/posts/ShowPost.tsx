@@ -15,22 +15,25 @@ interface Props {
     setDeleted?: (post: Post) => void;
     setFollowing?: (post: Post) => void;
     setLiked?: (post: Post) => void;
+    setParentCommentId?: (id: number) => void;
 }
 
 const imageDoubleClick = () => {
     console.log('Double click');
 };
 
-const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked}) => {
+const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
     const commentInputRef = useRef<HTMLInputElement>(null);
     const {state} = useContext(Context);
     const navigate = useNavigate();
     const [commentInput, setCommentInput] = useState('');
     const showComments = addComment && setCommentLiked;
+
     const loginFirst = useCallback(() => {
         const currentUrl = `/p/${post.id}`;
         navigate(`/accounts/login?returnTo=${encodeURIComponent(currentUrl)}`);
     }, [post, navigate]);
+
     const onFollow = useCallback(() => {
         if (state.loggedIn) {
             if (setFollowing) {
@@ -40,6 +43,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
             loginFirst();
         }
     }, [post, setFollowing, state, loginFirst]);
+
     const onComment = useCallback((e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (state.loggedIn) {
@@ -51,14 +55,19 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
             loginFirst();
         }
     }, [post, addComment, commentInput, setCommentInput, state, loginFirst]);
-    const onReply = useCallback((user: string) => {
+
+    const onReply = useCallback((user: string, id: number) => {
         if (state.loggedIn) {
             setCommentInput(`@${user} `);
+            if (setParentCommentId) {
+                setParentCommentId(id);
+            }
             commentInputRef.current?.focus();
         } else {
             loginFirst();
         }
     }, [setCommentInput, commentInputRef, setCommentInput, state, loginFirst]);
+
     const onLike = useCallback(() => {
         if (state.loggedIn) {
             if (setLiked) {
@@ -68,6 +77,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
             loginFirst();
         }
     }, [post, setLiked, state, loginFirst]);
+
     const onCommentLike = useCallback((comment: Comment) => {
         if (state.loggedIn) {
             if (setCommentLiked) {
@@ -77,14 +87,17 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
             loginFirst();
         }
     }, [post, setCommentLiked, state, loginFirst]);
+
     const onDelete = useCallback(() => {
         if (setDeleted) {
             setDeleted(post);
         }
     }, [post, setDeleted]);
+
     const inputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setCommentInput(e.target.value);
     }, [setCommentInput]);
+
     return (
         <article className="wrapper">
             <img onDoubleClick={imageDoubleClick} src={post.photoURL} />
