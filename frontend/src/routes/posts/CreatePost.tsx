@@ -42,6 +42,9 @@ const CreatePost: React.FC = () => {
 
         if (response.success) {
             setPostId(response.url);
+        } else {
+            setSubmissionState('error');
+            setIndicatorText(response.error);
         }
     }, []);
     return <form action="/p/new" method="POST" className="create-post" onSubmit={onCreatePostSubmit} encType="multipart/form-data" ref={formRef}>
