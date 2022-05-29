@@ -17,7 +17,8 @@ const App: React.FC = () => {
             if (response.success) {
                 dispatch({
                     type: 'log-in',
-                    username: response.user
+                    username: response.user,
+                    isAdmin: response.isAdmin
                 });
                 setSubmissionState('not-submitted');
             } else {

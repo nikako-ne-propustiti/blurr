@@ -1,13 +1,15 @@
 import React from 'react';
 
 interface State {
-    loggedIn: boolean
-    currentUser?: string
+    loggedIn: boolean;
+    currentUser?: string;
+    isAdmin: boolean;
 }
 
 export interface Action {
-    type: 'log-in' | 'log-out',
-    username?: string
+    type: 'log-in' | 'log-out';
+    username?: string;
+    isAdmin?: boolean;
 }
 
 type ContextReducer = (state: State, action: Action) => State;
@@ -18,19 +20,22 @@ const reducer: ContextReducer = (state, action) => {
             return {
                 ...state,
                 loggedIn: Boolean(action.username),
-                currentUser: action.username
+                currentUser: action.username,
+                isAdmin: Boolean(action.isAdmin)
             };
         case 'log-out':
             return {
                 ...state,
                 loggedIn: false,
-                currentUser: ''
+                currentUser: '',
+                isAdmin: false
             };
     }
 };
 
 const initialState: State = {
-    loggedIn: false
+    loggedIn: false,
+    isAdmin: false
 };
 
 export const Context = React.createContext({
