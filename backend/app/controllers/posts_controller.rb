@@ -90,7 +90,6 @@ class PostsController < ApplicationController
   # Returns up to 10 suggestions for accounts to follow
   # Sorted descending by follower count
   def suggestions
-
     accounts = User.find_by_sql("select * from users join (
       select users.id from
       users join follows on follows.follower_id = users.id

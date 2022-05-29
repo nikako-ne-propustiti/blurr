@@ -1,4 +1,4 @@
-const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3001';
+export const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3001';
 
 interface ApiCallArgs {
     json?: any,

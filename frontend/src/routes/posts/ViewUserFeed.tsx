@@ -4,7 +4,7 @@
 import React from 'react';
 import {useParams, Link} from 'react-router-dom';
 
-import {follow, accountInfo, posts as getPosts} from '../../api/';
+import {follow, accountInfo, posts as getPosts, profilePhoto} from '../../api/';
 
 import {Post, User} from '../../models/';
 
@@ -40,8 +40,27 @@ const ViewUserFeed: React.FC = () => {
         }
     }, [userInfo?.amFollowing]);
 
-    const uploadProfilePhoto = React.useCallback((file?: File | null) => {
+    const uploadProfilePhoto = React.useCallback(async(file?: File | null) => {
         if (!file) return;
+
+        if (!file.type.includes('image/jpeg')) {
+            alert("File must be JPEG.");
+            return;
+        }
+
+        if (file.size > 2048 * 1024) {
+            alert("Maximum 2 MB for profile photo.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await profilePhoto(formData);
+        if (!response.success)
+            alert(response.error);
+        else {
+            window.location.reload();
+        }
     }, [userInfo]);
 
     // Infinite scrolling callback
@@ -91,7 +110,8 @@ const ViewUserFeed: React.FC = () => {
     return <>
         <section className="userfeed-profile-info">
             <InfiniteScroll callback={handleInfiniteScroll}/>
-            {userInfo && <ProfilePhoto profilePhotoURL={userInfo.profilePhotoURL} callback={uploadProfilePhoto}
+            {userInfo && <ProfilePhoto profilePhotoURL={userInfo.profilePhotoURL}
+                                       callback={context.currentUser === username ? uploadProfilePhoto : undefined}
                                        tooltip={username}/>}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}

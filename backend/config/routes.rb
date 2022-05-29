@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get '/api/review', to: 'review#get'
   post '/api/review/:postId', to: 'review#submit'
   post '/api/p/new', to: 'posts#new'
+<<<<<<< HEAD
   get '/api/posts/:postId', to: 'posts#get'
   post '/api/posts', to: 'posts#submit'
   delete '/api/posts/:postId', to: 'posts#delete'
@@ -16,4 +17,7 @@ Rails.application.routes.draw do
   post '/api/comments/:commentId/likes', to: 'comments#toggleLike'
   post '/api/comments/:postId', to: 'comments#submit'
   post '/api/comments/:postId/:commentId', to: 'comments#reply'
+=======
+  post '/api/users/pfp', to: 'users#pfp'
+>>>>>>> master
 end

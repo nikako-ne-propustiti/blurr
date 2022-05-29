@@ -49,4 +49,46 @@ class UsersController < ApplicationController
       }
     end
   end
+
+  ##
+  # POST /api/users/pfp
+  #
+  # Sets a new profile photo for the user.
+  # Profile photos must meet the following criteria:
+  # JPEG format
+  # max resolution 512x512
+  # min resolution 150x150
+  # max size 2 MB
+  def pfp
+    user = User.find session[:user_id]
+    image = params.require(:image)
+
+    uuid = SecureRandom.uuid
+    user.profile_photo_uuid = uuid
+
+    File.binwrite("public/images/pfp/#{uuid}.jpg", image.read)
+    image = MiniMagick::Image.open("public/images/pfp/#{uuid}.jpg")
+    if image.type != 'JPEG'
+      File.delete "public/images/pfp/#{uuid}.jpg"
+      render json: { success: false, error: 'Image must be in JPEG format.' }, status: 400
+      return
+    elsif image.size > 2048 * 1000
+      File.delete "public/images/pfp/#{uuid}.jpg"
+      render json: { success: false, error: 'Image larger than 2 MB.' }, status: 400
+      return
+    elsif image.width > 512 || image.width < 150 || image.height > 512 || image.width < 150
+      File.delete "public/images/pfp/#{uuid}.jpg"
+      render json: { success: false, error: 'Image too big or too small.' }, status: 400
+      return
+    elsif not user.valid?
+      File.delete "public/images/pfp/#{uuid}.jpg"
+      render json: { success: false, error: 'User error.' }, status: 400
+      return
+    end
+
+    user.save
+    render json: {
+      success: true,
+    }
+  end
 end
