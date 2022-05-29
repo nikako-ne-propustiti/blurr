@@ -8,7 +8,7 @@ import {follow, accountInfo, posts as getPosts, profilePhoto} from '../../api/';
 
 import {Post, User} from '../../models/';
 
-import {ProfilePhoto} from '../accounts';
+import ProfilePhoto from '../../shared/ProfilePhoto';
 import PostGrid from './PostGrid';
 import {Context} from '../../shared/Context';
 import Button from '../../shared/Button';

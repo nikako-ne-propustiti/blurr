@@ -1,6 +1,5 @@
-import EditAccount from "./EditAccount";
-import Login from "./Login";
-import RegisterAccount from "./RegisterAccount";
-import ProfilePhoto from "./ProfilePhoto";
+import EditAccount from './EditAccount';
+import Login from './Login';
+import RegisterAccount from './RegisterAccount';
 
-export {EditAccount, Login, RegisterAccount, ProfilePhoto};
+export {EditAccount, Login, RegisterAccount};

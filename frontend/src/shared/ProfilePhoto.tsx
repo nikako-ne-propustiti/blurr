@@ -1,7 +1,7 @@
 import React from 'react';
+import {BACKEND_API_URL} from '../api';
 
 import './ProfilePhoto.css';
-import {BACKEND_API_URL} from "../../api";
 
 interface Props {
     profilePhotoURL: string,
