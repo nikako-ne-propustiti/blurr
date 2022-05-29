@@ -41,7 +41,7 @@ const ViewUserFeed: React.FC = () => {
     }, [userInfo?.amFollowing]);
 
     const uploadProfilePhoto = React.useCallback(async(file?: File | null) => {
-        if (!file) return;
+        if (!file || !userInfo) return;
 
         if (!file.type.includes('image/jpeg')) {
             alert("File must be JPEG.");
@@ -56,10 +56,13 @@ const ViewUserFeed: React.FC = () => {
         const formData = new FormData();
         formData.append('image', file);
         const response = await profilePhoto(formData);
-        if (!response.success)
+        if (response.success) {
+            setUserInfo({
+                ...userInfo,
+                profilePhotoURL: response.url
+            });
+        } else {
             alert(response.error);
-        else {
-            window.location.reload();
         }
     }, [userInfo]);
 
@@ -105,7 +108,7 @@ const ViewUserFeed: React.FC = () => {
             setLoadState('LOADED');
         })(username || '');
 
-    }, [username]);
+    }, [username, userInfo?.profilePhotoURL]);
 
     return <>
         <section className="userfeed-profile-info">

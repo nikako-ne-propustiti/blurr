@@ -17,9 +17,11 @@ const ProfilePhoto: React.FC<Props> = ({profilePhotoURL, callback, tooltip}) => 
     const fileInput = React.useRef<HTMLInputElement>(null);
 
     const uploadFile = React.useCallback(() => {
-        if (!fileInput.current) return;
-        if (callback)
-            callback(fileInput.current.files?.item(0));
+        if (!fileInput.current || !callback) {
+            return;
+        }
+        callback(fileInput.current.files?.item(0));
+        fileInput.current.value = '';
     }, [fileInput]);
 
     const openFileDialog = React.useCallback(() => {

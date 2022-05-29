@@ -92,6 +92,7 @@ class UsersController < ApplicationController
     user.save
     render json: {
       success: true,
+      url: "/images/pfp/#{uuid}.jpg"
     }
   end
 end
