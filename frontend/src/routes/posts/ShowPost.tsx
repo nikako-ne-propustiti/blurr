@@ -30,7 +30,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
     const showComments = addComment && setCommentLiked;
 
     const loginFirst = useCallback(() => {
-        const currentUrl = `/p/${post.id}`;
+        const currentUrl = `/p/${post.url}`;
         navigate(`/accounts/login?returnTo=${encodeURIComponent(currentUrl)}`);
     }, [post, navigate]);
 

@@ -3,6 +3,7 @@ import User from './User';
 
 interface Post {
     id: string;
+    url: string;
     photoURL: string;
     description: string;
     likes: number;

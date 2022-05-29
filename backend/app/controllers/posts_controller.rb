@@ -2,7 +2,7 @@ class PostsController < ApplicationController
   before_action :check_logged_in, except: :posts
 
   def get
-    post = Post.find(params.require(:postId))
+    post = Post.find_by(post_url: params.require(:postId))
     render json: {
       post: post.get_json(current_user),
       success: true

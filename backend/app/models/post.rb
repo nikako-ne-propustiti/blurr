@@ -4,6 +4,7 @@ class Post < ApplicationRecord
   def get_json(user)
     return {
       id: id,
+      url: post_url,
       # TODO: Add photo fetching endpoint
       photoURL: 'https://picsum.photos/512/512?nocache=',
       description: description,
