@@ -103,10 +103,6 @@ class PostsController < ApplicationController
     }
   end
 
-  ##
-  # POST /api/p/new
-  #
-  # Creates a new post
   def new
     image = params.require(:image)
     password = params.require(:password)

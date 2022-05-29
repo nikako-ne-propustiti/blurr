@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_action :check_logged_in
 
-  def submit
+  def new
     comment = params.require(:comment)
     post_id = params.require(:postId)
 
