@@ -44,6 +44,7 @@ class PostsController < ApplicationController
         haveLiked: true
       }
     end
+  end
 
   ##
   # GET /api/posts/
@@ -150,3 +151,4 @@ class PostsController < ApplicationController
     }
   end
 end
+
