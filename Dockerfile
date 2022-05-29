@@ -1,18 +1,7 @@
-# Build frontend
-FROM node:14-alpine AS frontend
-ARG API_URL
-ENV BACKEND_API_URL=$API_URL
-RUN mkdir -p /myapp/frontend
-WORKDIR /myapp/frontend
-COPY frontend /myapp/frontend
-RUN yarn && yarn build
-
-# Build backend
 FROM ruby:3.0.0 AS backend
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs imagemagick libmagic-dev libmagickwand-dev
 RUN mkdir -p /myapp/backend
 WORKDIR /myapp/backend
-COPY --from=frontend /myapp/frontend/dist /myapp/backend/public
 COPY backend/Gemfile /myapp/backend/Gemfile
 COPY backend/Gemfile.lock /myapp/backend/Gemfile.lock
 RUN bundle install
