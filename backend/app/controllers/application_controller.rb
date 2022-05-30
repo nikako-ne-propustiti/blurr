@@ -5,20 +5,20 @@ class ApplicationController < ActionController::API
   # Catches situations when inserting a resource which already exists.
   # These are usually caused by invalid user input.
   rescue_from ActiveRecord::RecordNotUnique do |exception|
-    render json: {success: false, error: 'Already exists.'}
+    render json: {success: false, error: 'Already exists.'}, status: 400
   end
 
   # Catches situations when a required parameter field is missing.
   # These are usually caused by invalid API calls.
   rescue_from ActionController::ParameterMissing do |exception|
-    render json: {success: false, error: 'Missing required fields.'}
+    render json: {success: false, error: 'Missing required fields.'}, status: 400
   end
 
   # Catches situations when a requested resource does not exist in the
   # database.
   # These are usually caused by invalid user input.
   rescue_from ActiveRecord::RecordNotFound do |exception|
-    render json: {success: false, error: 'Requested resource does not exist.'}
+    render json: {success: false, error: 'Requested resource does not exist.'}, status: 404
   end
 
   private
