@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get     '/api/users/:username',           to: 'users#info'
   patch   '/api/users',                     to: 'users#edit'
   post    '/api/users/pfp',                 to: 'users#pfp'
+  get     '/api/users',                     to: 'users#search'
   # Posts API
   get     '/api/posts/suggestions',         to: 'posts#suggestions'
   get     '/api/posts',                     to: 'posts#posts'
