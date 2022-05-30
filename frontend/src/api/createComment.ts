@@ -5,7 +5,7 @@ type CommentApiResponse =
     {success: false, error: string} |
     {success: true, comment: Comment};
 
-const createComment = (postId: string, text: string, parentCommentId?: number):
+const createComment = (postId: number, text: string, parentCommentId?: number):
     Promise<CommentApiResponse> => {
     return apiCall(`/comments/${postId}`, {
         method: 'POST',

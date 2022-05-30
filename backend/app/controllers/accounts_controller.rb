@@ -6,7 +6,7 @@ class AccountsController < ApplicationController
       return
     end
     session[:user_id] = user.id
-    render json: { success: true }
+    render json: { success: true, isAdmin: user.is_admin }
   end
 
   def logout
@@ -25,6 +25,21 @@ class AccountsController < ApplicationController
       return
     end
     user.save
+    session[:user_id] = user.id
     render json: { success: true }
+  end
+
+  def info
+    if current_user.nil?
+      render json: {
+        success: true
+      }
+    else
+      render json: {
+        success: true,
+        user: current_user.username,
+        isAdmin: current_user.is_admin
+      }
+    end
   end
 end

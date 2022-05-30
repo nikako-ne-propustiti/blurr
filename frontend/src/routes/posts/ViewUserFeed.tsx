@@ -4,11 +4,11 @@
 import React from 'react';
 import {useParams, Link} from 'react-router-dom';
 
-import {follow, accountInfo, posts as getPosts, profilePhoto} from '../../api/';
+import {follow, accountInfo, posts as getPosts} from '../../api/';
 
 import {Post, User} from '../../models/';
 
-import {ProfilePhoto} from '../accounts';
+import ProfilePhoto from '../../shared/ProfilePhoto';
 import PostGrid from './PostGrid';
 import {Context} from '../../shared/Context';
 import Button from '../../shared/Button';
@@ -35,33 +35,16 @@ const ViewUserFeed: React.FC = () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
             const result = await follow(username || '');
             if (result.success) {
-                setUserInfo({...userInfo, amFollowing: result.following});
+                setUserInfo({
+                    ...userInfo,
+                    amFollowing: result.following,
+                    numberOfFollowers: result.following ?
+                        userInfo.numberOfFollowers + 1 :
+                        userInfo.numberOfFollowers - 1
+                });
             }
         }
     }, [userInfo?.amFollowing]);
-
-    const uploadProfilePhoto = React.useCallback(async(file?: File | null) => {
-        if (!file) return;
-
-        if (!file.type.includes('image/jpeg')) {
-            alert("File must be JPEG.");
-            return;
-        }
-
-        if (file.size > 2048 * 1024) {
-            alert("Maximum 2 MB for profile photo.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('image', file);
-        const response = await profilePhoto(formData);
-        if (!response.success)
-            alert(response.error);
-        else {
-            window.location.reload();
-        }
-    }, [userInfo]);
 
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(async () => {
@@ -105,14 +88,12 @@ const ViewUserFeed: React.FC = () => {
             setLoadState('LOADED');
         })(username || '');
 
-    }, [username]);
+    }, [username, userInfo?.profilePhotoURL]);
 
     return <>
         <section className="userfeed-profile-info">
             <InfiniteScroll callback={handleInfiniteScroll}/>
-            {userInfo && <ProfilePhoto profilePhotoURL={userInfo.profilePhotoURL}
-                                       callback={context.currentUser === username ? uploadProfilePhoto : undefined}
-                                       tooltip={username}/>}
+            {userInfo && <ProfilePhoto userInfo={userInfo} setUserInfo={setUserInfo} />}
             <div className="userfeed-info">
                 {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
                 {loadState === 'NOUSER' && <p>The requested user does not exist.</p>}

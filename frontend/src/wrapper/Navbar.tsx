@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
         <Link to="/" title="Home"><Icon name="home" /></Link>
         {state.loggedIn && <Link to="/p/new" title="Create"><Icon name="add" /></Link>}
         {state.loggedIn && <Link to="" onClick={handleLogout} title="Logout"><Icon name="logout" /></Link>}
-        {state.currentUser === 'admin' && <Link to="/p/review" title="Review"><Icon name="remove_red_eye" /></Link>}
+        {state.isAdmin && <Link to="/p/review" title="Review"><Icon name="remove_red_eye" /></Link>}
     </nav>;
 }
 

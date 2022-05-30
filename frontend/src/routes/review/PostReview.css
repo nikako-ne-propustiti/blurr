@@ -33,6 +33,10 @@
     margin: 0;
 }
 
+.review-feed-post .wrapper > img {
+    width: 100%;
+}
+
 .review-feed-post .panel {
     order: -1;
 }

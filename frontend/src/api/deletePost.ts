@@ -4,7 +4,7 @@ type DeletePostApiResponse =
     {success: false, error: string} |
     {success: true};
 
-const deletePost = (postId: string): Promise<DeletePostApiResponse> => {
+const deletePost = (postId: number): Promise<DeletePostApiResponse> => {
     return apiCall(`posts/${postId}`, {
         method: 'DELETE',
     });

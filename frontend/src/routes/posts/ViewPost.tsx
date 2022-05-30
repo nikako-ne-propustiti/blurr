@@ -4,16 +4,13 @@
 import React, {useCallback, useContext, useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ShowPost } from '.';
-import { createComment, deletePost, getPost, toggleCommentLike, togglePostLike } from '../../api';
-
+import { createComment, deletePost, getPost, toggleCommentLike, togglePostLike, follow } from '../../api';
 import { Comment, Post } from '../../models';
-import { Context } from '../../shared/Context';
 
 type LoadState = 'INIT' | 'LOADED' | 'ERROR';
 
 const ViewPost: React.FC = () => {
     const postId = useParams().postId || '';
-    const {state} = useContext(Context);
     const navigate = useNavigate();
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [parentCommentId, setParentCommentId] = React.useState<number>(-1);
@@ -33,14 +30,17 @@ const ViewPost: React.FC = () => {
         })();
     }, [postId]);
 
-    const setFollowing = useCallback((post: Post) => {
-        setPost({
-            ...post,
-            poster: {
-                ...post.poster,
-                amFollowing: !post.poster.amFollowing
-            }
-        });
+    const setFollowing = useCallback(async (post: Post) => {
+        const result = await follow(post.poster.username);
+        if (result.success) {
+            setPost({
+                ...post,
+                poster: {
+                    ...post.poster,
+                    amFollowing: !post.poster.amFollowing
+                }
+            });
+        }
     }, [post, setPost]);
 
     const addComment = useCallback(async(post: Post, commentText: string) => {
@@ -68,7 +68,10 @@ const ViewPost: React.FC = () => {
 
         setPost({
             ...post,
-            haveLiked: response.haveLiked
+            haveLiked: response.haveLiked,
+            likes: response.haveLiked ?
+                post.likes + 1 :
+                post.likes - 1
         });
     }, [post, setPost]);
 
@@ -109,6 +112,7 @@ const ViewPost: React.FC = () => {
         {loadState == 'LOADED' && post &&
             <ShowPost post={post} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setDeleted={setDeleted} setParentCommentId={setParentCommentId} />
         }
+        {loadState == 'ERROR' && <p>Requested post does not exist.</p>}
         </>
     );
 }

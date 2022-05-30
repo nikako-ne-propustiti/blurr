@@ -49,3 +49,12 @@
 .create-post-blur-level {
     width: 75%;
 }
+
+@media screen and (max-width: 1000px) {
+    .create-post {
+        display: block;
+    }
+    .create-post fieldset {
+        width: 100%;
+    }
+}

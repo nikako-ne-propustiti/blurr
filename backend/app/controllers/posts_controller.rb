@@ -1,8 +1,8 @@
 class PostsController < ApplicationController
-  before_action :check_logged_in, except: :posts
+  before_action :check_logged_in, except: [:get, :posts]
 
   def get
-    post = Post.find(params.require(:postId))
+    post = Post.find_by(post_url: params.require(:postId))
     render json: {
       post: post.get_json(current_user),
       success: true
@@ -84,12 +84,16 @@ class PostsController < ApplicationController
   # Returns up to 10 suggestions for accounts to follow
   # Sorted descending by follower count
   def suggestions
-    accounts = User.find_by_sql("select * from users join (
-      select users.id from
-      users join follows on follows.follower_id = users.id
-      group by follower_id, users.id
-      order by count(*) desc) f on f.id = users.id
-      limit 10;")
+    accounts = User.find_by_sql(["
+      SELECT *
+      FROM users JOIN (
+        SELECT users.id
+        FROM users JOIN follows ON follows.followee_id = users.id
+        GROUP BY followee_id, users.id
+        ORDER BY COUNT(*) DESC)
+       f ON f.id = users.id
+       WHERE users.id != ?
+       LIMIT 10", current_user.id])
 
     render json: {
       success: true,

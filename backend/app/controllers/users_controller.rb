@@ -63,8 +63,8 @@ class UsersController < ApplicationController
     user = User.find session[:user_id]
     image = params.require(:image)
 
-    uuid = SecureRandom.uuid
-    user.profile_photo_uuid = uuid
+    old_uuid = user.profile_photo_uuid
+    uuid =  SecureRandom.uuid
 
     File.binwrite("public/images/pfp/#{uuid}.jpg", image.read)
     image = MiniMagick::Image.open("public/images/pfp/#{uuid}.jpg")
@@ -85,10 +85,20 @@ class UsersController < ApplicationController
       render json: { success: false, error: 'User error.' }, status: 400
       return
     end
-
+    unless old_uuid.nil?
+      File.delete"public/images/pfp/#{old_uuid}.jpg"
+    end
+    user.profile_photo_uuid = uuid
     user.save
     render json: {
       success: true,
+      url: "/images/pfp/#{uuid}.jpg"
     }
+  end
+
+  def edit
+    current_user.real_name = params.require(:realName)
+    current_user.save
+    render json: {success: true}
   end
 end
