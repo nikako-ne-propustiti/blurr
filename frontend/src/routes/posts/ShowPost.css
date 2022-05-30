@@ -124,10 +124,10 @@ ul {
 
 
 @media screen and (max-width: 1000px) {
-    .wrapper {
+    .post {
         display: block;
     }
-    .wrapper > img {
+    .post > img {
         width: 100%;
     }
     .comments ul {
