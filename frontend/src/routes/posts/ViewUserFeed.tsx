@@ -16,6 +16,7 @@ import InfiniteScroll from '../../shared/InfiniteScroll';
 
 import './ViewUserFeed.css';
 import '../../shared/Button.css'
+import SubmissionIndicator, {SubmissionState} from "../../shared/SubmissionIndicator";
 
 const pluralHelper = (word: string, count?: number) =>
     <><b>{count}</b> {`${word}${(count !== 1) ? 's' : ''}`}</>;
@@ -29,6 +30,7 @@ const ViewUserFeed: React.FC = () => {
     const [userInfo, setUserInfo] = React.useState<User>();
     const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
     const [posts, setPosts] = React.useState<Post[]>([]);
+    const [loaderState, setLoaderState] = React.useState<SubmissionState>("not-submitted");
 
     const handleFollow = React.useCallback(async () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
@@ -50,6 +52,7 @@ const ViewUserFeed: React.FC = () => {
         if (loadState !== 'LOADED') {
             return;
         }
+        setLoaderState('submitting');
         const response = await getPosts(lastPostIndex, username || '');
         if (!response.success) {
             setLoadState('ERROR');
@@ -57,10 +60,12 @@ const ViewUserFeed: React.FC = () => {
             setPosts(posts.concat(response.posts));
             setLastPostIndex(lastPostIndex + response.posts.length);
         }
+        setLoaderState('not-submitted');
     }, [loadState, setLoadState, posts, setPosts, lastPostIndex, setLastPostIndex]);
 
     React.useEffect(() => {
         setLoadState('INIT');
+        setLoaderState('submitting');
         (async (username: string) => {
             const response = await accountInfo(username);
             if (!response.success) {
@@ -82,6 +87,7 @@ const ViewUserFeed: React.FC = () => {
             setPosts(postsResponse.posts);
             setLastPostIndex(postsResponse.posts.length);
             setLoadState('LOADED');
+            setLoaderState('not-submitted');
         })(username || '');
 
     }, [username, setUserInfo, setLoadState, setPosts, setLastPostIndex]);
@@ -112,6 +118,7 @@ const ViewUserFeed: React.FC = () => {
         </section>
         <hr/>
         {posts && <PostGrid posts={posts}/>}
+        <SubmissionIndicator submissionState={loaderState}/>
     </>;
 }
 

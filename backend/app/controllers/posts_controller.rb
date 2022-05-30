@@ -109,13 +109,17 @@ class PostsController < ApplicationController
     accounts = User.find_by_sql(["
       SELECT *
       FROM users JOIN (
-        SELECT users.id
-        FROM users JOIN follows ON follows.followee_id = users.id
+        SELECT users.id, count(followee_id)
+        FROM users LEFT JOIN follows ON follows.followee_id = users.id
         GROUP BY followee_id, users.id
-        ORDER BY COUNT(*) DESC)
+        ORDER BY COUNT(followee_id) DESC)
        f ON f.id = users.id
        WHERE users.id != ?
-       LIMIT 10", current_user.id])
+       AND users.id NOT IN (
+        SELECT followee_id
+        FROM follows
+        WHERE follower_id = ?)
+       LIMIT 10", current_user.id, current_user.id])
 
     render json: {
       success: true,

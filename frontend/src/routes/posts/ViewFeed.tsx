@@ -8,11 +8,12 @@ import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
 import FollowSuggestions from '../accounts/FollowSuggestions';
+import SubmissionIndicator, {SubmissionState} from "../../shared/SubmissionIndicator";
+
 import {Comment, Post, User} from '../../models';
 
 import './ViewFeed.css';
-
-type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'SUGGESTIONS';
+type LoadState = 'INIT' | 'LOADED' | 'ERROR';
 
 const ViewFeed: FC = () => {
     const {state: context} = useContext(Context);
@@ -21,9 +22,11 @@ const ViewFeed: FC = () => {
     const [parentCommentId, setParentCommentId] = useState<number>(-1);
     const [lastPostIndex, setLastPostIndex] = useState<number>(0);
     const [suggestions, setSuggestions] = useState<User[]>([]);
+    const [loaderState, setLoaderState] = useState<SubmissionState>("not-submitted");
 
     useEffect(() => {
         setLoadState('INIT');
+        setLoaderState('submitting');
         (async () => {
             const feedResponse = await getPosts(0, '');
             if (!feedResponse.success) {
@@ -31,18 +34,18 @@ const ViewFeed: FC = () => {
                 return;
             }
             if (feedResponse.posts.length > 0) {
-                setLoadState('LOADED');
                 setPosts(feedResponse.posts);
                 setLastPostIndex(feedResponse.posts.length);
-            } else {
-                const response = await getSuggestions();
-                if (!response.success) {
-                    setLoadState('ERROR');
-                    return;
-                }
-                setLoadState('SUGGESTIONS');
-                setSuggestions(response.suggestions);
             }
+
+            const response = await getSuggestions();
+            if (!response.success) {
+                setLoadState('ERROR');
+                return;
+            }
+            setSuggestions(response.suggestions);
+            setLoadState('LOADED');
+            setLoaderState('not-submitted');
         })();
     }, [setLoadState, setPosts, setLastPostIndex, setSuggestions]);
 
@@ -51,6 +54,7 @@ const ViewFeed: FC = () => {
         if (loadState !== 'LOADED') {
             return;
         }
+        setLoaderState('submitting');
         const response = await getPosts(lastPostIndex, '');
         if (!response.success) {
             setLoadState('ERROR');
@@ -58,6 +62,7 @@ const ViewFeed: FC = () => {
             setPosts(posts.concat(response.posts));
             setLastPostIndex(lastPostIndex + response.posts.length);
         }
+        setLoaderState('not-submitted');
     }, [posts, setPosts, loadState, setLoadState, lastPostIndex, setLastPostIndex]);
 
     const setFollowing = useCallback(async(post: Post) => {
@@ -169,13 +174,7 @@ const ViewFeed: FC = () => {
         <>
             {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
             {context.loggedIn || <Navigate to="/accounts/login"/>}
-            {loadState == 'SUGGESTIONS' &&
-                <>
-                    <h1>People you might like</h1>
-                    {<FollowSuggestions users={suggestions}/>}
-                </>
-            }
-            {loadState == 'LOADED' &&
+            {loadState === 'LOADED' &&
                 <>
                     <InfiniteScroll callback={handleInfiniteScroll}/>
                     <section className="feed-list">
@@ -184,6 +183,13 @@ const ViewFeed: FC = () => {
                         )}
                     </section>
                 </>}
+            {loadState === 'LOADED' && posts.length < 5 &&
+                <>
+                    <h1>People you might know</h1>
+                    {<FollowSuggestions users={suggestions}/>}
+                </>
+            }
+            <SubmissionIndicator submissionState={loaderState}/>
         </>
     );
 }
