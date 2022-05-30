@@ -11,8 +11,11 @@ import FollowSuggestions from '../accounts/FollowSuggestions';
 import {Comment, Post, User} from '../../models';
 
 import './ViewFeed.css';
+import {Simulate} from "react-dom/test-utils";
+import load = Simulate.load;
+import SubmissionIndicator from "../../shared/SubmissionIndicator";
 
-type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'SUGGESTIONS';
+type LoadState = 'INIT' | 'LOADED' | 'ERROR';
 
 const ViewFeed: FC = () => {
     const {state: context} = useContext(Context);
@@ -34,15 +37,15 @@ const ViewFeed: FC = () => {
                 setLoadState('LOADED');
                 setPosts(feedResponse.posts);
                 setLastPostIndex(feedResponse.posts.length);
-            } else {
-                const response = await getSuggestions();
-                if (!response.success) {
-                    setLoadState('ERROR');
-                    return;
-                }
-                setLoadState('SUGGESTIONS');
-                setSuggestions(response.suggestions);
             }
+
+            const response = await getSuggestions();
+            if (!response.success) {
+                setLoadState('ERROR');
+                return;
+            }
+            setSuggestions(response.suggestions);
+
         })();
     }, [setLoadState, setPosts, setLastPostIndex, setSuggestions]);
 
@@ -169,13 +172,7 @@ const ViewFeed: FC = () => {
         <>
             {loadState === 'ERROR' && <p>Sorry, something went wrong...</p>}
             {context.loggedIn || <Navigate to="/accounts/login"/>}
-            {loadState == 'SUGGESTIONS' &&
-                <>
-                    <h1>People you might like</h1>
-                    {<FollowSuggestions users={suggestions}/>}
-                </>
-            }
-            {loadState == 'LOADED' &&
+            {loadState === 'LOADED' &&
                 <>
                     <InfiniteScroll callback={handleInfiniteScroll}/>
                     <section className="feed-list">
@@ -184,6 +181,12 @@ const ViewFeed: FC = () => {
                         )}
                     </section>
                 </>}
+            {loadState === 'LOADED' && posts.length < 5 &&
+                <>
+                    <h1>People you might know</h1>
+                    {<FollowSuggestions users={suggestions}/>}
+                </>
+            }
         </>
     );
 }
