@@ -78,57 +78,50 @@ ul {
     font-weight: 400;
 }
 
-
-/* Remove default button style */
-
-button,
-input[type="submit"],
-input[type="reset"] {
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-}
-
-.key-box {
-    width: 80%;
-    margin-bottom: 10px;
-    border: none;
-    outline: none;
-    font-size: 14px;
-}
-
 .post-bottom .material-icons:first-of-type {
     color: #ee515e;
 }
 
-.likes {
+.post-bottom {
+    margin-bottom: 5px;
     font-size: 12px;
+    padding-top: 10px;
+    border-top: 1px solid lightgray;
 }
 
-.comment-wrapper {
+.comment-wrapper, .key-wrapper {
     box-sizing: border-box;
     width: 100%;
-    height: 50px;
+    height: 45px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid lightgray;
 }
 
-.comment-box {
+.comment-box, .key-box {
     width: 80%;
     border: none;
     outline: none;
     font-size: 14px;
 }
 
-.comment-wrapper input[type="submit"].button {
+.comment-wrapper input[type="submit"].button,
+.key-wrapper input[type="submit"].button {
     width: 25%;
+    font-size: 14px;
 }
+
+.key-wrapper input[type="submit"].button {
+    background-color: green;
+}
+
+.key-wrapper input[type="submit"].button:active, .key-wrapper button.button:active, 
+.key-wrapper a.button:active, .key-wrapper input[type="submit"].button[disabled], 
+.key-wrapper button.button[disabled], .key-wrapper a.button[disabled] {
+    background-color: #33B333;
+}
+
 
 @media screen and (max-width: 1000px) {
     .wrapper {

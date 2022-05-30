@@ -111,6 +111,10 @@ const ViewFeed: React.FC = () => {
         setPosts(newPosts);
     }, [posts, setPosts, parentCommentId, setParentCommentId]);
 
+    const unlock = useCallback(async(post: Post, key: string) => {
+        // TODO
+    }, []);
+
     const setLiked = useCallback(async(post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
@@ -180,7 +184,7 @@ const ViewFeed: React.FC = () => {
                     <InfiniteScroll callback={handleInfiniteScroll}/>
                     <section className="feed-list">
                         {posts.map((post) =>
-                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setParentCommentId={setParentCommentId} />
+                            <ShowPost post={post} key={post.id} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setParentCommentId={setParentCommentId} unlock={unlock} />
                         )}
                     </section>
                 </>}

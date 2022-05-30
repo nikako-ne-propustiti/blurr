@@ -16,6 +16,7 @@ interface Props {
     setDeleted?: (post: Post) => void;
     setFollowing?: (post: Post) => void;
     setLiked?: (post: Post) => void;
+    unlock?: (post: Post, key: string) => void;
     setParentCommentId?: (id: number) => void;
 }
 
@@ -68,11 +69,12 @@ const orderComments = (comments: Comment[]): Comment[] => {
     return sortedComments;
 };
 
-const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
+const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId, unlock}) => {
     const commentInputRef = useRef<HTMLInputElement>(null);
     const {state} = useContext(Context);
     const navigate = useNavigate();
     const [commentInput, setCommentInput] = useState('');
+    const [keyInput, setKeyInput] = useState('');
     const showComments = addComment && setCommentLiked;
 
     const loginFirst = useCallback(() => {
@@ -101,6 +103,19 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
             loginFirst();
         }
     }, [post, addComment, commentInput, setCommentInput, state, loginFirst]);
+
+    const onUnlock = useCallback((e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (state.loggedIn) {
+            if (unlock) {
+                unlock(post, keyInput);
+                setKeyInput('');
+            }
+        } else {
+            loginFirst();
+        }
+    }, [post, unlock, keyInput, setKeyInput, state, loginFirst]);
+
 
     const onReply = useCallback((user: string, id: number) => {
         if (state.loggedIn) {
@@ -140,9 +155,14 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
         }
     }, [post, setDeleted]);
 
-    const inputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const commentInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setCommentInput(e.target.value);
     }, [setCommentInput]);
+
+    const keyInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setKeyInput(e.target.value);
+    }, [setKeyInput]);
+
 
     return (
         <article className="post-wrapper">
@@ -167,16 +187,21 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
                         </ul>
                     </div>}
 
-                    {showComments && <div className="post-bottom">
-                        {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
-                        <input type="text" className="key-box" placeholder="Enter the key" />
-                        <div className="likes">{formatLikes(post.followingWhoLiked, post.likes)}</div>
-                    </div>}
-
                     {showComments && <form className="comment-wrapper" onSubmit={onComment}>
-                        <input onChange={inputChange} type="text" name="text" className="comment-box" placeholder="Add a comment" ref={commentInputRef} value={commentInput} />
+                        <input onChange={commentInputChange} type="text" name="text" className="comment-box" placeholder="Add a comment" ref={commentInputRef} value={commentInput} />
                         <Button text="Post" disabled={!commentInput} />
                     </form>}
+
+                    {showComments && <form className="key-wrapper">
+                        <input onChange={keyInputChange} type="text" name="text" className="key-box" placeholder="Enter the key" value={keyInput}/>
+                        <Button text="Unlock" disabled={!keyInput} />
+                    </form>}
+
+                    {showComments && <div className="post-bottom">
+                        {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
+                        <div>{formatLikes(post.followingWhoLiked, post.likes)}</div>
+                    </div>}
+
                 </div>
             </div>
         </article>
