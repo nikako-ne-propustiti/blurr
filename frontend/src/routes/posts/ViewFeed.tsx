@@ -156,7 +156,10 @@ const ViewFeed: React.FC = () => {
         const newComments = [...postToUpdate.comments];
         newComments[commentToUpdateIndex] = {
             ...commentToUpdate,
-            haveLiked: response.haveLiked
+            haveLiked: response.haveLiked,
+            likes: response.haveLiked ?
+                commentToUpdate.likes + 1 :
+                commentToUpdate.likes - 1
         };
         newPosts[postToUpdateIndex] = {
             ...postToUpdate,
