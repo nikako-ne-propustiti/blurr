@@ -1,7 +1,10 @@
 .wrapper {
     display: flex;
-    height: 600px;
     margin: 10px;
+}
+
+.wrapper > img {
+    width: 60%;
 }
 
 .panel {
@@ -14,6 +17,11 @@
 .comments {
     flex-grow: 4;
     overflow-y: auto;
+}
+
+.comments ul {
+    min-height: 100%;
+    height: 0;
 }
 
 .profile-bar img,
@@ -90,4 +98,18 @@ input[type="reset"] {
 
 .comment-wrapper input[type="submit"].button {
     width: 25%;
+}
+
+@media screen and (max-width: 1000px) {
+    .wrapper {
+        display: block;
+    }
+    .wrapper > img {
+        width: 100%;
+    }
+    .comments ul {
+        height: initial;
+        max-height: 300px;
+        overflow-y: auto;
+    }
 }
