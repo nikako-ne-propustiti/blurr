@@ -195,7 +195,7 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
                         <Button text="Post" disabled={!commentInput} />
                     </form>}
 
-                    {showComments && <form className="key-wrapper">
+                    {unlock && <form className="key-wrapper" onSubmit={onUnlock}>
                         <input onChange={keyInputChange} type="text" name="text" className="key-box" placeholder="Enter the key" value={keyInput}/>
                         <Button text="Unlock" disabled={!keyInput} />
                     </form>}

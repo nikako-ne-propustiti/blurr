@@ -1,3 +1,7 @@
+.edit-account-wrapper {
+    padding: 30px;
+}
+
 .edit-account-form input[type="submit"].button {
     width: initial;
 }

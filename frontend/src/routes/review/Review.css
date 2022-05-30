@@ -6,3 +6,7 @@
 .review-feed .indicator-not-submitted {
     margin: 0;
 }
+
+.indicator-submitting {
+    margin: 0 auto;
+}

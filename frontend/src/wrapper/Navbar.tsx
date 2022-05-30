@@ -24,16 +24,16 @@ const Navbar: React.FC = () => {
 
             <div>
                 <form>
-                    <input spellcheck="false" type="text" placeholder="Search"></input>
+                    <input spellCheck="false" type="text" placeholder="Search"></input>
                 </form>
             </div>
 
             <div className="navbar-right">
                 <Link to="/" title="Home"><Icon name="home" /></Link>
-                {state.loggedIn && <Link to={state.currentUser} title="Profile"><Icon name="account_box" /></Link>}
+                {state.loggedIn && state.currentUser && <Link to={state.currentUser} title="Profile"><Icon name="account_box" /></Link>}
                 {state.loggedIn && <Link to="/p/new" title="Create"><Icon name="add_box" /></Link>}
-                {state.loggedIn && <Link to="" onClick={handleLogout} title="Logout"><Icon name="logout" /></Link>}
                 {state.isAdmin && <Link to="/p/review" title="Review"><Icon name="remove_red_eye" /></Link>}
+                {state.loggedIn && <Link to="" onClick={handleLogout} title="Logout"><Icon name="logout" /></Link>}
             </div>
         </nav>
     </div>;

@@ -30,8 +30,8 @@
     border: 0;
     padding: 3px 16px;
     font-size: 16px;
-    background: rgba(var(--bb2,239,239,239), 1);
-    color: rgba(var(--i1d,38,38,38), 1);
+    background: rgba(239,239,239);
+    color: rgba(38,38,38);
     line-height: 18px;
 }
 
