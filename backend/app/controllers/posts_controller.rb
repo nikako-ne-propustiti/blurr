@@ -84,8 +84,7 @@ class PostsController < ApplicationController
   # Returns up to 10 suggestions for accounts to follow
   # Sorted descending by follower count
   def suggestions
-    user = User.find session[:user_id]
-    accounts = User.find_by_sql("
+    accounts = User.find_by_sql(["
       SELECT *
       FROM users JOIN (
         SELECT users.id
@@ -93,7 +92,8 @@ class PostsController < ApplicationController
         GROUP BY followee_id, users.id
         ORDER BY COUNT(*) DESC)
        f ON f.id = users.id
-       LIMIT 10", )
+       WHERE users.id != ?
+       LIMIT 10", current_user.id])
 
     render json: {
       success: true,
