@@ -1,8 +1,7 @@
 import {apiCall} from './base';
 
 const follow = (username: string) => {
-    return apiCall('users/follow', {
-        json: {username},
+    return apiCall(`users/${username}/follow`, {
         method: 'POST'
     });
 };
