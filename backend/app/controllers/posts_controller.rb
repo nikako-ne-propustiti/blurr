@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :check_logged_in, except: :posts
+  before_action :check_logged_in, except: [:get, :posts]
 
   def get
     post = Post.find_by(post_url: params.require(:postId))
