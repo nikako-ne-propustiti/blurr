@@ -3,3 +3,12 @@
     margin: 0 auto;
     text-align: center;
 }
+
+.login-form img {
+    width: 100px;
+    height: 100px;
+}
+
+.login-form p {
+    color: #8E8E8E;
+}

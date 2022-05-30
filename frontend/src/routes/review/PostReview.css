@@ -28,13 +28,22 @@
     color: #ED4956;
 }
 
-.review-feed-post .wrapper {
+.review-feed-post .post-wrapper .post {
     flex-direction: column;
+    border: 0;
     margin: 0;
 }
 
-.review-feed-post .wrapper > img {
+.review-feed-post .post-wrapper .post > img {
     width: 100%;
+}
+
+.review-feed-post .post-wrapper .post .panel {
+    padding: 0;
+}
+
+.review-feed-post .post-wrapper .post .profile-bar {
+    padding: 8px;
 }
 
 .review-feed-post .panel {

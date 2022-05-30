@@ -53,7 +53,7 @@ const EditAccount: FC = () => {
         }
     }, [context]);
 
-    return <>
+    return <div className="edit-account-wrapper">
         {!context.loggedIn && <Navigate to="/accounts/login?returnTo=%2Faccounts%2Fedit" />}
         <h1>Edit account</h1>
         <SubmissionIndicator submissionState={submissionState} text={indicatorText} />
@@ -68,7 +68,7 @@ const EditAccount: FC = () => {
                 <ProfilePhoto userInfo={userInfo} setUserInfo={setUserInfo} />
             </section>
         </form>}
-    </>;
+    </div>;
 }
 
 export default EditAccount;

@@ -17,6 +17,7 @@ interface Props {
     setDeleted?: (post: Post) => void;
     setFollowing?: (post: Post) => void;
     setLiked?: (post: Post) => void;
+    unlock?: (post: Post, key: string) => void;
     setParentCommentId?: (id: number) => void;
 }
 
@@ -69,11 +70,12 @@ const orderComments = (comments: Comment[]): Comment[] => {
     return sortedComments;
 };
 
-const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
+const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId, unlock}) => {
     const commentInputRef = useRef<HTMLInputElement>(null);
     const {state} = useContext(Context);
     const navigate = useNavigate();
     const [commentInput, setCommentInput] = useState('');
+    const [keyInput, setKeyInput] = useState('');
     const showComments = addComment && setCommentLiked;
     const canFollow = setFollowing && state.currentUser !== post.poster.username;
     const photoURL = isReview && post.reviewPhotoURL || post.photoURL;
@@ -104,6 +106,19 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
             loginFirst();
         }
     }, [post, addComment, commentInput, setCommentInput, state, loginFirst]);
+
+    const onUnlock = useCallback((e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (state.loggedIn) {
+            if (unlock) {
+                unlock(post, keyInput);
+                setKeyInput('');
+            }
+        } else {
+            loginFirst();
+        }
+    }, [post, unlock, keyInput, setKeyInput, state, loginFirst]);
+
 
     const onReply = useCallback((user: string, id: number) => {
         if (state.loggedIn) {
@@ -143,43 +158,54 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
         }
     }, [post, setDeleted]);
 
-    const inputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const commentInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setCommentInput(e.target.value);
     }, [setCommentInput]);
 
+    const keyInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setKeyInput(e.target.value);
+    }, [setKeyInput]);
+
+
     return (
-        <article className="wrapper">
-            <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${photoURL}`} />
-            <div className="panel">
-                <div className="profile-bar">
-                    <Link to={`/${post.poster.username}`}>
-                        <img src={`${BACKEND_API_URL}/${post.poster.profilePhotoURL}`}></img>
-                    </Link>
-                    <Link to={`/${post.poster.username}`}>
-                        {post.poster.username}
-                    </Link>
-                    {canFollow && <span className="dot-separator">•</span>}
-                    {canFollow && <Button text={post.poster.amFollowing ? 'Unfollow' : 'Follow'} onClick={onFollow} />}
+        <article className="post-wrapper">
+            <div className="post">
+                <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${photoURL}`} />
+                <div className="panel">
+                    <div className="profile-bar">
+                        <Link to={`/${post.poster.username}`}>
+                            <img src={`${BACKEND_API_URL}/${post.poster.profilePhotoURL}`}></img>
+                        </Link>
+                        <Link to={`/${post.poster.username}`}>
+                            {post.poster.username}
+                        </Link>
+                        {canFollow && <span className="dot-separator">•</span>}
+                        {canFollow && <Button text={post.poster.amFollowing ? 'Unfollow' : 'Follow'} onClick={onFollow} />}
+                    </div>
+
+                    {showComments && <div className="comments">
+                        <ul>
+                        <ShowComment comment={postToComment(post)} key={-1} onLike={onLike} />
+                        {orderComments(post.comments).map(c => <ShowComment comment={c} key={c.id} onReply={onReply} onLike={onCommentLike} />)}
+                        </ul>
+                    </div>}
+
+                    {showComments && <form className="comment-wrapper" onSubmit={onComment}>
+                        <input onChange={commentInputChange} type="text" name="text" className="comment-box" placeholder="Add a comment" ref={commentInputRef} value={commentInput} />
+                        <Button text="Post" disabled={!commentInput} />
+                    </form>}
+
+                    {unlock && <form className="key-wrapper" onSubmit={onUnlock}>
+                        <input onChange={keyInputChange} type="text" name="text" className="key-box" placeholder="Enter the key" value={keyInput}/>
+                        <Button text="Unlock" disabled={!keyInput} />
+                    </form>}
+
+                    {showComments && <div className="post-bottom">
+                        {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
+                        <div>{formatLikes(post.followingWhoLiked, post.likes)}</div>
+                    </div>}
+
                 </div>
-
-                {showComments && <div className="comments">
-                    <ul>
-                    <ShowComment comment={postToComment(post)} key={-1} onLike={onLike} />
-                    {orderComments(post.comments).map(c => <ShowComment comment={c} key={c.id} onReply={onReply} onLike={onCommentLike} />)}
-                    </ul>
-                </div>}
-
-                {showComments && <div className="post-bottom">
-                    {setLiked && <button onClick={onLike}><Icon name={post.haveLiked ? 'favorite' : 'favorite_border'} /></button>}
-                    {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
-                    <input type="text" className="key-box" placeholder="Enter the key" />
-                    <div>{formatLikes(post.followingWhoLiked, post.likes)}</div>
-                </div>}
-
-                {showComments && <form className="comment-wrapper" onSubmit={onComment}>
-                    <input onChange={inputChange} type="text" name="text" className="comment-box" placeholder="Add a comment" ref={commentInputRef} value={commentInput} />
-                    <Button text="Post" disabled={!commentInput} />
-                </form>}
             </div>
         </article>
     );
