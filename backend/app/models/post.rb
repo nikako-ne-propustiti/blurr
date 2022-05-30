@@ -7,7 +7,6 @@ class Post < ApplicationRecord
       url: post_url,
       photoURL: "/images/#{file_uuid}.jpg",
       description: description,
-      likes: PostLike.where(post_id: id).length,
       haveLiked: PostLike.exists?(user_id: user.id, post_id: id),
       likes: PostLike.where(post_id: id).length,
       time: created_at,
