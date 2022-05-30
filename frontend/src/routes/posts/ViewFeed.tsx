@@ -184,10 +184,10 @@ const ViewFeed: FC = () => {
                     </section>
                 </>}
             {loadState === 'LOADED' && posts.length < 5 &&
-                <>
+                <div className="suggestions">
                     <h1>People you might know</h1>
                     {<FollowSuggestions users={suggestions}/>}
-                </>
+                </div>
             }
             <SubmissionIndicator submissionState={loaderState}/>
         </>
