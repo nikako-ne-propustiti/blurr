@@ -7,6 +7,10 @@
     padding: 2px 5px;
 }
 
+.comment.reply {
+    margin-left: 50px;
+}
+
 .comm {
     display: flex;
     flex-grow: 3;

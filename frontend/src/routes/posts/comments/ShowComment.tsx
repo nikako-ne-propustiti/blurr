@@ -42,7 +42,7 @@ const formatTimeAgo = (time: Date) => {
 };
 
 const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
-    const {id, commenter, text, likes, haveLiked, time} = comment;
+    const {id, commenter, text, likes, haveLiked, time, parentCommentId} = comment;
 
     const onReplyClick = useCallback(() => {
         if (onReply) {
@@ -56,7 +56,7 @@ const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
         }
     }, [comment, onLike]);
 
-    return <li key={id} className="comment">
+    return <li key={id} className={`comment ${parentCommentId ? 'reply' : ''}`}>
         <img src={`${BACKEND_API_URL}/${commenter.profilePhotoURL}`} />
         <div className="comm">
             <div className="comm-top">
@@ -68,7 +68,7 @@ const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
 
                 {likes > 0 && <span>{`${likes} ${likes === 1 ? 'like' : 'likes'}`}</span>}
                 
-                {onReply && <button onClick={onReplyClick}>Reply</button>}
+                {onReply && !parentCommentId && <button onClick={onReplyClick}>Reply</button>}
             </div>
         </div>
 
