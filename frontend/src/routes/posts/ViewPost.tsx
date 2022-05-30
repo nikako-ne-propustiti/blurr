@@ -90,7 +90,10 @@ const ViewPost: React.FC = () => {
         const newComments = [...post.comments];
         newComments[commentToUpdateIndex] = {
             ...commentToUpdate,
-            haveLiked: response.haveLiked
+            haveLiked: response.haveLiked,
+            likes: response.haveLiked ?
+                commentToUpdate.likes + 1 :
+                commentToUpdate.likes - 1
         };
         setPost({
             ...post,

@@ -1,33 +1,28 @@
 /**
  * @author Aleksa Marković
  */
-import React, {useCallback, useContext} from 'react';
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-
 import {follow, getSuggestions, toggleCommentLike, posts as getPosts, createComment, togglePostLike} from '../../api'
-
 import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
-import FollowSuggestions from "../accounts/FollowSuggestions";
-
+import FollowSuggestions from '../accounts/FollowSuggestions';
 import {Comment, Post, User} from '../../models';
 
 import './ViewFeed.css';
 
-
 type LoadState = 'INIT' | 'LOADED' | 'ERROR' | 'SUGGESTIONS';
 
-const ViewFeed: React.FC = () => {
+const ViewFeed: FC = () => {
     const {state: context} = useContext(Context);
-    const [loadState, setLoadState] = React.useState<LoadState>('INIT');
-    const [posts, setPosts] = React.useState<Post[]>([]);
-    const [parentCommentId, setParentCommentId] = React.useState<number>(-1);
-    const [postsLeft, setPostsLeft] = React.useState<number>(0);
-    const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
-    const [suggestions, setSuggestions] = React.useState<User[]>([]);
+    const [loadState, setLoadState] = useState<LoadState>('INIT');
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [parentCommentId, setParentCommentId] = useState<number>(-1);
+    const [lastPostIndex, setLastPostIndex] = useState<number>(0);
+    const [suggestions, setSuggestions] = useState<User[]>([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         setLoadState('INIT');
         (async () => {
             const feedResponse = await getPosts(0, '');
@@ -38,7 +33,6 @@ const ViewFeed: React.FC = () => {
             if (feedResponse.posts.length > 0) {
                 setLoadState('LOADED');
                 setPosts(feedResponse.posts);
-                setPostsLeft(feedResponse.left);
                 setLastPostIndex(feedResponse.posts.length);
             } else {
                 const response = await getSuggestions();
@@ -50,38 +44,37 @@ const ViewFeed: React.FC = () => {
                 setSuggestions(response.suggestions);
             }
         })();
-    }, []);
+    }, [setLoadState, setPosts, setLastPostIndex, setSuggestions]);
 
     // Infinite scrolling callback
-    const handleInfiniteScroll = React.useCallback(async () => {
-        if (loadState == 'LOADED' && postsLeft > 0) {
-            const response = await getPosts(lastPostIndex, '');
-            if (!response.success) {
-                setLoadState('ERROR');
-            } else {
-                setPosts(posts.concat(response.posts));
-                setLastPostIndex(lastPostIndex + response.posts.length);
-            }
+    const handleInfiniteScroll = useCallback(async () => {
+        if (loadState !== 'LOADED') {
+            return;
         }
-    }, [posts, setPosts]);
+        const response = await getPosts(lastPostIndex, '');
+        if (!response.success) {
+            setLoadState('ERROR');
+        } else {
+            setPosts(posts.concat(response.posts));
+            setLastPostIndex(lastPostIndex + response.posts.length);
+        }
+    }, [posts, setPosts, loadState, setLoadState, lastPostIndex, setLastPostIndex]);
 
     const setFollowing = useCallback(async(post: Post) => {
-        if (context.loggedIn && post.poster.username !== context.currentUser) {
-            const result = await follow(post.poster.username || '');
-            if (result.success) {
-                const postToUpdate = posts.find(p => p.id === post.id);
-                if (postToUpdate) {
-                    const newPosts = [...posts];
-                    const postToUpdateIndex = posts.indexOf(postToUpdate);
-                    newPosts[postToUpdateIndex] = {
-                        ...postToUpdate,
-                        poster: {
-                            ...postToUpdate.poster,
-                            amFollowing: !postToUpdate.poster.amFollowing
-                        }
-                    };
-                    setPosts(newPosts);
-                }
+        const result = await follow(post.poster.username || '');
+        if (result.success) {
+            const postToUpdate = posts.find(p => p.id === post.id);
+            if (postToUpdate) {
+                const newPosts = [...posts];
+                const postToUpdateIndex = posts.indexOf(postToUpdate);
+                newPosts[postToUpdateIndex] = {
+                    ...postToUpdate,
+                    poster: {
+                        ...postToUpdate.poster,
+                        amFollowing: !postToUpdate.poster.amFollowing
+                    }
+                };
+                setPosts(newPosts);
             }
         }
     }, [posts, setPosts]);
@@ -160,7 +153,10 @@ const ViewFeed: React.FC = () => {
         const newComments = [...postToUpdate.comments];
         newComments[commentToUpdateIndex] = {
             ...commentToUpdate,
-            haveLiked: response.haveLiked
+            haveLiked: response.haveLiked,
+            likes: response.haveLiked ?
+                commentToUpdate.likes + 1 :
+                commentToUpdate.likes - 1
         };
         newPosts[postToUpdateIndex] = {
             ...postToUpdate,

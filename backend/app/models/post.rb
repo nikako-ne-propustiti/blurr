@@ -6,6 +6,7 @@ class Post < ApplicationRecord
       id: id,
       url: post_url,
       photoURL: "/images/#{file_uuid}.jpg",
+      reviewPhotoURL: (!user.nil? && user.is_admin) ? "/images/#{file_uuid}#{password}.jpg" : false,
       description: description,
       haveLiked: !user.nil? && PostLike.exists?(user_id: user.id, post_id: id),
       followingWhoLiked: user.nil? ?
