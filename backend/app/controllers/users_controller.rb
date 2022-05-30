@@ -1,9 +1,9 @@
 # Handles user-related API requests
 #
 # Requires authentication before use, unless requesting a single user's
-# profile information.
+# profile information, or searching for users.
 class UsersController < ApplicationController
-  before_action :check_logged_in, except: :info
+  before_action :check_logged_in, except: [:info, :search]
 
   # GET /api/users/:username
   #
@@ -111,5 +111,21 @@ class UsersController < ApplicationController
     current_user.real_name = params.require(:realName)
     current_user.save
     render json: {success: true}
+  end
+
+  # GET /api/users
+  #
+  # Searches for users with a specified search string in their username.
+  # @param query [string] String to search for in the username
+  # @return Search results
+  def search
+    query = params.require(:query)
+    render json: {
+      success: true,
+      users: User
+        .where("username ~* ?", query)
+        .limit(5)
+        .map {|u| u.get_json(current_user)}
+    }
   end
 end
