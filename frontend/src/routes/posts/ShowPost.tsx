@@ -75,6 +75,7 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
     const navigate = useNavigate();
     const [commentInput, setCommentInput] = useState('');
     const showComments = addComment && setCommentLiked;
+    const canFollow = setFollowing && state.currentUser !== post.poster.username;
     const photoURL = isReview && post.reviewPhotoURL || post.photoURL;
 
     const loginFirst = useCallback(() => {
@@ -157,8 +158,8 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
                     <Link to={`/${post.poster.username}`}>
                         {post.poster.username}
                     </Link>
-                    {setFollowing && <span className="dot-separator">•</span>}
-                    {setFollowing && <Button text={post.poster.amFollowing ? 'Unfollow' : 'Follow'} onClick={onFollow} />}
+                    {canFollow && <span className="dot-separator">•</span>}
+                    {canFollow && <Button text={post.poster.amFollowing ? 'Unfollow' : 'Follow'} onClick={onFollow} />}
                 </div>
 
                 {showComments && <div className="comments">
