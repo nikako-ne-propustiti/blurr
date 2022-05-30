@@ -10,6 +10,7 @@ import {BACKEND_API_URL} from '../../api';
 import './ShowPost.css';
 
 interface Props {
+    isReview?: boolean;
     addComment?: (post: Post, comment: string) => void;
     post: Post;
     setCommentLiked?: (post: Post, comment: Comment) => void;
@@ -68,13 +69,14 @@ const orderComments = (comments: Comment[]): Comment[] => {
     return sortedComments;
 };
 
-const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
+const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
     const commentInputRef = useRef<HTMLInputElement>(null);
     const {state} = useContext(Context);
     const navigate = useNavigate();
     const [commentInput, setCommentInput] = useState('');
     const showComments = addComment && setCommentLiked;
     const canFollow = setFollowing && state.currentUser !== post.poster.username;
+    const photoURL = isReview && post.reviewPhotoURL || post.photoURL;
 
     const loginFirst = useCallback(() => {
         const currentUrl = `/p/${post.url}`;
@@ -147,7 +149,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
 
     return (
         <article className="wrapper">
-            <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${post.photoURL}`} />
+            <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${photoURL}`} />
             <div className="panel">
                 <div className="profile-bar">
                     <Link to={`/${post.poster.username}`}>
