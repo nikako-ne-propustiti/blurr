@@ -1,6 +1,15 @@
+# Handles post-related API requests.
+#
+# Requires authentication before use, unless requesting a single post or
+# a user's post feed.
 class PostsController < ApplicationController
   before_action :check_logged_in, except: [:get, :posts]
 
+  # GET /api/posts/:postId
+  #
+  # Retrieves information about a single post.
+  # @param postId [string] URL segment of the post requested
+  # @returns Post data
   def get
     post = Post.find_by(post_url: params.require(:postId))
     render json: {
@@ -9,24 +18,36 @@ class PostsController < ApplicationController
     }
   end
 
+  # DELETE /api/posts/:postId
+  #
+  # Deletes the specified post.
+  # @param postId [number] ID of the post to delete
+  # @returns That the request suceeded, unless the user requesting deletion
+  #          is not the post author
   def delete
     post = Post.find(params.require(:postId))
     if post.user_id == current_user.id
       post.destroy
       render json: {
-        success: true,
+        success: true
       }
     else
       render json: {
         success: false,
+        error: 'You do not have the permission to perform this action.'
       }, status: 403
     end
   end
 
-  def toggleLike
-    postLike = PostLike.find_by(user_id: current_user.id, post_id: params.require(:postId))
-    if postLike
-      postLike.destroy
+  # POST /api/posts/:postId/likes
+  #
+  # Likes or unlikes a post, depending on whether it was already liked.
+  # @param postId [int] ID of the post to like or unlike
+  # @return That the request succeeded, and the current like status
+  def toggle_like
+    post_like = PostLike.find_by(user_id: current_user.id, post_id: params.require(:postId))
+    if post_like
+      post_like.destroy
       render json: {
         success: true,
         haveLiked: false
@@ -40,21 +61,23 @@ class PostsController < ApplicationController
     end
   end
 
-  ##
-  # GET /api/posts/
-  # Query:
-  # username - username
-  # lastIndex - the last post's index received from the previous query
+  # GET /api/posts
   #
-  # Returns posts to form the user's feed
-  # Posts are from profiles that the user follows
-  # If username is specified, returns only posts from that user
+  # Retrieves posts for the user's feed. If a username is specified, lists all
+  # posts from a specified user, otherwise lists posts from users that the
+  # current user is following.
+  # @param username [string|nil] Username of the user whose feed is being
+  #                              fetched
+  # @param lastIndex [int] Last post's index received from the previous query,
+  #                        used for pagination
+  # @return List of posts filtered by specified criteria, and how many posts
+  #         are left in the list.
   def posts
     last_index = params.require(:lastIndex)
     username = params[:username]
     posts = []
     if username != ''
-      user = User.find_by username: params.require(:username)
+      user = User.find_by username: username
       posts = Post.where(user_id: user.id).offset(last_index).limit(10)
     else
       following = Follow.where(follower_id: current_user).pluck(:followee_id)
@@ -78,11 +101,11 @@ class PostsController < ApplicationController
     }
   end
 
-  ##
   # GET /api/posts/suggestions
   #
-  # Returns up to 10 suggestions for accounts to follow
-  # Sorted descending by follower count
+  # Returns up to 10 suggestions for accounts to follow, sorted descending
+  # by follower count.
+  # @return Suggested accounts
   def suggestions
     accounts = User.find_by_sql(["
       SELECT *
@@ -101,6 +124,15 @@ class PostsController < ApplicationController
     }
   end
 
+  # POST /api/posts
+  #
+  # Creates a new post.
+  # @param image [File] Uploaded image
+  # @param password [string] Password for the image
+  # @param blur-level [number] Blur level (multiplied by 5 before sent to
+  #                            ImageMagick)
+  # @param description [string] Post description
+  # @return New post's URL segment.
   def new
     image = params.require(:image)
     password = params.require(:password)
@@ -144,4 +176,3 @@ class PostsController < ApplicationController
     }
   end
 end
-
