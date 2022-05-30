@@ -1,9 +1,3 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  blocker: one
-  blockee: one
-
-two:
-  blocker: two
-  blockee: two
+# one:
+#   blocker: one
+#   blockee: one
