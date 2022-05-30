@@ -8,13 +8,11 @@ import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
 import FollowSuggestions from '../accounts/FollowSuggestions';
+import SubmissionIndicator, {SubmissionState} from "../../shared/SubmissionIndicator";
+
 import {Comment, Post, User} from '../../models';
 
 import './ViewFeed.css';
-import {Simulate} from "react-dom/test-utils";
-import load = Simulate.load;
-import SubmissionIndicator, {SubmissionState} from "../../shared/SubmissionIndicator";
-
 type LoadState = 'INIT' | 'LOADED' | 'ERROR';
 
 const ViewFeed: FC = () => {
@@ -36,7 +34,6 @@ const ViewFeed: FC = () => {
                 return;
             }
             if (feedResponse.posts.length > 0) {
-                setLoadState('LOADED');
                 setPosts(feedResponse.posts);
                 setLastPostIndex(feedResponse.posts.length);
             }
@@ -47,6 +44,7 @@ const ViewFeed: FC = () => {
                 return;
             }
             setSuggestions(response.suggestions);
+            setLoadState('LOADED');
             setLoaderState('not-submitted');
         })();
     }, [setLoadState, setPosts, setLastPostIndex, setSuggestions]);

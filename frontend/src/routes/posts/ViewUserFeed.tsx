@@ -1,7 +1,7 @@
 /**
  * @author Aleksa Marković
  */
-import React, {useState} from 'react';
+import React from 'react';
 import {useParams, Link} from 'react-router-dom';
 
 import {follow, accountInfo, posts as getPosts} from '../../api/';
@@ -30,7 +30,7 @@ const ViewUserFeed: React.FC = () => {
     const [userInfo, setUserInfo] = React.useState<User>();
     const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
     const [posts, setPosts] = React.useState<Post[]>([]);
-    const [loaderState, setLoaderState] = useState<SubmissionState>("not-submitted");
+    const [loaderState, setLoaderState] = React.useState<SubmissionState>("not-submitted");
 
     const handleFollow = React.useCallback(async () => {
         if (userInfo && context.loggedIn && username !== context.currentUser) {
