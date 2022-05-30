@@ -70,15 +70,15 @@ class PostsController < ApplicationController
   #                              fetched
   # @param lastIndex [int] Last post's index received from the previous query,
   #                        used for pagination
-  # @return List of posts filtered by specified criteria, and how many posts
-  #         are left in the list.
+  # @return List of posts filtered by specified criteria.
   def posts
-    last_index = params.require(:lastIndex)
+    last_index = params.require(:lastIndex).to_i
     username = params[:username]
     posts = []
+    posts_number = 10
     if username != ''
       user = User.find_by username: username
-      posts = Post.where(user_id: user.id).offset(last_index).limit(10)
+      posts = Post.where(user_id: user.id).offset(last_index).limit(posts_number)
     else
       following = Follow.where(follower_id: current_user).pluck(:followee_id)
       # If no followers, return empty. Frontend will call suggestions
@@ -90,14 +90,13 @@ class PostsController < ApplicationController
         }
         return
       end
-      posts_number = last_index == 0 ? 5 : 10;
+      posts_number = 5 if last_index == 0
       posts = Post.where('user_id in (?)', following).order(created_at: :desc).offset(last_index).limit(posts_number)
+      post_count = Post.where('user_id in (?)', following).count
     end
-    left = posts.length >= 10 ? posts.length - 10 : 0
     render json: {
       success: true,
-      posts: posts.map { |p| p.get_json current_user },
-      left: left
+      posts: posts.map { |p| p.get_json current_user }
     }
   end
 

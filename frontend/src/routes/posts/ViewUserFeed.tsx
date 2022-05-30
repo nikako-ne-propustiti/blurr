@@ -27,7 +27,6 @@ const ViewUserFeed: React.FC = () => {
     const {state: context} = React.useContext(Context);
     const [loadState, setLoadState] = React.useState<LoadState>('INIT');
     const [userInfo, setUserInfo] = React.useState<User>();
-    const [postsLeft, setPostsLeft] = React.useState<number>(0);
     const [lastPostIndex, setLastPostIndex] = React.useState<number>(0);
     const [posts, setPosts] = React.useState<Post[]>([]);
 
@@ -48,18 +47,17 @@ const ViewUserFeed: React.FC = () => {
 
     // Infinite scrolling callback
     const handleInfiniteScroll = React.useCallback(async () => {
-        if (loadState == 'LOADED' && postsLeft) {
-            const response = await getPosts(lastPostIndex, username || '');
-            if (!response.success) {
-                setLoadState('ERROR');
-            } else {
-                setPosts(posts.concat(response.posts));
-                setPostsLeft(response.left);
-                setLastPostIndex(lastPostIndex + response.posts.length);
-            }
-
+        if (loadState !== 'LOADED') {
+            return;
         }
-    }, [posts]);
+        const response = await getPosts(lastPostIndex, username || '');
+        if (!response.success) {
+            setLoadState('ERROR');
+        } else {
+            setPosts(posts.concat(response.posts));
+            setLastPostIndex(lastPostIndex + response.posts.length);
+        }
+    }, [loadState, setLoadState, posts, setPosts, lastPostIndex, setLastPostIndex]);
 
     React.useEffect(() => {
         setLoadState('INIT');
@@ -81,14 +79,12 @@ const ViewUserFeed: React.FC = () => {
                 setLoadState('ERROR');
                 return;
             }
-            setLoadState('LOADED');
             setPosts(postsResponse.posts);
-            setPostsLeft(postsResponse.left);
             setLastPostIndex(postsResponse.posts.length);
             setLoadState('LOADED');
         })(username || '');
 
-    }, [username, userInfo?.profilePhotoURL]);
+    }, [username, setUserInfo, setLoadState, setPosts, setLastPostIndex]);
 
     return <>
         <section className="userfeed-profile-info">
