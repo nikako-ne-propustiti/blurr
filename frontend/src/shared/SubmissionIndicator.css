@@ -1,3 +1,7 @@
 .indicator-error {
     color: #ED4956;
 }
+
+.indicator-submitting {
+    text-align: center;
+}

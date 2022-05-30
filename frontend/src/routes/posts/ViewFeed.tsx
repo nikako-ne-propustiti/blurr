@@ -13,7 +13,7 @@ import {Comment, Post, User} from '../../models';
 import './ViewFeed.css';
 import {Simulate} from "react-dom/test-utils";
 import load = Simulate.load;
-import SubmissionIndicator from "../../shared/SubmissionIndicator";
+import SubmissionIndicator, {SubmissionState} from "../../shared/SubmissionIndicator";
 
 type LoadState = 'INIT' | 'LOADED' | 'ERROR';
 
@@ -24,9 +24,11 @@ const ViewFeed: FC = () => {
     const [parentCommentId, setParentCommentId] = useState<number>(-1);
     const [lastPostIndex, setLastPostIndex] = useState<number>(0);
     const [suggestions, setSuggestions] = useState<User[]>([]);
+    const [loaderState, setLoaderState] = useState<SubmissionState>("not-submitted");
 
     useEffect(() => {
         setLoadState('INIT');
+        setLoaderState('submitting');
         (async () => {
             const feedResponse = await getPosts(0, '');
             if (!feedResponse.success) {
@@ -45,7 +47,7 @@ const ViewFeed: FC = () => {
                 return;
             }
             setSuggestions(response.suggestions);
-
+            setLoaderState('not-submitted');
         })();
     }, [setLoadState, setPosts, setLastPostIndex, setSuggestions]);
 
@@ -54,6 +56,7 @@ const ViewFeed: FC = () => {
         if (loadState !== 'LOADED') {
             return;
         }
+        setLoaderState('submitting');
         const response = await getPosts(lastPostIndex, '');
         if (!response.success) {
             setLoadState('ERROR');
@@ -61,6 +64,7 @@ const ViewFeed: FC = () => {
             setPosts(posts.concat(response.posts));
             setLastPostIndex(lastPostIndex + response.posts.length);
         }
+        setLoaderState('not-submitted');
     }, [posts, setPosts, loadState, setLoadState, lastPostIndex, setLastPostIndex]);
 
     const setFollowing = useCallback(async(post: Post) => {
@@ -187,6 +191,7 @@ const ViewFeed: FC = () => {
                     {<FollowSuggestions users={suggestions}/>}
                 </>
             }
+            <SubmissionIndicator submissionState={loaderState}/>
         </>
     );
 }
