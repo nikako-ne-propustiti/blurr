@@ -68,7 +68,10 @@ const ViewPost: React.FC = () => {
 
         setPost({
             ...post,
-            haveLiked: response.haveLiked
+            haveLiked: response.haveLiked,
+            likes: response.haveLiked ?
+                post.likes + 1 :
+                post.likes - 1
         });
     }, [post, setPost]);
 

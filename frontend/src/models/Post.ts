@@ -8,6 +8,7 @@ interface Post {
     description: string;
     likes: number;
     haveLiked: boolean;
+    followingWhoLiked: string[];
     time: Date;
     poster: User;
     comments: Comment[];

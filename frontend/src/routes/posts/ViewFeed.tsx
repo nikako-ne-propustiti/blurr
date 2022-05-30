@@ -126,7 +126,10 @@ const ViewFeed: React.FC = () => {
         const postToUpdateIndex = posts.indexOf(postToUpdate);
         newPosts[postToUpdateIndex] = {
             ...postToUpdate,
-            haveLiked: response.haveLiked
+            haveLiked: response.haveLiked,
+            likes: response.haveLiked ?
+                postToUpdate.likes + 1 :
+                postToUpdate.likes - 1
         };
         setPosts(newPosts);
     }, [posts, setPosts]);

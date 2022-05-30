@@ -19,8 +19,28 @@ interface Props {
     setParentCommentId?: (id: number) => void;
 }
 
-const imageDoubleClick = () => {
-    console.log('Double click');
+const formatLikes = (users: string[], count: number): string => {
+    if (count === 0) {
+        return '';
+    }
+    if (users.length === 0) {
+        if (count === 1) {
+            return `Liked by 1 user`;
+        }
+        return `Liked by ${count} users`;
+    }
+    if (users.length === 1) {
+        if (count === 1) {
+            return `Liked by ${users[0]}`;
+        }
+        return `Liked by ${users[0]} and ${count - 1} more`
+    }
+    const slice = users.slice(0, 3);
+    if (slice.length === count) {
+        const last = slice.pop();
+        return `Liked by ${slice.join(', ')} and ${last}`;
+    }
+    return `Liked by ${slice.join(', ')} and ${count - slice.length} more`;
 };
 
 const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
@@ -101,7 +121,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
 
     return (
         <article className="wrapper">
-            <img onDoubleClick={imageDoubleClick} src={`${BACKEND_API_URL}/${post.photoURL}`} />
+            <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${post.photoURL}`} />
             <div className="panel">
                 <div className="profile-bar">
                     <Link to={`/${post.poster.username}`}>
@@ -124,9 +144,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
                     {setLiked && <button onClick={onLike}><Icon name={post.haveLiked ? 'favorite' : 'favorite_border'} /></button>}
                     {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
                     <input type="text" className="key-box" placeholder="Enter the key" />
-                    <div>
-                        Liked by stan, elizabeth, and 39 others
-                    </div>
+                    <div>{formatLikes(post.followingWhoLiked, post.likes)}</div>
                 </div>}
 
                 {showComments && <form className="comment-wrapper" onSubmit={onComment}>

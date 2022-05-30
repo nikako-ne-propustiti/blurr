@@ -2,6 +2,7 @@ class User < ApplicationRecord
   validates :username, presence: true, length: { minimum: 1, maximum: 30 }
   validates :real_name, presence: true, length: { minimum: 1, maximum: 255 }
   validates :password_digest, presence: true, length: { minimum: 1, maximum: 255 }
+  has_many :post_likes
 
   has_secure_password validations: false
 
