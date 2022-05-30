@@ -43,6 +43,18 @@ const formatLikes = (users: string[], count: number): string => {
     return `Liked by ${slice.join(', ')} and ${count - slice.length} more`;
 };
 
+const postToComment = (post: Post): Comment => {
+    return {
+        id: post.id,
+        text: post.description,
+        likes: post.likes,
+        time: post.time,
+        commenter: post.poster,
+        postId: post.id,
+        haveLiked: post.haveLiked
+    };
+};
+
 const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
     const commentInputRef = useRef<HTMLInputElement>(null);
     const {state} = useContext(Context);
@@ -136,6 +148,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
 
                 {showComments && <div className="comments">
                     <ul>
+                    <ShowComment comment={postToComment(post)} key={-1} onLike={onLike} />
                     {post.comments.map(c => <ShowComment comment={c} key={c.id} onReply={onReply} onLike={onCommentLike} />)}
                     </ul>
                 </div>}

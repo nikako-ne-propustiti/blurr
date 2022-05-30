@@ -2,7 +2,7 @@ import Comment from './Comment';
 import User from './User';
 
 interface Post {
-    id: string;
+    id: number;
     url: string;
     photoURL: string;
     description: string;

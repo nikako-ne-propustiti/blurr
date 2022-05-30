@@ -8,7 +8,7 @@ import './ShowComment.css';
 
 interface Props {
     comment: Comment;
-    onReply: (user: string, parentCommentId: number) => void;
+    onReply?: (user: string, parentCommentId: number) => void;
     onLike?: (comment: Comment) => void;
 }
 
@@ -16,7 +16,9 @@ const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
     const {id, commenter, text, likes, haveLiked} = comment;
 
     const onReplyClick = useCallback(() => {
-        onReply(commenter.username, id);
+        if (onReply) {
+            onReply(commenter.username, id);
+        }
     }, [commenter, onReply]);
 
     const onLikeClick = useCallback(() => {
@@ -37,11 +39,11 @@ const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
 
                 {likes > 0 && <span>{`${likes} ${likes === 1 ? 'like' : 'likes'}`}</span>}
                 
-                <button onClick={onReplyClick}>Reply</button>
+                {onReply && <button onClick={onReplyClick}>Reply</button>}
             </div>
         </div>
 
-        <button onClick={onLikeClick}><Icon name={haveLiked ? 'favorite' : 'favorite_border'} /></button>
+        {onLike && <button onClick={onLikeClick}><Icon name={haveLiked ? 'favorite' : 'favorite_border'} /></button>}
 
     </li>
 };
