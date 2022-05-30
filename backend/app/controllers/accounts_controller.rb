@@ -9,7 +9,8 @@ class AccountsController < ApplicationController
   #         administrator
   def login
     user = User.find_by(username: params.require(:username))
-    if not user or not user.authenticate(params.require(:password))
+    password = params.require(:password)
+    if not user or not user.authenticate(password)
       render json: { success: false, error: 'Invalid username or password.' }, status: 400
       return
     end
