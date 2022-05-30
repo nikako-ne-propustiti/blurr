@@ -12,8 +12,37 @@ interface Props {
     onLike?: (comment: Comment) => void;
 }
 
+const formatTimeAgo = (time: Date) => {
+    const ms = Date.now() - (new Date(time)).getTime();
+    const s = ms / 1000;
+    const m = s / 60;
+    const h = m / 60;
+    const d = h / 24;
+    const mo = d / 30;
+    const y = d / 365;
+    if (y >= 1) {
+        return `${Math.floor(y)}y`;
+    }
+    if (mo >= 1) {
+        return `${Math.floor(mo)}mo`;
+    }
+    if (d >= 1) {
+        return `${Math.floor(d)}d`;
+    }
+    if (h >= 1) {
+        return `${Math.floor(h)}h`;
+    }
+    if (m >= 1) {
+        return `${Math.floor(m)}m`;
+    }
+    if (s >= 1) {
+        return `${Math.floor(s)}s`;
+    }
+    return 'now';
+};
+
 const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
-    const {id, commenter, text, likes, haveLiked} = comment;
+    const {id, commenter, text, likes, haveLiked, time} = comment;
 
     const onReplyClick = useCallback(() => {
         if (onReply) {
@@ -35,7 +64,7 @@ const ShowComment: React.FC<Props> = ({comment, onReply, onLike}) => {
                 {text}
             </div>
             <div className="comm-bottom">
-                <span>1 minute ago</span>
+                <span>{formatTimeAgo(time)}</span>
 
                 {likes > 0 && <span>{`${likes} ${likes === 1 ? 'like' : 'likes'}`}</span>}
                 
