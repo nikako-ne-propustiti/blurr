@@ -37,7 +37,7 @@ Follow.create!(followee_id: drazendr.id, follower_id: luka.id)
 def post_helper(url, blur_level, password)
   uuid = SecureRandom.uuid
   imageLocked = MiniMagick::Image.open(url)
-  imageLocked.write "public/images/#{uuid}_#{password}.jpg"
+  imageLocked.write "public/images/#{uuid}#{password}.jpg"
   imageLocked.combine_options do |i|
     i.blur "0x#{blur_level * 5}"
   end
@@ -67,7 +67,7 @@ etf.reviewed = true
 etf.save!
 
 # Creating a lot of posts on one account
-cloned_photo_uuid = post_helper('https://picsum.photos/512/512', 20, 'postalot')
+cloned_photo_uuid = post_helper('https://picsum.photos/512/512', 20, '123')
 38.times do |i|
   cloned_post = Post.new
   cloned_post.file_uuid = cloned_photo_uuid
