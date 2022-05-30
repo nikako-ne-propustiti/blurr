@@ -55,6 +55,19 @@ const postToComment = (post: Post): Comment => {
     };
 };
 
+const orderComments = (comments: Comment[]): Comment[] => {
+    const notReplies = comments
+        .filter(c => typeof c.parentCommentId !== 'number')
+        .sort((c1, c2) => (new Date(c1.time)).getTime() - (new Date(c2.time)).getTime());
+    let replies = comments.filter(c => typeof c.parentCommentId === 'number');
+    const sortedComments = [];
+    for (const comment of notReplies) {
+        sortedComments.push(comment, ...replies.filter(r => r.parentCommentId === comment.id));
+        replies = replies.filter(r => r.parentCommentId !== comment.id);
+    }
+    return sortedComments;
+};
+
 const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDeleted, setFollowing, setLiked, setParentCommentId}) => {
     const commentInputRef = useRef<HTMLInputElement>(null);
     const {state} = useContext(Context);
@@ -149,7 +162,7 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
                 {showComments && <div className="comments">
                     <ul>
                     <ShowComment comment={postToComment(post)} key={-1} onLike={onLike} />
-                    {post.comments.map(c => <ShowComment comment={c} key={c.id} onReply={onReply} onLike={onCommentLike} />)}
+                    {orderComments(post.comments).map(c => <ShowComment comment={c} key={c.id} onReply={onReply} onLike={onCommentLike} />)}
                     </ul>
                 </div>}
 
