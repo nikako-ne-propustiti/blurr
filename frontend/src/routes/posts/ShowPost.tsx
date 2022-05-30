@@ -145,38 +145,39 @@ const ShowPost: React.FC<Props> = ({addComment, post, setCommentLiked, setDelete
     }, [setCommentInput]);
 
     return (
-        <article className="wrapper">
-            <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${post.photoURL}`} />
-            <div className="panel">
-                <div className="profile-bar">
-                    <Link to={`/${post.poster.username}`}>
-                        <img src={`${BACKEND_API_URL}/${post.poster.profilePhotoURL}`}></img>
-                    </Link>
-                    <Link to={`/${post.poster.username}`}>
-                        {post.poster.username}
-                    </Link>
-                    {setFollowing && <span className="dot-separator">•</span>}
-                    {setFollowing && <Button text={post.poster.amFollowing ? 'Unfollow' : 'Follow'} onClick={onFollow} />}
+        <article className="post-wrapper">
+            <div className="post">
+                <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${post.photoURL}`} />
+                <div className="panel">
+                    <div className="profile-bar">
+                        <Link to={`/${post.poster.username}`}>
+                            <img src={`${BACKEND_API_URL}/${post.poster.profilePhotoURL}`}></img>
+                        </Link>
+                        <Link to={`/${post.poster.username}`}>
+                            {post.poster.username}
+                        </Link>
+                        {setFollowing && <span className="dot-separator">•</span>}
+                        {setFollowing && <Button text={post.poster.amFollowing ? 'Unfollow' : 'Follow'} onClick={onFollow} />}
+                    </div>
+
+                    {showComments && <div className="comments">
+                        <ul>
+                        <ShowComment comment={postToComment(post)} key={-1} onLike={onLike} />
+                        {orderComments(post.comments).map(c => <ShowComment comment={c} key={c.id} onReply={onReply} onLike={onCommentLike} />)}
+                        </ul>
+                    </div>}
+
+                    {showComments && <div className="post-bottom">
+                        {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
+                        <input type="text" className="key-box" placeholder="Enter the key" />
+                        <div className="likes">{formatLikes(post.followingWhoLiked, post.likes)}</div>
+                    </div>}
+
+                    {showComments && <form className="comment-wrapper" onSubmit={onComment}>
+                        <input onChange={inputChange} type="text" name="text" className="comment-box" placeholder="Add a comment" ref={commentInputRef} value={commentInput} />
+                        <Button text="Post" disabled={!commentInput} />
+                    </form>}
                 </div>
-
-                {showComments && <div className="comments">
-                    <ul>
-                    <ShowComment comment={postToComment(post)} key={-1} onLike={onLike} />
-                    {orderComments(post.comments).map(c => <ShowComment comment={c} key={c.id} onReply={onReply} onLike={onCommentLike} />)}
-                    </ul>
-                </div>}
-
-                {showComments && <div className="post-bottom">
-                    {setLiked && <button onClick={onLike}><Icon name={post.haveLiked ? 'favorite' : 'favorite_border'} /></button>}
-                    {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
-                    <input type="text" className="key-box" placeholder="Enter the key" />
-                    <div>{formatLikes(post.followingWhoLiked, post.likes)}</div>
-                </div>}
-
-                {showComments && <form className="comment-wrapper" onSubmit={onComment}>
-                    <input onChange={inputChange} type="text" name="text" className="comment-box" placeholder="Add a comment" ref={commentInputRef} value={commentInput} />
-                    <Button text="Post" disabled={!commentInput} />
-                </form>}
             </div>
         </article>
     );
