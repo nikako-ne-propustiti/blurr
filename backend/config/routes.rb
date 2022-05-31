@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   post    '/api/posts',                     to: 'posts#new'
   delete  '/api/posts/:postId',             to: 'posts#delete'
   post    '/api/posts/:postId/likes',       to: 'posts#toggle_like'
+  post    '/api/posts/:postId/unlock',      to: 'posts#unlock'
   # Comments API
   post    '/api/comments/:commentId/likes', to: 'comments#toggle_like'
   post    '/api/comments/:postId',          to: 'comments#new'

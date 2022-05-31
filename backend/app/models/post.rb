@@ -5,7 +5,9 @@ class Post < ApplicationRecord
     return {
       id: id,
       url: post_url,
-      photoURL: "/images/#{file_uuid}.jpg",
+      photoURL: !user.nil? && (Unlock.exists?(user_id: user.id, post_id: id) || user.id == user_id) ?
+        "/images/#{file_uuid}#{password}.jpg" :
+        "/images/#{file_uuid}.jpg",
       reviewPhotoURL: (!user.nil? && user.is_admin) ? "/images/#{file_uuid}#{password}.jpg" : false,
       description: description,
       haveLiked: !user.nil? && PostLike.exists?(user_id: user.id, post_id: id),
@@ -20,7 +22,10 @@ class Post < ApplicationRecord
       likes: PostLike.where(post_id: id).length,
       time: created_at,
       poster: User.find_by(id: user_id).get_json(user),
-      comments: Comment.where(post_id: id).map { |c| c.get_json(user) }
+      comments: Comment.where(post_id: id).map { |c| c.get_json(user) },
+      unlocked: (!user.nil? && (Unlock.exists?(user_id: user.id, post_id: id) || user.id == user_id)) ?
+        true :
+        false
     }
   end
 
