@@ -1,4 +1,4 @@
-import {Builder, WebDriver, WebElementPromise, until, By} from 'selenium-webdriver';
+import {Builder, WebDriver, WebElement, until, By} from 'selenium-webdriver';
 import {Options} from 'selenium-webdriver/chrome';
 import assert from 'assert';
 import 'chromedriver';
@@ -20,10 +20,19 @@ export async function screenshot(driver: WebDriver, filename: string) {
     });
 }
 
-export async function waitForElement(driver: WebDriver, xpath: string): Promise<WebElementPromise> {
+export async function waitForElement(driver: WebDriver, xpath: string): Promise<WebElement> {
     // Hopefully this fixes intermittent errors...
-    await driver.sleep(3000);
-    return driver.wait(until.elementIsVisible(driver.findElement(By.xpath(xpath))), 100);
+    let lastError;
+    for (let i = 0; i < 10; ++i) {
+        try {
+            await driver.sleep(1000);
+            const element = await driver.wait(until.elementIsVisible(driver.findElement(By.xpath(xpath))), 100);
+            return element;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError;
 }
 
 export async function login(driver: WebDriver) {
