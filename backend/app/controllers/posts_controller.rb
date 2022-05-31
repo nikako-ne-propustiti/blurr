@@ -162,6 +162,9 @@ class PostsController < ApplicationController
       return
     end
 
+    unless File.directory?('public/images')
+      FileUtils.mkdir_p('public/images')
+    end
     File.binwrite("public/images/#{post.file_uuid}#{password}.jpg", image.read)
     imageLocked = MiniMagick::Image.open("public/images/#{post.file_uuid}#{password}.jpg")
 
