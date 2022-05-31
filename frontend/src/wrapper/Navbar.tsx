@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
     const [searchItems, setSearchItems] = useState<User[]>([]);
     const navigate = useNavigate();
 
-    const handleLogout = useCallback(async (event: MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const handleLogout = useCallback(async (event: MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         await logout();
         dispatch({
