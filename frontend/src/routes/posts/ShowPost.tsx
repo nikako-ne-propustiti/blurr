@@ -130,7 +130,7 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
         } else {
             loginFirst();
         }
-    }, [setCommentInput, commentInputRef, setCommentInput, state, loginFirst]);
+    }, [setCommentInput, commentInputRef, setCommentInput, state, loginFirst, setParentCommentId]);
 
     const onLike = useCallback(() => {
         if (state.loggedIn) {
@@ -195,7 +195,7 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
                         <Button text="Post" disabled={!commentInput} />
                     </form>}
 
-                    {unlock && <form className="key-wrapper" onSubmit={onUnlock}>
+                    {unlock && !post.unlocked && <form className="key-wrapper" onSubmit={onUnlock}>
                         <input onChange={keyInputChange} type="text" name="text" className="key-box" placeholder="Enter the key" value={keyInput}/>
                         <Button text="Unlock" disabled={!keyInput} />
                     </form>}

@@ -3,7 +3,7 @@
  */
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-import {follow, getSuggestions, toggleCommentLike, posts as getPosts, createComment, togglePostLike} from '../../api'
+import {follow, getSuggestions, toggleCommentLike, posts as getPosts, createComment, togglePostLike, unlockPost} from '../../api'
 import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
@@ -107,11 +107,29 @@ const ViewFeed: FC = () => {
             ]
         };
         setPosts(newPosts);
-    }, [posts, setPosts, parentCommentId, setParentCommentId]);
+    }, [posts, setPosts, parentCommentId]);
 
     const unlock = useCallback(async(post: Post, key: string) => {
-        // TODO
-    }, []);
+        const postToUpdate = posts.find(p => p.id === post.id);
+        if (!postToUpdate) {
+            return;
+        }
+
+        const response = await unlockPost(post.id, key);
+        if (!response.success) {
+            alert("Wrong password. Please try again.");
+            return;
+        }
+
+        const newPosts = [...posts];
+        const postToUpdateIndex = posts.indexOf(postToUpdate);
+        newPosts[postToUpdateIndex] = {
+            ...postToUpdate,
+            photoURL: response.url,
+            unlocked: true
+        };
+        setPosts(newPosts);
+    }, [posts, setPosts]);
 
     const setLiked = useCallback(async(post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);

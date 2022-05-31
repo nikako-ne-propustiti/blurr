@@ -178,4 +178,37 @@ class PostsController < ApplicationController
       url: post.post_url
     }
   end
+
+  # POST /api/posts/:postId/unlock
+  #
+  # Unlocks a post.
+  # @param postId [int] ID of the post to be unlocked
+  # @param key [string] Password for unlocking the post provided by user
+  # @return Unlocked post image url.
+  def unlock
+    key = params.require(:key)
+    post_id = params.require(:postId)
+
+    post = Post.find_by(id: post_id)
+
+    if post == nil
+      render json: { success: false, error: post.errors.full_messages[0] }, status: 400
+      return
+    end
+
+    if post.password != key
+      render json: {
+        success: false
+      }
+      return
+    end
+
+    Unlock.create!(user_id: current_user.id, post_id: post_id)
+
+    render json: {
+      success: true,
+      url: "/images/#{post.file_uuid}#{key}.jpg"
+    }
+
+  end
 end
