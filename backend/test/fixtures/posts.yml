@@ -1,8 +1,17 @@
-# one:
-#   post_url: MyString
-#   file_uuid: 
-#   description: MyString
-#   user: one
-#   password: MyString
-#   reviewed: false
-#   sponsored: false
+testpost1:
+  post_url: url1
+  file_uuid: 285b9102-fb53-4f9b-9c6a-46198c689825
+  description: desc1
+  user: testuser1
+  password: pass1
+  reviewed: false
+  sponsored: false
+
+testpost2:
+  post_url: url2
+  file_uuid: 12345678-abcd-ef12-345a-12345678abcd
+  description: desc2
+  user: testuser1
+  password: pass2
+  reviewed: true
+  sponsored: false

@@ -66,4 +66,35 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       isAdmin: false
     }
   end
+
+  test "register succesful" do
+    post api_accounts_register_path, params: {
+      username: 'abc',
+      password: '123',
+      name: 'ab cd'
+    }
+    assert session[:user_id] != nil
+    assert_request body: {
+      success: true,
+    }
+  end
+
+  test "register missing params" do
+    post api_accounts_register_path, params: {}
+    assert_missing_param
+    post api_accounts_register_path, params: {username: 'a', password: 'b'}
+    assert_missing_param
+    post api_accounts_register_path, params: {name: 'a', password: 'b'}
+    assert_missing_param
+    post api_accounts_register_path, params: {username: 'a', name: 'b'}
+    assert_missing_param
+  end
+
+  test "logout succesful" do
+    delete api_accounts_logout_path
+    assert_nil session[:user_id]
+    assert_request body: {
+      success: true,
+    }
+  end
 end

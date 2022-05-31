@@ -30,4 +30,21 @@ class ActiveSupport::TestCase
       error: 'Requested resource does not exist.'
     }, status: 404
   end
+
+  def get_admin_user
+    return users(:testuser2)
+  end
+
+  def login_admin_user
+    user = get_admin_user
+    post api_accounts_login_path, params: {
+      username: user.username,
+      password: '123'
+    }
+    assert_equal session[:user_id], user.id
+    assert_request body: {
+      success: true,
+      isAdmin: true
+    }
+  end
 end
