@@ -162,6 +162,9 @@ class PostsController < ApplicationController
       return
     end
 
+    unless File.directory?('public/images')
+      FileUtils.mkdir_p('public/images')
+    end
     File.binwrite("public/images/#{post.file_uuid}#{password}.jpg", image.read)
     imageLocked = MiniMagick::Image.open("public/images/#{post.file_uuid}#{password}.jpg")
 
@@ -189,17 +192,12 @@ class PostsController < ApplicationController
     key = params.require(:key)
     post_id = params.require(:postId)
 
-    post = Post.find_by(id: post_id)
-
-    if post == nil
-      render json: { success: false, error: post.errors.full_messages[0] }, status: 400
-      return
-    end
+    post = Post.find(post_id)
 
     if post.password != key
       render json: {
         success: false
-      }
+      }, status: 400
       return
     end
 
@@ -207,8 +205,7 @@ class PostsController < ApplicationController
 
     render json: {
       success: true,
-      url: "/images/#{post.file_uuid}#{key}.jpg"
+      post: post.get_json(current_user)
     }
-
   end
 end

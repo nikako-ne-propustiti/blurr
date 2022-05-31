@@ -17,7 +17,7 @@ interface Props {
     setDeleted?: (post: Post) => void;
     setFollowing?: (post: Post) => void;
     setLiked?: (post: Post) => void;
-    unlock?: (post: Post, key: string) => void;
+    unlock?: (post: Post, key: string) => Promise<boolean>;
     setParentCommentId?: (id: number) => void;
 }
 
@@ -76,8 +76,11 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
     const navigate = useNavigate();
     const [commentInput, setCommentInput] = useState('');
     const [keyInput, setKeyInput] = useState('');
+    const [unlockError, setUnlockError] = useState(false);
     const showComments = addComment && setCommentLiked;
     const canFollow = setFollowing && state.currentUser !== post.poster.username;
+    const canUnlock = unlock && !post.unlocked;
+    const canDelete = post.poster.username === state.currentUser && setDeleted;
     const photoURL = isReview && post.reviewPhotoURL || post.photoURL;
 
     const loginFirst = useCallback(() => {
@@ -107,18 +110,20 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
         }
     }, [post, addComment, commentInput, setCommentInput, state, loginFirst]);
 
-    const onUnlock = useCallback((e: FormEvent<HTMLFormElement>) => {
+    const onUnlock = useCallback(async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (state.loggedIn) {
             if (unlock) {
-                unlock(post, keyInput);
-                setKeyInput('');
+                const successful = await unlock(post, keyInput);
+                setUnlockError(!successful);
+                if (successful) {
+                    setKeyInput('');
+                }
             }
         } else {
             loginFirst();
         }
-    }, [post, unlock, keyInput, setKeyInput, state, loginFirst]);
-
+    }, [post, unlock, keyInput, setKeyInput, state, loginFirst, setUnlockError]);
 
     const onReply = useCallback((user: string, id: number) => {
         if (state.loggedIn) {
@@ -163,8 +168,11 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
     }, [setCommentInput]);
 
     const keyInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === '') {
+            setUnlockError(false);
+        }
         setKeyInput(e.target.value);
-    }, [setKeyInput]);
+    }, [setKeyInput, setUnlockError]);
 
 
     return (
@@ -195,13 +203,13 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
                         <Button text="Post" disabled={!commentInput} />
                     </form>}
 
-                    {unlock && !post.unlocked && <form className="key-wrapper" onSubmit={onUnlock}>
+                    {canUnlock && <form className={`key-wrapper ${unlockError ? 'unlock-error' : ''}`} onSubmit={onUnlock}>
                         <input onChange={keyInputChange} type="text" name="text" className="key-box" placeholder="Enter the key" value={keyInput}/>
                         <Button text="Unlock" disabled={!keyInput} />
                     </form>}
 
                     {showComments && <div className="post-bottom">
-                        {post.poster.username === state.currentUser && setDeleted && <button onClick={onDelete}><Icon name="delete" /></button>}
+                        {canDelete && <button onClick={onDelete}><Icon name="delete" /></button>}
                         <div>{formatLikes(post.followingWhoLiked, post.likes)}</div>
                     </div>}
 

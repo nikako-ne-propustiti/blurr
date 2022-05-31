@@ -43,7 +43,7 @@ const ViewPost: React.FC = () => {
         }
     }, [post, setPost]);
 
-    const addComment = useCallback(async(post: Post, commentText: string) => {
+    const addComment = useCallback(async (post: Post, commentText: string) => {
         const response = (parentCommentId != -1 && commentText.startsWith('@')) ?
             await createComment(post.id, commentText, parentCommentId) :
             await createComment(post.id, commentText);
@@ -60,7 +60,7 @@ const ViewPost: React.FC = () => {
         })
     }, [post, setPost, parentCommentId]);
 
-    const setLiked = useCallback(async(post: Post) => {
+    const setLiked = useCallback(async (post: Post) => {
         const response = await togglePostLike(post.id);
         if (!response.success) {
             return;
@@ -75,7 +75,7 @@ const ViewPost: React.FC = () => {
         });
     }, [post, setPost]);
 
-    const setCommentLiked = useCallback(async(post: Post, comment: Comment) => {
+    const setCommentLiked = useCallback(async (post: Post, comment: Comment) => {
         const commentToUpdate = post.comments.find(c => c.id === comment.id);
         if (!commentToUpdate) {
             return;
@@ -101,7 +101,7 @@ const ViewPost: React.FC = () => {
         });
     }, [post, setPost]);
 
-    const setDeleted = useCallback(async(post: Post) => {
+    const setDeleted = useCallback(async (post: Post) => {
         const response = await deletePost(post.id);
         if (!response.success) {
             return;
@@ -113,15 +113,9 @@ const ViewPost: React.FC = () => {
     const unlock = useCallback(async (post: Post, key: string) => {
         const result = await unlockPost(post.id, key);
         if (result.success) {
-            setPost({
-                ...post,
-                photoURL: result.url,
-                unlocked: true
-            });
+            setPost(result.post);
         }
-        else {
-            alert("Wrong password. Please try again.");
-        }
+        return Boolean(result.success);
     }, [post, setPost]);
 
     return (
