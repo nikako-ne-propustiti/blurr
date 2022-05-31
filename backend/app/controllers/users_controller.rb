@@ -71,33 +71,36 @@ class UsersController < ApplicationController
     old_uuid = current_user.profile_photo_uuid
     uuid =  SecureRandom.uuid
 
-    File.binwrite("public/images/pfp/#{uuid}.jpg", image.read)
-    image = MiniMagick::Image.open("public/images/pfp/#{uuid}.jpg")
+    unless File.directory?('public/pfp')
+      FileUtils.mkdir_p('public/pfp')
+    end
+    File.binwrite("public/pfp/#{uuid}.jpg", image.read)
+    image = MiniMagick::Image.open("public/pfp/#{uuid}.jpg")
     if image.type != 'JPEG'
-      File.delete "public/images/pfp/#{uuid}.jpg"
+      File.delete "public/pfp/#{uuid}.jpg"
       render json: { success: false, error: 'Image must be in JPEG format.' }, status: 400
       return
     elsif image.size > 2048 * 1024
-      File.delete "public/images/pfp/#{uuid}.jpg"
+      File.delete "public/pfp/#{uuid}.jpg"
       render json: { success: false, error: 'Image larger than 2 MB.' }, status: 400
       return
     elsif image.width > 512 || image.width < 150 || image.height > 512 || image.height < 150
-      File.delete "public/images/pfp/#{uuid}.jpg"
+      File.delete "public/pfp/#{uuid}.jpg"
       render json: { success: false, error: 'Image too big or too small.' }, status: 400
       return
     elsif not current_user.valid?
-      File.delete "public/images/pfp/#{uuid}.jpg"
+      File.delete "public/pfp/#{uuid}.jpg"
       render json: { success: false, error: 'User error.' }, status: 400
       return
     end
     unless old_uuid.nil?
-      File.delete"public/images/pfp/#{old_uuid}.jpg"
+      File.delete "public/pfp/#{old_uuid}.jpg"
     end
     current_user.profile_photo_uuid = uuid
     current_user.save
     render json: {
       success: true,
-      url: "/images/pfp/#{uuid}.jpg"
+      url: "/pfp/#{uuid}.jpg"
     }
   end
 

@@ -4,7 +4,7 @@
 import React, {useCallback, useContext, useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ShowPost } from '.';
-import { createComment, deletePost, getPost, toggleCommentLike, togglePostLike, follow } from '../../api';
+import { createComment, deletePost, getPost, toggleCommentLike, togglePostLike, follow, unlockPost } from '../../api';
 import { Comment, Post } from '../../models';
 
 type LoadState = 'INIT' | 'LOADED' | 'ERROR';
@@ -43,7 +43,7 @@ const ViewPost: React.FC = () => {
         }
     }, [post, setPost]);
 
-    const addComment = useCallback(async(post: Post, commentText: string) => {
+    const addComment = useCallback(async (post: Post, commentText: string) => {
         const response = (parentCommentId != -1 && commentText.startsWith('@')) ?
             await createComment(post.id, commentText, parentCommentId) :
             await createComment(post.id, commentText);
@@ -58,9 +58,9 @@ const ViewPost: React.FC = () => {
                 response.comment
             ]
         })
-    }, [post, setPost]);
+    }, [post, setPost, parentCommentId]);
 
-    const setLiked = useCallback(async(post: Post) => {
+    const setLiked = useCallback(async (post: Post) => {
         const response = await togglePostLike(post.id);
         if (!response.success) {
             return;
@@ -75,7 +75,7 @@ const ViewPost: React.FC = () => {
         });
     }, [post, setPost]);
 
-    const setCommentLiked = useCallback(async(post: Post, comment: Comment) => {
+    const setCommentLiked = useCallback(async (post: Post, comment: Comment) => {
         const commentToUpdate = post.comments.find(c => c.id === comment.id);
         if (!commentToUpdate) {
             return;
@@ -101,7 +101,7 @@ const ViewPost: React.FC = () => {
         });
     }, [post, setPost]);
 
-    const setDeleted = useCallback(async(post: Post) => {
+    const setDeleted = useCallback(async (post: Post) => {
         const response = await deletePost(post.id);
         if (!response.success) {
             return;
@@ -110,10 +110,18 @@ const ViewPost: React.FC = () => {
         navigate('/');
     }, [navigate]);
 
+    const unlock = useCallback(async (post: Post, key: string) => {
+        const result = await unlockPost(post.id, key);
+        if (result.success) {
+            setPost(result.post);
+        }
+        return Boolean(result.success);
+    }, [post, setPost]);
+
     return (
         <>
         {loadState == 'LOADED' && post &&
-            <ShowPost post={post} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setDeleted={setDeleted} setParentCommentId={setParentCommentId} />
+            <ShowPost post={post} addComment={addComment} setFollowing={setFollowing} setLiked={setLiked} setCommentLiked={setCommentLiked} setDeleted={setDeleted} setParentCommentId={setParentCommentId} unlock={unlock}/>
         }
         {loadState == 'ERROR' && <p>Requested post does not exist.</p>}
         </>

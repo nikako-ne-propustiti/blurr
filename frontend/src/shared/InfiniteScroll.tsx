@@ -8,7 +8,6 @@ const InfiniteScroll: React.FC<Props> = ({ callback }) => {
     const prevScrollY = React.useRef(0);
     const [goingUp, setGoingUp] = React.useState(true);
 
-    // TODO Could do refactoring
     const onScroll = React.useCallback(() => {
         const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
         if (prevScrollY.current < scrollHeight && goingUp)

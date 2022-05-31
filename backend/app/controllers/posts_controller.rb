@@ -162,6 +162,9 @@ class PostsController < ApplicationController
       return
     end
 
+    unless File.directory?('public/images')
+      FileUtils.mkdir_p('public/images')
+    end
     File.binwrite("public/images/#{post.file_uuid}#{password}.jpg", image.read)
     imageLocked = MiniMagick::Image.open("public/images/#{post.file_uuid}#{password}.jpg")
 
@@ -176,6 +179,33 @@ class PostsController < ApplicationController
     render json: {
       success: true,
       url: post.post_url
+    }
+  end
+
+  # POST /api/posts/:postId/unlock
+  #
+  # Unlocks a post.
+  # @param postId [int] ID of the post to be unlocked
+  # @param key [string] Password for unlocking the post provided by user
+  # @return Unlocked post image url.
+  def unlock
+    key = params.require(:key)
+    post_id = params.require(:postId)
+
+    post = Post.find(post_id)
+
+    if post.password != key
+      render json: {
+        success: false
+      }, status: 400
+      return
+    end
+
+    Unlock.create!(user_id: current_user.id, post_id: post_id)
+
+    render json: {
+      success: true,
+      post: post.get_json(current_user)
     }
   end
 end
