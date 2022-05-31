@@ -84,7 +84,7 @@ class UsersController < ApplicationController
       File.delete "public/pfp/#{uuid}.jpg"
       render json: { success: false, error: 'Image larger than 2 MB.' }, status: 400
       return
-    elsif image.width > 512 || image.width < 150 || image.height > 512 || image.width < 150
+    elsif image.width > 512 || image.width < 150 || image.height > 512 || image.height < 150
       File.delete "public/pfp/#{uuid}.jpg"
       render json: { success: false, error: 'Image too big or too small.' }, status: 400
       return

@@ -140,7 +140,7 @@ class PostsController < ApplicationController
     image = params.require(:image)
     password = params.require(:password)
     blur_level = params.require(:"blur-level").to_i
-    description = params[:description]
+    description = params[:description] || ''
 
     post = Post.new
     post.password = password
