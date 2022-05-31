@@ -1,13 +1,14 @@
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
+require 'minitest/mock'
 
 class ActiveSupport::TestCase
   fixtures :all
 
   def assert_request(opts)
-    assert_equal(@response.body, opts[:body].to_json)
-    assert_equal(@response.status, (opts[:status] || 200))
+    assert_equal(opts[:body].to_json, @response.body)
+    assert_equal((opts[:status] || 200), @response.status)
   end
 
   def assert_already_exists
@@ -31,8 +32,39 @@ class ActiveSupport::TestCase
     }, status: 404
   end
 
+  def assert_require_login
+    assert_request body: {
+      success: false,
+      error: 'You must be logged in to perform this action.'
+    }, status: 401
+  end
+
+  def assert_require_admin
+    assert_request body: {
+      success: false,
+      error: 'This resource is admin-only.'
+    }, status: 403
+  end
+
+  def get_regular_user
+    return users(:testuser1)
+  end
+
   def get_admin_user
     return users(:testuser2)
+  end
+
+  def login_regular_user
+    user = get_regular_user
+    post api_accounts_login_path, params: {
+      username: user.username,
+      password: '123'
+    }
+    assert_equal session[:user_id], user.id
+    assert_request body: {
+      success: true,
+      isAdmin: false
+    }
   end
 
   def login_admin_user

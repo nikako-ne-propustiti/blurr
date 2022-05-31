@@ -18,6 +18,7 @@ import toggleCommentLike from './toggleCommentLike';
 import createComment from './createComment';
 import getPost from './getPost';
 import deletePost from './deletePost';
+import unlockPost from './unlockPost';
 import {BACKEND_API_URL} from './base';
 
-export {BACKEND_API_URL, getReview, login, logout, register, whoami, submitReview, follow, createPost, accountInfo, posts, feed, getSuggestions, search, profilePhoto, editAccount, toggleCommentLike, togglePostLike, createComment, getPost, deletePost};
+export {BACKEND_API_URL, getReview, login, logout, register, whoami, submitReview, follow, createPost, accountInfo, posts, feed, getSuggestions, search, profilePhoto, editAccount, toggleCommentLike, togglePostLike, createComment, getPost, deletePost, unlockPost};

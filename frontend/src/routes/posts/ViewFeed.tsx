@@ -3,7 +3,7 @@
  */
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-import {follow, getSuggestions, toggleCommentLike, posts as getPosts, createComment, togglePostLike} from '../../api'
+import {follow, getSuggestions, toggleCommentLike, posts as getPosts, createComment, togglePostLike, unlockPost} from '../../api'
 import ShowPost from './ShowPost';
 import {Context} from '../../shared/Context';
 import InfiniteScroll from '../../shared/InfiniteScroll';
@@ -65,7 +65,7 @@ const ViewFeed: FC = () => {
         setLoaderState('not-submitted');
     }, [posts, setPosts, loadState, setLoadState, lastPostIndex, setLastPostIndex]);
 
-    const setFollowing = useCallback(async(post: Post) => {
+    const setFollowing = useCallback(async (post: Post) => {
         const result = await follow(post.poster.username || '');
         if (result.success) {
             const postToUpdate = posts.find(p => p.id === post.id);
@@ -84,7 +84,7 @@ const ViewFeed: FC = () => {
         }
     }, [posts, setPosts]);
 
-    const addComment = useCallback(async(post: Post, commentText: string) => {
+    const addComment = useCallback(async (post: Post, commentText: string) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;
@@ -107,13 +107,26 @@ const ViewFeed: FC = () => {
             ]
         };
         setPosts(newPosts);
-    }, [posts, setPosts, parentCommentId, setParentCommentId]);
+    }, [posts, setPosts, parentCommentId]);
 
-    const unlock = useCallback(async(post: Post, key: string) => {
-        // TODO
-    }, []);
+    const unlock = useCallback(async (post: Post, key: string) => {
+        const postToUpdateIndex = posts.findIndex(p => p.id === post.id);
+        if (postToUpdateIndex === -1) {
+            return false;
+        }
 
-    const setLiked = useCallback(async(post: Post) => {
+        const response = await unlockPost(post.id, key);
+        if (!response.success) {
+            return false;
+        }
+
+        const newPosts = [...posts];
+        newPosts[postToUpdateIndex] = response.post;
+        setPosts(newPosts);
+        return true;
+    }, [posts, setPosts]);
+
+    const setLiked = useCallback(async (post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;
@@ -136,7 +149,7 @@ const ViewFeed: FC = () => {
         setPosts(newPosts);
     }, [posts, setPosts]);
 
-    const setCommentLiked = useCallback(async(post: Post, comment: Comment) => {
+    const setCommentLiked = useCallback(async (post: Post, comment: Comment) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;

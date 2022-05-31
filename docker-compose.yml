@@ -19,6 +19,7 @@ services:
       - ./backend/test:/myapp/backend/test
       - ./backend/vendor:/myapp/backend/vendor
       - ./tmp/images:/myapp/backend/public/images
+      - ./tmp/pfp:/myapp/backend/public/pfp
       - ./backend/app/assets/images:/myapp/backend/public/default_images
     depends_on:
       - db
@@ -27,7 +28,7 @@ services:
   frontend:
     container_name: frontend
     image: "node:14-alpine"
-    user: "node"
+    user: root
     working_dir: /myapp/frontend
     volumes:
       - ./frontend:/myapp/frontend
