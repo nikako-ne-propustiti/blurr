@@ -5,3 +5,18 @@
     justify-content: space-evenly;
     gap: 0px 20px;
 }
+
+.suggestions {
+    padding: 30px;
+    border: 1px solid rgb(219, 219, 219);
+    margin: 15px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.suggestions h1 {
+    font-style: italic;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 35px;
+}

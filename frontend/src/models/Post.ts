@@ -2,14 +2,18 @@ import Comment from './Comment';
 import User from './User';
 
 interface Post {
-    id: string;
+    id: number;
+    url: string;
     photoURL: string;
+    reviewPhotoURL?: string;
     description: string;
-    likes : number
+    likes: number;
     haveLiked: boolean;
+    followingWhoLiked: string[];
     time: Date;
     poster: User;
     comments: Comment[];
+    unlocked: Boolean;
 }
 
 export default Post;

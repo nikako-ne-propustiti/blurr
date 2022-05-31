@@ -36,14 +36,14 @@ const Review: React.FC = () => {
     const submitCallback = useCallback(async (post: Post, approve: boolean) => {
         const response = await submitReview(post.id, approve);
         if (!response.success) {
-            // TODO: Error reporting
+            alert(`An error occurred: ${response.error}`);
             return;
         }
         setPosts(posts.filter(p => p.id !== post.id));
     }, [posts]);
     return <div className="review-feed">
         {state.loggedIn || <Navigate to="/accounts/login" />}
-        {state.currentUser === 'admin' || <Navigate to="/" />}
+        {state.isAdmin || <Navigate to="/" />}
         <SubmissionIndicator submissionState={loadingState} text={errorReason} />
         {posts.map(p => <PostReview post={p} key={p.id} callback={submitCallback} />)}
     </div>;

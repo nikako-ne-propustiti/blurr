@@ -28,7 +28,7 @@ module Myapp
         origins 'http://localhost:3000', 'https://blurr.social', 'https://blurr.azurewebsites.net'
         resource '*',
           headers: :any,
-          methods: [:get, :post, :put, :delete, :options],
+          methods: [:get, :post, :put, :delete, :options, :patch],
           credentials: true
       end
     end

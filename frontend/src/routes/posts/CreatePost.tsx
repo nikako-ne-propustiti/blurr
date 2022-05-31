@@ -42,6 +42,9 @@ const CreatePost: React.FC = () => {
 
         if (response.success) {
             setPostId(response.url);
+        } else {
+            setSubmissionState('error');
+            setIndicatorText(response.error);
         }
     }, []);
     return <form action="/p/new" method="POST" className="create-post" onSubmit={onCreatePostSubmit} encType="multipart/form-data" ref={formRef}>
@@ -56,9 +59,9 @@ const CreatePost: React.FC = () => {
             <input type="file" name="image" accept="image/*" onChange={showFilePreview} ref={fileInputRef} />
         </fieldset>
         <fieldset className="create-post-contents">
-            <p><input type="password" className="create-post-password" name="password" placeholder="Enter the image password" onChange={updatePassword} maxLength={30} /></p>
             <p>Blur level: <input type="range" className="create-post-blur-level" min="5" max="20" name="blur-level" onChange={updateBlurLevel} /> {blurLevel}</p>
             <p>Description: <textarea name="description" rows={10}></textarea></p>
+            <p><input type="password" className="create-post-password" name="password" placeholder="Enter the image password" onChange={updatePassword} maxLength={30} /></p>
             <Button text="Submit" disabled={fileUrl === '' || password === ''} />
             <SubmissionIndicator submissionState={submissionState} text={indicatorText} />
         </fieldset>

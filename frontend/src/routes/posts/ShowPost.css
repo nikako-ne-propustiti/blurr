@@ -1,19 +1,49 @@
-.wrapper {
+.post-wrapper {
+    background-color: #FAFAFA;
+}
+
+.post {
     display: flex;
-    height: 600px;
-    margin: 10px;
+    margin: 15px;
+    border: 2px solid rgb(219, 219, 219);
+    border-radius: 5px;
+}
+
+.post > img {
+    width: 60%;
 }
 
 .panel {
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin: 16px 16px 2px 16px;
+    padding: 16px 16px 2px 16px;
+    background-color: white;
 }
 
 .comments {
     flex-grow: 4;
     overflow-y: auto;
+    font-size: 13px;
+}
+
+.comments::-webkit-scrollbar {
+    width: 4px;
+}
+
+.comments::-webkit-scrollbar-track {
+    background-color: #dfdddd;
+    border-radius: 10px;
+}
+
+.comments::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+}
+
+.comments ul {
+    min-height: 75%;
+    height: 0;
 }
 
 .profile-bar img,
@@ -38,56 +68,71 @@ ul {
     padding-bottom: 10px;
 }
 
-.dot-separator {
-    margin: 0 5px;
-}
-
-
-/* Remove default button style */
-
-button,
-input[type="submit"],
-input[type="reset"] {
-    background: none;
-    color: inherit;
-    border: none;
+.profile-bar input[type="submit"].button {
+    color: #0095F6;
+    background-color: white;
+    display: inline;
+    width: initial;
+    margin-top: 0;
     padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-}
-
-.key-box {
-    width: 80%;
-    margin-bottom: 10px;
-    border: none;
-    outline: none;
-    font-size: 14px;
+    font-weight: 400;
 }
 
 .post-bottom .material-icons:first-of-type {
     color: #ee515e;
 }
 
-.comment-wrapper {
+.post-bottom {
+    margin-bottom: 5px;
+    font-size: 12px;
+    padding-top: 10px;
+    border-top: 1px solid lightgray;
+}
+
+.comment-wrapper, .key-wrapper {
     box-sizing: border-box;
     width: 100%;
-    height: 50px;
-    border-radius: 1px solid #dfdfdf;
+    height: 45px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 2px solid lightgray;
+    border-top: 1px solid lightgray;
 }
 
-.comment-box {
+.comment-box, .key-box {
     width: 80%;
-    height: 100%;
     border: none;
     outline: none;
     font-size: 14px;
 }
 
-.comment-wrapper input[type="submit"].button {
+.comment-wrapper input[type="submit"].button,
+.key-wrapper input[type="submit"].button {
     width: 25%;
+    font-size: 14px;
+}
+
+.key-wrapper input[type="submit"].button {
+    background-color: green;
+}
+
+.key-wrapper input[type="submit"].button:active, .key-wrapper button.button:active, 
+.key-wrapper a.button:active, .key-wrapper input[type="submit"].button[disabled], 
+.key-wrapper button.button[disabled], .key-wrapper a.button[disabled] {
+    background-color: #33B333;
+}
+
+
+@media screen and (max-width: 1000px) {
+    .post {
+        display: block;
+    }
+    .post > img {
+        width: 100%;
+    }
+    .comments ul {
+        height: initial;
+        max-height: 300px;
+        overflow-y: auto;
+    }
 }

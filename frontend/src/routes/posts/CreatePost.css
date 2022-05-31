@@ -2,6 +2,7 @@
     display: flex;
     justify-content: space-between;
     margin: 0 auto;
+    padding: 30px;
 }
 
 .create-post fieldset {
@@ -41,11 +42,22 @@
 }
 
 .create-post-password {
-    border-width: 0 0 1px 0;
-    font-size: 24px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    opacity: 0.75;
     width: 100%;
 }
 
 .create-post-blur-level {
     width: 75%;
+}
+
+@media screen and (max-width: 1000px) {
+    .create-post {
+        display: block;
+    }
+    .create-post fieldset {
+        width: 100%;
+    }
 }

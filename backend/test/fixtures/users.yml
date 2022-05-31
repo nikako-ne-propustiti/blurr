@@ -1,15 +1,6 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  username: MyString
-  real_name: MyString
-  password: MyString
-  profile_photo_uuid: 
-  is_admin: false
-
-two:
-  username: MyString
-  real_name: MyString
-  password: MyString
+testuser1:
+  username: testuser1
+  real_name: Test User1
+  password_digest: <%= BCrypt::Password.create('123', cost: 4) %>
   profile_photo_uuid: 
   is_admin: false

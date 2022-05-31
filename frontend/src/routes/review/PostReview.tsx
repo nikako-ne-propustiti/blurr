@@ -16,7 +16,7 @@ const PostReview: React.FC<Props> = ({callback, post}) => {
             <button onClick={() => callback(post, true)}><Icon name="done" /></button>
             <button onClick={() => callback(post, false)}><Icon name="clear" /></button>
         </div>
-        <ShowPost post={post} />
+        <ShowPost post={post} isReview={true} />
     </div>
 };
 

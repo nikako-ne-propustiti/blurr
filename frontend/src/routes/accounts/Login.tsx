@@ -34,7 +34,8 @@ const Login: React.FC = () => {
             setSubmissionState('not-submitted');
             dispatch({
                 type: 'log-in',
-                username: username
+                username: username,
+                isAdmin: response.isAdmin
             });
         } else {
             setSubmissionState('error');

@@ -1,9 +1,8 @@
 main {
     background-color: white;
-    border: 1px solid #CCCCCC;
     margin: 10px auto;
-    max-width: 1000px;
-    padding: 30px;
+    max-width: 1030px;
+    box-sizing: border-box;
 }
 
 footer {
