@@ -65,7 +65,7 @@ const ViewFeed: FC = () => {
         setLoaderState('not-submitted');
     }, [posts, setPosts, loadState, setLoadState, lastPostIndex, setLastPostIndex]);
 
-    const setFollowing = useCallback(async(post: Post) => {
+    const setFollowing = useCallback(async (post: Post) => {
         const result = await follow(post.poster.username || '');
         if (result.success) {
             const postToUpdate = posts.find(p => p.id === post.id);
@@ -84,7 +84,7 @@ const ViewFeed: FC = () => {
         }
     }, [posts, setPosts]);
 
-    const addComment = useCallback(async(post: Post, commentText: string) => {
+    const addComment = useCallback(async (post: Post, commentText: string) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;
@@ -109,16 +109,15 @@ const ViewFeed: FC = () => {
         setPosts(newPosts);
     }, [posts, setPosts, parentCommentId]);
 
-    const unlock = useCallback(async(post: Post, key: string) => {
+    const unlock = useCallback(async (post: Post, key: string) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
-            return;
+            return false;
         }
 
         const response = await unlockPost(post.id, key);
         if (!response.success) {
-            alert("Wrong password. Please try again.");
-            return;
+            return false;
         }
 
         const newPosts = [...posts];
@@ -129,9 +128,10 @@ const ViewFeed: FC = () => {
             unlocked: true
         };
         setPosts(newPosts);
+        return true;
     }, [posts, setPosts]);
 
-    const setLiked = useCallback(async(post: Post) => {
+    const setLiked = useCallback(async (post: Post) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;
@@ -154,7 +154,7 @@ const ViewFeed: FC = () => {
         setPosts(newPosts);
     }, [posts, setPosts]);
 
-    const setCommentLiked = useCallback(async(post: Post, comment: Comment) => {
+    const setCommentLiked = useCallback(async (post: Post, comment: Comment) => {
         const postToUpdate = posts.find(p => p.id === post.id);
         if (!postToUpdate) {
             return;

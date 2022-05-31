@@ -122,6 +122,13 @@ ul {
     background-color: #33B333;
 }
 
+.key-wrapper input[type="text"] {
+    background-color: transparent;
+}
+
+.key-wrapper.unlock-error {
+    background-color: #FFCCCB;
+}
 
 @media screen and (max-width: 1000px) {
     .post {
