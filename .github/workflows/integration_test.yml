@@ -1,0 +1,26 @@
+name: Integration Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build containers
+        run: docker-compose build
+      - name: Setup frontend
+        run: docker-compose run frontend yarn
+      - name: Setup backend
+        run: docker-compose run backend bin/rails db:setup
+      - name: Run containers
+        run: docker-compose up -d
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: yarn install
+        working-directory: ./test
+      - name: Test
+        run: yarn jest
+        working-directory: ./test
