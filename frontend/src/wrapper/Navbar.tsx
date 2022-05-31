@@ -1,4 +1,4 @@
-import React, {FormEvent, useCallback, useContext, useState} from 'react';
+import React, {FormEvent, MouseEvent, useCallback, useContext, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ReactSearchAutocomplete} from 'react-search-autocomplete';
 import logo from '../logo.png';
@@ -15,7 +15,8 @@ const Navbar: React.FC = () => {
     const [searchItems, setSearchItems] = useState<User[]>([]);
     const navigate = useNavigate();
 
-    const handleLogout = useCallback(async () => {
+    const handleLogout = useCallback(async (event: MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        event.preventDefault();
         await logout();
         dispatch({
             type : 'log-out'
