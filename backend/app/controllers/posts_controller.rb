@@ -189,17 +189,12 @@ class PostsController < ApplicationController
     key = params.require(:key)
     post_id = params.require(:postId)
 
-    post = Post.find_by(id: post_id)
-
-    if post == nil
-      render json: { success: false, error: post.errors.full_messages[0] }, status: 400
-      return
-    end
+    post = Post.find(post_id)
 
     if post.password != key
       render json: {
         success: false
-      }
+      }, status: 400
       return
     end
 

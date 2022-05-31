@@ -13,7 +13,7 @@ interface Post {
     time: Date;
     poster: User;
     comments: Comment[];
-    unlocked: Boolean;
+    unlocked: boolean;
 }
 
 export default Post;
