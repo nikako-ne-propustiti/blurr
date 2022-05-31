@@ -113,11 +113,7 @@ const ViewPost: React.FC = () => {
     const unlock = useCallback(async (post: Post, key: string) => {
         const result = await unlockPost(post.id, key);
         if (result.success) {
-            setPost({
-                ...post,
-                photoURL: result.url,
-                unlocked: true
-            });
+            setPost(result.post);
         }
         return Boolean(result.success);
     }, [post, setPost]);

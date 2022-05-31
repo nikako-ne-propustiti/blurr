@@ -110,8 +110,8 @@ const ViewFeed: FC = () => {
     }, [posts, setPosts, parentCommentId]);
 
     const unlock = useCallback(async (post: Post, key: string) => {
-        const postToUpdate = posts.find(p => p.id === post.id);
-        if (!postToUpdate) {
+        const postToUpdateIndex = posts.findIndex(p => p.id === post.id);
+        if (postToUpdateIndex === -1) {
             return false;
         }
 
@@ -121,12 +121,7 @@ const ViewFeed: FC = () => {
         }
 
         const newPosts = [...posts];
-        const postToUpdateIndex = posts.indexOf(postToUpdate);
-        newPosts[postToUpdateIndex] = {
-            ...postToUpdate,
-            photoURL: response.url,
-            unlocked: true
-        };
+        newPosts[postToUpdateIndex] = response.post;
         setPosts(newPosts);
         return true;
     }, [posts, setPosts]);

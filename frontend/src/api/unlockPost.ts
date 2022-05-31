@@ -1,6 +1,11 @@
-import { apiCall } from './base';
+import {apiCall} from './base';
+import {Post} from '../models';
 
-const unlockPost = (postId: number, key: string) => {
+type UnlockPostResponse =
+    {success: true, post: Post} |
+    {success: false, error: string};
+
+const unlockPost = (postId: number, key: string): Promise<UnlockPostResponse> => {
     return apiCall(`posts/${postId}/unlock`, {
         json: { key },
         method: 'POST'

@@ -202,8 +202,7 @@ class PostsController < ApplicationController
 
     render json: {
       success: true,
-      url: "/images/#{post.file_uuid}#{key}.jpg"
+      post: post.get_json(current_user)
     }
-
   end
 end
