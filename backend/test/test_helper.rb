@@ -46,6 +46,14 @@ class ActiveSupport::TestCase
     }, status: 403
   end
 
+  def get_unreviewed_post
+    return posts(:testpost1)
+  end
+
+  def get_reviewed_post
+    return posts(:testpost2)
+  end
+
   def get_regular_user
     return users(:testuser1)
   end
