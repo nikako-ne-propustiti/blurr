@@ -1,8 +1,8 @@
-import {Builder, WebDriver, WebElement, until, By} from 'selenium-webdriver';
-import {Options} from 'selenium-webdriver/chrome';
+import { Builder, WebDriver, WebElement, until, By } from 'selenium-webdriver';
+import { Options } from 'selenium-webdriver/chrome';
 import assert from 'assert';
 import 'chromedriver';
-import {writeFile} from 'fs/promises';
+import { writeFile } from 'fs/promises';
 
 export function getDriver(): WebDriver {
     return new Builder()
@@ -41,10 +41,31 @@ export async function login(driver: WebDriver) {
     const usernameBox = await driver.findElement(By.css('input[name="username"]'));
     const passwordBox = await driver.findElement(By.css('input[name="password"]'));
     const loginButton = await driver.findElement(By.css('input.button[type="submit"]'));
+    await usernameBox.clear();
+    await passwordBox.clear();
     await usernameBox.sendKeys('luka');
     await passwordBox.sendKeys('sifra');
     await loginButton.click();
     await driver.wait(until.urlIs('http://localhost:3000/'));
+    const createButton = driver.findElement(By.css('a[title="Create"]'));
+    await driver.wait(until.elementIsVisible(createButton))
+    assert.equal(await createButton.getAttribute('title'), 'Create');
+}
+
+export async function register(driver: WebDriver) {
+    await driver.get('http://localhost:3000/accounts/register');
+    await driver.wait(until.urlIs('http://localhost:3000/accounts/register'));
+    const usernameBox = await driver.findElement(By.css('input[name="username"]'));
+    const realnameBox = await driver.findElement(By.css('input[name="name"]'));
+    const passwordBox = await driver.findElement(By.css('input[name="password"]'));
+    const repeatPasswordBox = await driver.findElement(By.css('input[name="repeat-password"]'));
+    const registerButton = await driver.findElement(By.css('input.button[type="submit"]'));
+    await usernameBox.sendKeys('testusername');
+    await realnameBox.sendKeys('Test Ime');
+    await passwordBox.sendKeys('sifra');
+    await repeatPasswordBox.sendKeys('sifra');
+    await registerButton.click();
+    await driver.wait(until.urlIs('http://localhost:3000/'));    
     const createButton = driver.findElement(By.css('a[title="Create"]'));
     await driver.wait(until.elementIsVisible(createButton))
     assert.equal(await createButton.getAttribute('title'), 'Create');
