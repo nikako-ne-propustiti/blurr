@@ -89,3 +89,11 @@ it('unsuccessful registration wrong repeated password', async () => {
 it('successfully registers', async () => {
     await register(driver);
 });
+
+it('cannot register because user is already logged in after registering', async () => {
+    await driver.get('http://localhost:3000/accounts/register');
+    await driver.wait(until.urlIs('http://localhost:3000/'));
+    const createButton = driver.findElement(By.css('a[title="Create"]'));
+    await driver.wait(until.elementIsVisible(createButton))
+    assert.equal(await createButton.getAttribute('title'), 'Create');
+});
