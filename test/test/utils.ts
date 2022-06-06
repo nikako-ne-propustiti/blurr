@@ -60,7 +60,7 @@ export async function register(driver: WebDriver) {
     const passwordBox = await driver.findElement(By.css('input[name="password"]'));
     const repeatPasswordBox = await driver.findElement(By.css('input[name="repeat-password"]'));
     const registerButton = await driver.findElement(By.css('input.button[type="submit"]'));
-    await usernameBox.sendKeys('testusername');
+    await usernameBox.sendKeys('test_username_');
     await realnameBox.sendKeys('Test Ime');
     await passwordBox.sendKeys('sifra');
     await repeatPasswordBox.sendKeys('sifra');
