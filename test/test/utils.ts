@@ -55,12 +55,12 @@ export async function login(driver: WebDriver) {
 export async function register(driver: WebDriver) {
     await driver.get('http://localhost:3000/accounts/register');
     await driver.wait(until.urlIs('http://localhost:3000/accounts/register'));
-    const usernameBox = await driver.findElement(By.css('input[name="username"]'));
-    const realnameBox = await driver.findElement(By.css('input[name="name"]'));
-    const passwordBox = await driver.findElement(By.css('input[name="password"]'));
-    const repeatPasswordBox = await driver.findElement(By.css('input[name="repeat-password"]'));
-    const registerButton = await driver.findElement(By.css('input.button[type="submit"]'));
-    await usernameBox.sendKeys('test_username_');
+    const usernameBox = await waitForElement(driver, '//*[@id="root"]/div/main/form/p[1]/input');
+    const realnameBox = await waitForElement(driver, '//*[@id="root"]/div/main/form/p[2]/input');
+    const passwordBox = await waitForElement(driver, '//*[@id="root"]/div/main/form/p[3]/input');
+    const repeatPasswordBox = await waitForElement(driver, '//*[@id="root"]/div/main/form/p[4]/input');
+    const registerButton = await waitForElement(driver, '//*[@id="root"]/div/main/form/input');
+    await usernameBox.sendKeys('username_test');
     await realnameBox.sendKeys('Test Ime');
     await passwordBox.sendKeys('sifra');
     await repeatPasswordBox.sendKeys('sifra');
