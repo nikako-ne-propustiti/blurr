@@ -63,7 +63,7 @@ etf.file_uuid = post_helper(
 etf.post_url = 'eeeetf'
 etf.user_id = drazendr.id
 etf.password = 'mojfaks'
-etf.reviewed = true
+etf.reviewed = false
 etf.save!
 
 # Creating a lot of posts on one account
