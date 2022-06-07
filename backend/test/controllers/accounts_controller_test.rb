@@ -77,6 +77,16 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_request body: {
       success: true,
     }
+    assert User.exists?(username: 'abc')
+  end
+
+  test "register unsuccesful username exists" do
+    post api_accounts_register_path, params: {
+      username: 'testuser1',
+      password: '123',
+      name: 'ab cd'
+    }
+    assert_already_exists
   end
 
   test "register missing params" do

@@ -5,7 +5,7 @@ class ReviewControllerTest < ActionDispatch::IntegrationTest
     login_admin_user
     get api_review_path
 
-    db_post = Post.find_by(post_url: 'url1')
+    db_post = get_unreviewed_post
     test_post = {
       id: db_post[:id],
       url: 'url1',
@@ -38,16 +38,25 @@ class ReviewControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "approve post" do
-      login_admin_user
-      post "/api/review/#{get_unreviewed_post.id}", params: {
-        approve: true
-      }
-      assert_request body: {
-        success: true,
-      }
-      approved_post = Post.find_by(id: get_unreviewed_post.id)
+    login_admin_user
+    post "/api/review/#{get_unreviewed_post.id}", params: {
+      approve: true
+    }
+    assert_request body: {
+      success: true,
+    }
+    approved_post = Post.find_by(id: get_unreviewed_post.id)
 
-      assert_equal(approved_post.reviewed, true)
+    assert_equal(approved_post.reviewed, true)
+  end
+
+  test "review missing params" do
+    login_admin_user
+    post "/api/review/#{get_unreviewed_post.id}"
+    assert_missing_param
+    unapproved_post = Post.find_by(id: get_unreviewed_post.id)
+
+    assert_equal(unapproved_post.reviewed, false)
   end
 
   test "disapprove post" do
@@ -66,7 +75,10 @@ class ReviewControllerTest < ActionDispatch::IntegrationTest
   test "regular user cannot review posts" do
     login_regular_user
     get api_review_path
-
+    assert_require_admin
+    post "/api/review/#{get_unreviewed_post.id}", params: {
+      approve: true,
+    }, as: :json
     assert_require_admin
   end
 end
