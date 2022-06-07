@@ -4,3 +4,10 @@ testuser1:
   password_digest: <%= BCrypt::Password.create('123', cost: 4) %>
   profile_photo_uuid: 
   is_admin: false
+
+testuser2:
+  username: testuser2
+  real_name: Test User2
+  password_digest: <%= BCrypt::Password.create('123', cost: 4) %>
+  profile_photo_uuid:
+  is_admin: true
