@@ -52,6 +52,23 @@ export async function login(driver: WebDriver) {
     assert.equal(await createButton.getAttribute('title'), 'Create');
 }
 
+export async function loginRegularUser(driver: WebDriver) {
+    await driver.get('http://localhost:3000');
+    await driver.wait(until.urlIs('http://localhost:3000/accounts/login'));
+    const usernameBox = await driver.findElement(By.css('input[name="username"]'));
+    const passwordBox = await driver.findElement(By.css('input[name="password"]'));
+    const loginButton = await driver.findElement(By.css('input.button[type="submit"]'));
+    await usernameBox.clear();
+    await passwordBox.clear();
+    await usernameBox.sendKeys('ivan');
+    await passwordBox.sendKeys('sifra');
+    await loginButton.click();
+    await driver.wait(until.urlIs('http://localhost:3000/'));
+    const createButton = driver.findElement(By.css('a[title="Create"]'));
+    await driver.wait(until.elementIsVisible(createButton))
+    assert.equal(await createButton.getAttribute('title'), 'Create');
+}
+
 export async function register(driver: WebDriver) {
     await driver.get('http://localhost:3000/accounts/register');
     await driver.wait(until.urlIs('http://localhost:3000/accounts/register'));
@@ -65,7 +82,7 @@ export async function register(driver: WebDriver) {
     await passwordBox.sendKeys('sifra');
     await repeatPasswordBox.sendKeys('sifra');
     await registerButton.click();
-    await driver.wait(until.urlIs('http://localhost:3000/'));    
+    await driver.wait(until.urlIs('http://localhost:3000/'));
     const createButton = driver.findElement(By.css('a[title="Create"]'));
     await driver.wait(until.elementIsVisible(createButton))
     assert.equal(await createButton.getAttribute('title'), 'Create');
