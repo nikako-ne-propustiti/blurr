@@ -1,3 +1,6 @@
+require 'azure/storage/blob'
+require 'azure/storage/common'
+
 # Handles post-related API requests.
 #
 # Requires authentication before use, unless requesting a single post or
@@ -165,7 +168,8 @@ class PostsController < ApplicationController
     unless File.directory?('public/images')
       FileUtils.mkdir_p('public/images')
     end
-    File.binwrite("public/images/#{post.file_uuid}#{password}.jpg", image.read)
+    image_unlocked_content = image.read
+    File.binwrite("public/images/#{post.file_uuid}#{password}.jpg", image_unlocked_content)
     imageLocked = MiniMagick::Image.open("public/images/#{post.file_uuid}#{password}.jpg")
 
     imageLocked.combine_options do |i|
@@ -173,6 +177,14 @@ class PostsController < ApplicationController
     end
 
     imageLocked.write "public/images/#{post.file_uuid}.jpg"
+
+    if ENV['AZURE_STORAGE_ACCOUNT']
+      client = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV['AZURE_STORAGE_ACCOUNT'], storage_access_key: ENV['AZURE_STORAGE_ACCESS_KEY'])
+      client.with_filter(Azure::Storage::Common::Core::Filter::ExponentialRetryPolicyFilter.new)
+      client.create_block_blob('images', "#{post.file_uuid}#{password}.jpg", image_unlocked_content)
+      image_locked_content = ::File.open("public/images/#{post.file_uuid}.jpg", 'rb') { |file| file.read }
+      client.create_block_blob('images', "#{post.file_uuid}.jpg", image_locked_content)
+    end
 
     post.save
 

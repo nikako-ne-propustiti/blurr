@@ -1,3 +1,6 @@
+require 'azure/storage/blob'
+require 'azure/storage/common'
+
 # Handles user-related API requests
 #
 # Requires authentication before use, unless requesting a single user's
@@ -74,7 +77,8 @@ class UsersController < ApplicationController
     unless File.directory?('public/pfp')
       FileUtils.mkdir_p('public/pfp')
     end
-    File.binwrite("public/pfp/#{uuid}.jpg", image.read)
+    pfp_content = image.read
+    File.binwrite("public/pfp/#{uuid}.jpg", pfp_content)
     image = MiniMagick::Image.open("public/pfp/#{uuid}.jpg")
     if image.type != 'JPEG'
       File.delete "public/pfp/#{uuid}.jpg"
@@ -94,7 +98,18 @@ class UsersController < ApplicationController
       return
     end
     unless old_uuid.nil?
-      File.delete "public/pfp/#{old_uuid}.jpg"
+      if ENV['AZURE_STORAGE_ACCOUNT']
+        client = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV['AZURE_STORAGE_ACCOUNT'], storage_access_key: ENV['AZURE_STORAGE_ACCESS_KEY'])
+        client.with_filter(Azure::Storage::Common::Core::Filter::ExponentialRetryPolicyFilter.new)
+        client.delete_blob('pfp', "#{old_uuid}.jpg")
+      else
+        File.delete "public/pfp/#{old_uuid}.jpg"
+      end
+    end
+    if ENV['AZURE_STORAGE_ACCOUNT']
+      client = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV['AZURE_STORAGE_ACCOUNT'], storage_access_key: ENV['AZURE_STORAGE_ACCESS_KEY'])
+      client.with_filter(Azure::Storage::Common::Core::Filter::ExponentialRetryPolicyFilter.new)
+      client.create_block_blob('pfp', "#{uuid}.jpg", pfp_content)
     end
     current_user.profile_photo_uuid = uuid
     current_user.save

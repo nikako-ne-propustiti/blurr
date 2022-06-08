@@ -1,3 +1,6 @@
+require 'azure/storage/blob'
+require 'azure/storage/common'
+
 # Users
 aleksa = User.create!(username: 'aleksa', real_name: 'Aleksa Marković', password: 'sifra', is_admin: true)
 luka = User.create!(username: 'luka', real_name: 'Luka Simić', password: 'sifra', is_admin: true)
@@ -44,6 +47,14 @@ def post_helper(url, blur_level, password)
     i.blur "0x#{blur_level * 5}"
   end
   imageLocked.write "public/images/#{uuid}.jpg"
+  if ENV['AZURE_STORAGE_ACCOUNT']
+    client = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV['AZURE_STORAGE_ACCOUNT'], storage_access_key: ENV['AZURE_STORAGE_ACCESS_KEY'])
+    client.with_filter(Azure::Storage::Common::Core::Filter::ExponentialRetryPolicyFilter.new)
+    image_locked_content = ::File.open("public/images/#{uuid}.jpg", 'rb') { |file| file.read }
+    client.create_block_blob('images', "#{uuid}.jpg", image_locked_content)
+    image_unlocked_content = ::File.open("public/images/#{uuid}#{password}.jpg", 'rb') { |file| file.read }
+    client.create_block_blob('images', "#{uuid}#{password}.jpg", image_unlocked_content)
+  end
   return uuid
 end
 
