@@ -8,6 +8,7 @@ pavled = User.create!(username: 'pavled', real_name: 'Pavle Divović', password:
 drazendr = User.create!(username: 'drazendr', real_name: 'Dražen Drašković', password: 'sifra', is_admin: false)
 bojicd = User.create!(username: 'bojicd', real_name: 'Dragan Bojić', password: 'sifra', is_admin: false)
 postalot = User.create!(username: 'postalot', real_name: 'Infinite scroll test', password: 'sifra', is_admin: false)
+feed = User.create!(username: 'feed', real_name: 'Infinite scroll on feed test', password: 'sifra', is_admin: false)
 
 # Followers
 Follow.create!(followee_id: aleksa.id, follower_id: luka.id)
@@ -32,6 +33,7 @@ Follow.create!(followee_id: pavled.id, follower_id: tasha.id)
 Follow.create!(followee_id: pavled.id, follower_id: luka.id)
 Follow.create!(followee_id: bojicd.id, follower_id: luka.id)
 Follow.create!(followee_id: drazendr.id, follower_id: luka.id)
+Follow.create!(followee_id: postalot.id, follower_id: feed.id)
 
 # Posts
 def post_helper(url, blur_level, password)

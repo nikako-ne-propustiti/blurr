@@ -19,11 +19,11 @@ it('non-admin tries to review posts', async () => {
     await loginRegularUser(driver);
     await driver.get('http://localhost:3000/p/review');
     await driver.wait(until.urlIs('http://localhost:3000/'));
-    const logoutButton = await driver.findElement(By.css('a[title="Logout"]'));
-    await driver.wait(until.elementIsVisible(logoutButton))
-    assert.equal(await logoutButton.getAttribute('title'), 'Logout');
+    const logoutButton = await waitForElement(driver, '//*[@id="root"]/div/div/nav/div[3]/a[4]/span');
     await logoutButton.click();
+    await driver.sleep(3000);
     await driver.wait(until.urlIs('http://localhost:3000/accounts/login'));
+    await driver.sleep(3000);
 });
 
 it('admin deletes post', async () => {
