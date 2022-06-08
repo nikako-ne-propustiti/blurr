@@ -38,6 +38,29 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert Follow.exists?(follower_id: get_user3.id, followee_id: get_user4.id)
   end
 
+  test "cannot edit real name when logged out" do
+    patch "/api/users"
+    assert_require_login
+  end
+
+  test "cannot edit real name missing params" do
+    login_user3
+    patch "/api/users"
+    assert_missing_param
+  end
+
+  test "edit real name successfully" do
+    login_user3
+    patch "/api/users", params: {
+      realName: 'Check Test Name'
+    }
+    assert_request body: {
+      success: true
+    }
+    db_user = User.find_by! username: get_user3.username
+    assert db_user.real_name == 'Check Test Name'
+  end
+
   test "get account info unsuccessful non-existing user" do
     get "/api/users/nonexisting"
     assert_not_found
