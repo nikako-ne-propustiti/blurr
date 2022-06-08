@@ -110,4 +110,25 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     }
     assert !Post.exists?(id: get_post_to_delete.id)
   end
+  
+  test "guest toggles like unsuccessfully" do
+    post "/api/posts/#{get_reviewed_post.id}/likes"
+    assert_require_login
+  end
+
+  test "regular user likes and then unlikes a post successfully" do
+    login_regular_user
+    post "/api/posts/#{get_reviewed_post.id}/likes"
+    assert_request body: {
+      success: true,
+      haveLiked: true
+    }
+    assert PostLike.exists?(user_id: get_regular_user.id, post_id: get_reviewed_post.id)
+    post "/api/posts/#{get_reviewed_post.id}/likes"
+    assert_request body: {
+      success: true,
+      haveLiked: false
+    }
+    assert !PostLike.exists?(user_id: get_regular_user.id, post_id: get_reviewed_post.id)
+  end
 end
