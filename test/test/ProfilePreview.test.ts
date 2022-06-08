@@ -38,7 +38,7 @@ it('guest visits existing profile', async () => {
     assert.equal(await followers.getText(), '2 followers');
     assert.equal(await following.getText(), '2 following');
     assert.equal(await posts.getText(), '0 posts');
-    assert.equal(await pfp.getAttribute('src'), 'http://localhost:3001//default-images/default_user.jpg');
+    assert.equal(await pfp.getAttribute('src'), 'http://localhost:3001/default-images/default_user.jpg');
     assert.equal(await followButtons.length, 0);
 });
 
@@ -67,7 +67,7 @@ it('logged in user visits existing profile', async () => {
     assert.equal(await followers.getText(), '2 followers');
     assert.equal(await following.getText(), '2 following');
     assert.equal(await posts.getText(), '0 posts');
-    assert.equal(await pfp.getAttribute('src'), 'http://localhost:3001//default-images/default_user.jpg');
+    assert.equal(await pfp.getAttribute('src'), 'http://localhost:3001/default-images/default_user.jpg');
     assert.equal(await followButtons.length, 1);
 });
 
@@ -83,7 +83,7 @@ it('logged in user visits his profile', async () => {
     assert.equal(await name.getText(), 'aleksa - Aleksa Marković');
     assert.equal(await followers.getText(), '6 followers');
     assert.equal(await following.getText(), '2 following');
-    assert.equal(await pfp.getAttribute('src'), 'http://localhost:3001//default-images/default_user.jpg');
+    assert.equal(await pfp.getAttribute('src'), 'http://localhost:3001/default-images/default_user.jpg');
     assert.equal(await editProfileButton.getText(), 'Edit account');
 });
 
