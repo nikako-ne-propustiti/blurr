@@ -53,8 +53,28 @@ hedgehog.post_url = 'jezjezjez'
 hedgehog.user_id = tasha.id
 hedgehog.password = 'hedgehog'
 hedgehog.description = 'Guess my favorite animal!'
-hedgehog.reviewed = false
+hedgehog.reviewed = true
 hedgehog.save!
+
+bicikl = Post.new
+bicikl.file_uuid = post_helper(
+  'https://ychef.files.bbci.co.uk/1376x774/p07phq4b.jpg',
+  10, 'bicikl')
+bicikl.post_url = 'biciklbicikl'
+bicikl.user_id = ivan.id
+bicikl.password = 'bicikl'
+bicikl.reviewed = false
+bicikl.save!
+
+more = Post.new
+more.file_uuid = post_helper(
+  'https://exp.cdn-hotels.com/hotels/55000000/54150000/54148300/54148234/8d43a81d_z.jpg?impolicy=fcrop&w=500&h=333&q=medium',
+  10, 'more')
+more.post_url = 'moremoremore'
+more.user_id = aleksa.id
+more.password = 'more'
+more.reviewed = true
+more.save!
 
 etf = Post.new
 etf.file_uuid = post_helper(
