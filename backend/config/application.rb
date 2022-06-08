@@ -12,7 +12,8 @@ module Myapp
     config.load_defaults 6.0
 
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, key: 'blurr_session'
+    config.middleware.use ActionDispatch::Session::CookieStore, key: 'blurr_session', secure: (ENV['RAILS_SAMESITE'] == 'none')
+    config.action_dispatch.cookies_same_site_protection = (ENV['RAILS_SAMESITE'] == 'none') ? :none : :lax
 
     # Configuration for the application, engines, and railties goes here.
     #
