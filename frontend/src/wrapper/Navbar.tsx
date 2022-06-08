@@ -21,6 +21,7 @@ const Navbar: React.FC = () => {
         dispatch({
             type : 'log-out'
         });
+        window.location.reload();
     }, []);
 
     const handleSearch = useCallback(async (query: string) => {
