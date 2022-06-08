@@ -103,7 +103,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "successfully delete post" do
-    login_user
+    login_user3
     delete "/api/posts/#{get_post_to_delete.id}"
     assert_request body: {
       success: true

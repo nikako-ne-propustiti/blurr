@@ -73,8 +73,12 @@ class ActiveSupport::TestCase
     return users(:testuser2)
   end
 
-  def get_user
+  def get_user3
     return users(:testuser3)
+  end
+
+  def get_user4
+    return users(:testuser4)
   end
 
   def get_comment
@@ -107,8 +111,21 @@ class ActiveSupport::TestCase
     }
   end
 
-  def login_user
-    user = get_user
+  def login_user3
+    user = get_user3
+    post api_accounts_login_path, params: {
+      username: user.username,
+      password: '123'
+    }
+    assert_equal session[:user_id], user.id
+    assert_request body: {
+      success: true,
+      isAdmin: true
+    }
+  end
+
+  def login_user4
+    user = get_user3
     post api_accounts_login_path, params: {
       username: user.username,
       password: '123'
