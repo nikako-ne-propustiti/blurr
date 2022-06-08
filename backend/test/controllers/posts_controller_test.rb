@@ -90,4 +90,24 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_missing_param
     assert_create_post_invalid
   end
+
+  test "failed to delete post not logged in" do
+    delete "/api/posts/#{get_post_to_delete.id}"
+    assert_require_login
+  end
+
+  test "failed to delete post no permission" do
+    login_admin_user
+    delete "/api/posts/#{get_post_to_delete.id}"
+    assert_no_permission
+  end
+
+  test "successfully delete post" do
+    login_user
+    delete "/api/posts/#{get_post_to_delete.id}"
+    assert_request body: {
+      success: true
+    }
+    assert !Post.exists?(id: get_post_to_delete.id)
+  end
 end
