@@ -21,7 +21,7 @@ class ReviewControllerTest < ActionDispatch::IntegrationTest
         username: 'testuser1',
         realName: 'Test User1',
         profileURL: 'testuser1',
-        profilePhotoURL: '/default_images/default_user.jpg',
+        profilePhotoURL: '/default-images/default_user.jpg',
         amFollowing: false,
         numberOfPosts: 2,
         numberOfFollowers: 0,

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {Post} from '../../models';
-import {BACKEND_API_URL} from '../../api';
+import {CDN_URL} from '../../api';
 
 import './PostPreview.css';
 import Icon from "../../shared/Icon";
@@ -10,7 +10,7 @@ import Icon from "../../shared/Icon";
 const PostPreview: React.FC<Post> = ({url, photoURL, likes, haveLiked, comments}) => {
 
     return <Link to={`/p/${url}`} className='post-preview'>
-        <img className="post-preview-image" src={`${BACKEND_API_URL}/${photoURL}`}/>
+        <img className="post-preview-image" src={`${CDN_URL}${photoURL}`}/>
         <div className="post-preview-overlay">
             <div className="post-preview-bar">
                 <Icon name={haveLiked ? 'favorite' : 'favorite_border'}/>️ {likes}

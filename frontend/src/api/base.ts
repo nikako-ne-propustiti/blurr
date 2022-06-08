@@ -1,4 +1,5 @@
 export const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3001';
+export const CDN_URL = process.env.CDN_URL || BACKEND_API_URL;
 
 interface ApiCallArgs {
     json?: any,

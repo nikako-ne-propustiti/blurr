@@ -1,5 +1,5 @@
 import React from 'react';
-import {BACKEND_API_URL, profilePhoto} from '../api';
+import {CDN_URL, profilePhoto} from '../api';
 import {User} from '../models';
 import {Context} from './Context';
 
@@ -52,7 +52,7 @@ const ProfilePhoto: React.FC<Props> = ({userInfo, setUserInfo}) => {
     }, []);
 
     return <div className={`profile-photo ${clickable ? 'profile-photo-clickable' : ''}`}>
-        <img src={`${BACKEND_API_URL}/${userInfo.profilePhotoURL}`} title={userInfo.username} onClick={openFileDialog} />
+        <img src={`${CDN_URL}${userInfo.profilePhotoURL}`} title={userInfo.username} onClick={openFileDialog} />
         {clickable && <input type="file" accept=".jpg, .jpeg" onChange={uploadFile} ref={fileInput} id="profilePhotoFile" />}
     </div>
 };

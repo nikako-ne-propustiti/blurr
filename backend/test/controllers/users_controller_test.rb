@@ -136,7 +136,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
         username: "testuser3",
         realName: "Test User3",
         profileURL: "testuser3",
-        profilePhotoURL: "/default_images/default_user.jpg",
+        profilePhotoURL: "/default-images/default_user.jpg",
         amFollowing: false,
         numberOfPosts: 1,
         numberOfFollowers: 0,

@@ -20,7 +20,7 @@ services:
       - ./backend/vendor:/myapp/backend/vendor
       - ./tmp/images:/myapp/backend/public/images
       - ./tmp/pfp:/myapp/backend/public/pfp
-      - ./backend/app/assets/images:/myapp/backend/public/default_images
+      - ./backend/app/assets/images:/myapp/backend/public/default-images
     depends_on:
       - db
     ports:

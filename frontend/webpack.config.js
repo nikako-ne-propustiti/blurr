@@ -43,7 +43,8 @@ module.exports = {
             template: path.join(__dirname, 'src/index.html'),
         }),
         new EnvironmentPlugin({
-            BACKEND_API_URL: 'http://localhost:3001'
+            BACKEND_API_URL: 'http://localhost:3001',
+            CDN_URL: 'http://localhost:3001'
         }),
     ],
     devServer: {

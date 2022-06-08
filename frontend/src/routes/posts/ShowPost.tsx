@@ -5,7 +5,7 @@ import Icon from '../../shared/Icon';
 import {Link, useNavigate} from 'react-router-dom';
 import Button from '../../shared/Button';
 import {Context} from '../../shared/Context';
-import {BACKEND_API_URL} from '../../api';
+import {CDN_URL} from '../../api';
 
 import './ShowPost.css';
 
@@ -178,11 +178,11 @@ const ShowPost: React.FC<Props> = ({isReview, addComment, post, setCommentLiked,
     return (
         <article className="post-wrapper">
             <div className="post">
-                <img onDoubleClick={onLike} src={`${BACKEND_API_URL}/${photoURL}`} />
+                <img onDoubleClick={onLike} src={`${CDN_URL}${photoURL}`} />
                 <div className="panel">
                     <div className="profile-bar">
                         <Link to={`/${post.poster.username}`}>
-                            <img src={`${BACKEND_API_URL}/${post.poster.profilePhotoURL}`}></img>
+                            <img src={`${CDN_URL}${post.poster.profilePhotoURL}`}></img>
                         </Link>
                         <Link to={`/${post.poster.username}`}>
                             {post.poster.username}
