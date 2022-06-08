@@ -62,6 +62,10 @@ class ActiveSupport::TestCase
     return users(:testuser2)
   end
 
+  def get_comment
+    return comments(:testcomment1)
+  end
+
   def login_regular_user
     user = get_regular_user
     post api_accounts_login_path, params: {
