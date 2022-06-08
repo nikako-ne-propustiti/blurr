@@ -38,6 +38,67 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert Follow.exists?(follower_id: get_user3.id, followee_id: get_user4.id)
   end
 
+  test "cannot change profile picture when logged out" do
+    post "/api/users/pfp"
+    assert_require_login
+  end
+
+  test "cannot change profile picture missing params" do
+    login_user3
+    post "/api/users/pfp"
+    assert_missing_param
+  end
+
+  test "cannot change profile picture wrong dimensions" do
+    login_user3
+    post "/api/users/pfp", params: {
+      image: fixture_file_upload('pfp-invalid-format.png')
+    }
+    assert_request body: {
+      success: false, error: 'Image must be in JPEG format.'
+    }, status: 400
+
+    post "/api/users/pfp", params: {
+      image: fixture_file_upload('pfp-not-tall-enough.jpg')
+    }
+    assert_request body: {
+      success: false, error: 'Image too big or too small.'
+    }, status: 400
+
+    post "/api/users/pfp", params: {
+      image: fixture_file_upload('pfp-not-wide-enough.jpg')
+    }
+    assert_request body: {
+      success: false, error: 'Image too big or too small.'
+    }, status: 400
+
+    post "/api/users/pfp", params: {
+      image: fixture_file_upload('pfp-too-tall.jpg')
+    }
+    assert_request body: {
+      success: false, error: 'Image too big or too small.'
+    }, status: 400
+
+    post "/api/users/pfp", params: {
+      image: fixture_file_upload('pfp-too-wide.jpg')
+    }
+    assert_request body: {
+      success: false, error: 'Image too big or too small.'
+    }, status: 400
+  end
+
+  test "profile picture update successful" do
+    login_user3
+    SecureRandom.stub :uuid, '285b9102-fb53-4f9b-9c6a-46198c689825' do
+      post "/api/users/pfp", params: {
+        image: fixture_file_upload('pfp-valid.jpg')
+      }
+    end
+    assert_request body: {
+      success: true, url: "/pfp/285b9102-fb53-4f9b-9c6a-46198c689825.jpg"
+    }
+  end
+
   test "cannot edit real name when logged out" do
     patch "/api/users"
     assert_require_login
