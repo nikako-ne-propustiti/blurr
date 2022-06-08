@@ -190,7 +190,8 @@ class PostsController < ApplicationController
 
     render json: {
       success: true,
-      url: post.post_url
+      url: post.post_url,
+      debug: ENV['AZURE_STORAGE_ACCOUNT']
     }
   end
 
