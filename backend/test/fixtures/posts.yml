@@ -15,3 +15,12 @@ testpost2:
   password: pass2
   reviewed: true
   sponsored: false
+
+testpost3:
+  post_url: url3
+  file_uuid: 12345678-abcd-ef12-345a-87654321ffff
+  description: desc3
+  user: testuser3
+  password: pass3
+  reviewed: true
+  sponsored: false

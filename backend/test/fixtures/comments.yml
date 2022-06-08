@@ -1,5 +1,4 @@
-# one:
-#   comment_text: MyString
-#   post: one
-#   parent_comment: one
-#   user: one
+testcomment1:
+  comment_text: 'test comment'
+  post: testpost2
+  user: testuser1

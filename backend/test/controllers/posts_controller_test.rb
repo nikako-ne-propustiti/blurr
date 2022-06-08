@@ -90,4 +90,45 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_missing_param
     assert_create_post_invalid
   end
+
+  test "failed to delete post not logged in" do
+    delete "/api/posts/#{get_post_to_delete.id}"
+    assert_require_login
+  end
+
+  test "failed to delete post no permission" do
+    login_admin_user
+    delete "/api/posts/#{get_post_to_delete.id}"
+    assert_no_permission
+  end
+
+  test "successfully delete post" do
+    login_user3
+    delete "/api/posts/#{get_post_to_delete.id}"
+    assert_request body: {
+      success: true
+    }
+    assert !Post.exists?(id: get_post_to_delete.id)
+  end
+  
+  test "guest toggles like unsuccessfully" do
+    post "/api/posts/#{get_reviewed_post.id}/likes"
+    assert_require_login
+  end
+
+  test "regular user likes and then unlikes a post successfully" do
+    login_regular_user
+    post "/api/posts/#{get_reviewed_post.id}/likes"
+    assert_request body: {
+      success: true,
+      haveLiked: true
+    }
+    assert PostLike.exists?(user_id: get_regular_user.id, post_id: get_reviewed_post.id)
+    post "/api/posts/#{get_reviewed_post.id}/likes"
+    assert_request body: {
+      success: true,
+      haveLiked: false
+    }
+    assert !PostLike.exists?(user_id: get_regular_user.id, post_id: get_reviewed_post.id)
+  end
 end

@@ -46,6 +46,13 @@ class ActiveSupport::TestCase
     }, status: 403
   end
 
+  def assert_no_permission
+    assert_request body: {
+      success: false,
+      error: 'You do not have the permission to perform this action.'
+    }, status: 403
+  end
+
   def get_unreviewed_post
     return posts(:testpost1)
   end
@@ -54,12 +61,28 @@ class ActiveSupport::TestCase
     return posts(:testpost2)
   end
 
+  def get_post_to_delete
+    return posts(:testpost3)
+  end
+
   def get_regular_user
     return users(:testuser1)
   end
 
   def get_admin_user
     return users(:testuser2)
+  end
+
+  def get_user3
+    return users(:testuser3)
+  end
+
+  def get_user4
+    return users(:testuser4)
+  end
+
+  def get_comment
+    return comments(:testcomment1)
   end
 
   def login_regular_user
@@ -77,6 +100,32 @@ class ActiveSupport::TestCase
 
   def login_admin_user
     user = get_admin_user
+    post api_accounts_login_path, params: {
+      username: user.username,
+      password: '123'
+    }
+    assert_equal session[:user_id], user.id
+    assert_request body: {
+      success: true,
+      isAdmin: true
+    }
+  end
+
+  def login_user3
+    user = get_user3
+    post api_accounts_login_path, params: {
+      username: user.username,
+      password: '123'
+    }
+    assert_equal session[:user_id], user.id
+    assert_request body: {
+      success: true,
+      isAdmin: true
+    }
+  end
+
+  def login_user4
+    user = get_user3
     post api_accounts_login_path, params: {
       username: user.username,
       password: '123'
