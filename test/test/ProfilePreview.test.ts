@@ -95,5 +95,3 @@ it('logged in clicks edit account button', async () => {
     const editAccount = await waitForElement(driver, '//*[@id="root"]/div/main/div/h1');
     assert.equal(await editAccount.getText(), 'Edit account');
 });
-
-//TODO: add integration tests for pfp successful and unsuccessful update

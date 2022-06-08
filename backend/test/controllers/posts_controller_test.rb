@@ -131,4 +131,16 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     }
     assert !PostLike.exists?(user_id: get_regular_user.id, post_id: get_reviewed_post.id)
   end
+
+  test "get posts unsuccessful missing params" do
+    get "/api/posts"
+    assert_missing_param
+  end
+
+  test "get posts as not logged in user" do
+    get "/api/posts", params: {
+      lastIndex: 1,
+    }, as: :json
+    assert_require_login
+  end
 end
